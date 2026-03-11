@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-api_key = os.environ.get("OMDB_API_KEY")  # Pulled from Render env variable
+api_key = os.environ.get("OMDB_API_KEY")
 
 def get_poster_url(movie_title):
     url = f"http://www.omdbapi.com/?t={movie_title}&apikey={api_key}"
@@ -13,7 +13,7 @@ def get_poster_url(movie_title):
 
     if 'Poster' in data and data['Poster'] != 'N/A':
         poster_url = data['Poster']
-        modified = poster_url[:poster_url.rfind("SX300")] + "0" + poster_url[poster_url.rfind("SX300"):]
+        modified = poster_url[:poster_url.rfind("._V1_")+5] + "poster.jpg"
         return modified, data.get('Title', movie_title)
     return None, None
 

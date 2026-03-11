@@ -2,6 +2,35 @@
 <html>
 <head>
     <title>Movie Poster Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        input {
+            padding: 8px;
+            width: 60%;
+            font-size: 16px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>🎬 Movie Poster Finder</h1>
@@ -11,12 +40,12 @@
     </form>
 
     {% if error %}
-        <p style="color:red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
 
     {% if poster_url %}
         <h2>{{ title }}</h2>
-        <img src="{{ poster_url }}" alt="{{ title }}" style="max-width:400px;" />
+        <img src="{{ poster_url }}" alt="{{ title }}" />
     {% endif %}
 </body>
 </html>
