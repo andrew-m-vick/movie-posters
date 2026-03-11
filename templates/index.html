@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Poster Finder</title>
+</head>
+<body>
+    <h1>🎬 Movie Poster Finder</h1>
+    <form method="POST">
+        <input type="text" name="movie_title" placeholder="Enter movie title" required />
+        <button type="submit">Search</button>
+    </form>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    {% if poster_url %}
+        <h2>{{ title }}</h2>
+        <img src="{{ poster_url }}" alt="{{ title }}" style="max-width:400px;" />
+    {% endif %}
+</body>
+</html>
+```
+
+**`requirements.txt`**:
+```
+flask
+requests
+gunicorn
+```
+
+**`.gitignore`**:
+```
+__pycache__/
+config.py
+.env
+*.pyc
