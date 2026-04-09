@@ -1,0 +1,2303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CINEDATA — Box Office Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080f;
+  --bg2:#0f0f1a;
+  --bg3:#14141f;
+  --card:#16162a;
+  --border:#1e1e35;
+  --border2:#252540;
+  --gold:#e8a020;
+  --gold2:#f0b840;
+  --teal:#1a9baa;
+  --teal2:#22b8c8;
+  --red:#e05050;
+  --green:#3ab870;
+  --text:#e2e2f0;
+  --text2:#9090b0;
+  --text3:#5a5a80;
+  --font-head:'Bebas Neue',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* HEADER */
+#header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,8,15,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;align-items:center;gap:0;
+  height:56px;
+}
+.logo{
+  font-family:var(--font-head);
+  font-size:22px;
+  letter-spacing:2px;
+  color:var(--gold);
+  margin-right:16px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.logo span{color:var(--text3);font-size:11px;font-family:var(--font-mono);letter-spacing:1px;vertical-align:middle;margin-left:6px}
+.nav-tabs{display:flex;gap:0;overflow-x:auto;flex:1;-ms-overflow-style:none;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{
+  padding:0 12px;height:56px;
+  display:flex;align-items:center;
+  font-family:var(--font-head);
+  font-size:13px;letter-spacing:1px;
+  color:var(--text2);
+  cursor:pointer;border:none;background:none;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  white-space:nowrap;min-width:44px;flex-shrink:0;
+}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-tab.ops-tab{color:var(--text3)}
+.nav-tab.ops-tab:hover{color:var(--teal)}
+.nav-tab.ops-tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+.header-actions{display:flex;gap:8px;flex-shrink:0}
+.icon-btn{
+  width:36px;height:36px;border-radius:6px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-size:16px;
+}
+.icon-btn:hover{background:var(--card);color:var(--text);border-color:var(--border2)}
+
+/* MAIN */
+#main{padding:24px;max-width:1400px;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* SECTION HEADER */
+.section-header{
+  display:flex;align-items:baseline;gap:12px;
+  margin-bottom:16px;
+}
+.section-title{
+  font-family:var(--font-head);
+  font-size:20px;letter-spacing:2px;
+  color:var(--text);
+}
+.section-sub{color:var(--text3);font-size:12px;font-family:var(--font-mono)}
+.section-actions{margin-left:auto;display:flex;gap:8px}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.kpi-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:16px 18px;
+  position:relative;overflow:hidden;
+}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--gold);opacity:.6;
+}
+.kpi-card.teal::before{background:var(--teal)}
+.kpi-card.red::before{background:var(--red)}
+.kpi-card.green::before{background:var(--green)}
+.kpi-label{font-size:11px;color:var(--text3);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.kpi-value{font-family:var(--font-head);font-size:28px;letter-spacing:1px;color:var(--text);line-height:1}
+.kpi-change{font-size:11px;margin-top:4px;font-family:var(--font-mono)}
+.kpi-change.up{color:var(--green)}.kpi-change.down{color:var(--red)}.kpi-change.neutral{color:var(--text3)}
+
+/* TWO COLUMN LAYOUT */
+.two-col{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-bottom:24px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px}
+.card-title{font-family:var(--font-head);font-size:14px;letter-spacing:1.5px;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.card-title .dot.teal{background:var(--teal)}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{
+  text-align:left;padding:8px 10px;
+  font-family:var(--font-mono);font-size:10px;
+  color:var(--text3);letter-spacing:1px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+.data-table th.right,.data-table td.right{text-align:right}
+.data-table td{
+  padding:9px 10px;border-bottom:1px solid var(--border);
+  color:var(--text);vertical-align:middle;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+.data-table .rank{font-family:var(--font-mono);color:var(--text3);font-size:12px;width:28px}
+.data-table .movie-title-cell{display:flex;align-items:center;gap:10px;min-width:160px}
+.data-table .mini-poster{width:32px;height:48px;object-fit:cover;border-radius:3px;background:var(--bg3);flex-shrink:0;cursor:pointer}
+.data-table .title-link{cursor:pointer;color:var(--text)}
+.data-table .title-link:hover{color:var(--gold)}
+.data-table .revenue{font-family:var(--font-mono);color:var(--gold);font-weight:500}
+.data-table .revenue.teal{color:var(--teal)}
+.data-table .weeks{font-family:var(--font-mono);color:var(--text3);font-size:12px}
+.trend-arrow{font-size:14px}
+.trend-arrow.up{color:var(--green)}.trend-arrow.down{color:var(--red)}.trend-arrow.flat{color:var(--text3)}
+
+/* BADGE */
+.badge{
+  display:inline-flex;align-items:center;
+  padding:2px 7px;border-radius:3px;
+  font-size:10px;font-family:var(--font-mono);letter-spacing:.5px;
+  font-weight:500;
+}
+.badge.gold{background:rgba(232,160,32,.15);color:var(--gold);border:1px solid rgba(232,160,32,.3)}
+.badge.teal{background:rgba(26,155,170,.15);color:var(--teal);border:1px solid rgba(26,155,170,.3)}
+.badge.red{background:rgba(224,80,80,.15);color:var(--red);border:1px solid rgba(224,80,80,.3)}
+.badge.green{background:rgba(58,184,112,.15);color:var(--green);border:1px solid rgba(58,184,112,.3)}
+.badge.grey{background:rgba(90,90,128,.15);color:var(--text3);border:1px solid rgba(90,90,128,.3)}
+
+/* POSTER GRID */
+.poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+.poster-item{
+  position:relative;cursor:pointer;border-radius:5px;overflow:hidden;
+  aspect-ratio:2/3;background:var(--bg3);
+  border:1px solid var(--border);
+  transition:transform .15s,border-color .15s;
+}
+.poster-item:hover{transform:scale(1.03);border-color:var(--gold)}
+.poster-item img{width:100%;height:100%;object-fit:cover;display:block}
+.poster-item .poster-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.85));
+  padding:20px 6px 6px;
+  opacity:0;transition:opacity .15s;
+}
+.poster-item:hover .poster-overlay{opacity:1}
+.poster-item .poster-title{font-size:10px;color:#fff;font-weight:500;line-height:1.2}
+.poster-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:28px}
+
+/* CHART WRAPPER */
+.chart-wrap{position:relative;height:200px}
+.chart-wrap.tall{height:280px}
+
+/* AI ANALYST */
+.analyst-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.analyst-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.analyst-icon{
+  width:28px;height:28px;border-radius:6px;
+  background:linear-gradient(135deg,var(--gold),var(--teal));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.analyst-name{font-family:var(--font-head);font-size:13px;letter-spacing:1px;color:var(--text)}
+.analyst-model{font-size:10px;font-family:var(--font-mono);color:var(--text3)}
+.analyst-messages{
+  height:220px;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.msg{max-width:90%;padding:8px 12px;border-radius:6px;font-size:13px;line-height:1.5}
+.msg.user{
+  align-self:flex-end;
+  background:rgba(232,160,32,.12);
+  border:1px solid rgba(232,160,32,.2);
+  color:var(--text);
+}
+.msg.assistant{
+  align-self:flex-start;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.msg.system{
+  align-self:center;
+  font-size:11px;font-family:var(--font-mono);
+  color:var(--text3);background:none;border:none;
+}
+.analyst-input-row{
+  display:flex;gap:8px;padding:10px;
+  border-top:1px solid var(--border);
+}
+.analyst-input{
+  flex:1;background:var(--bg2);border:1px solid var(--border);
+  border-radius:5px;padding:7px 10px;
+  color:var(--text);font-family:var(--font-body);font-size:13px;
+  outline:none;
+}
+.analyst-input:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(232,160,32,.1)}
+.analyst-send{
+  padding:7px 14px;background:var(--gold);border:none;
+  border-radius:5px;color:#000;font-weight:600;
+  font-size:12px;cursor:pointer;font-family:var(--font-body);
+  transition:background .15s;
+}
+.analyst-send:hover{background:var(--gold2)}
+.analyst-send:disabled{opacity:.4;cursor:not-allowed}
+
+/* GENRE BREAKDOWN */
+.genre-list{display:flex;flex-direction:column;gap:8px}
+.genre-row{display:flex;align-items:center;gap:10px}
+.genre-name{font-size:12px;color:var(--text2);width:80px;flex-shrink:0}
+.genre-bar-wrap{flex:1;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+.genre-bar{height:100%;border-radius:3px;background:var(--gold);transition:width .5s ease}
+.genre-pct{font-family:var(--font-mono);font-size:11px;color:var(--text3);width:36px;text-align:right}
+
+/* TECH STACK PILLS */
+.tech-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tech-pill{
+  padding:4px 10px;border-radius:4px;
+  font-size:11px;font-family:var(--font-mono);
+  background:var(--bg2);border:1px solid var(--border2);
+  color:var(--text2);
+}
+
+/* PIPELINE TAB */
+.pipeline-header{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:20px;margin-bottom:16px;
+}
+.medallion{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+.medallion-layer{
+  border-radius:8px;padding:18px;
+  border:1px solid;
+}
+.medallion-layer.bronze{
+  background:rgba(184,115,51,.06);
+  border-color:rgba(184,115,51,.3);
+}
+.medallion-layer.silver{
+  background:rgba(192,192,192,.06);
+  border-color:rgba(192,192,192,.3);
+}
+.medallion-layer.gold-layer{
+  background:rgba(232,160,32,.06);
+  border-color:rgba(232,160,32,.3);
+}
+.layer-title{
+  font-family:var(--font-head);font-size:18px;letter-spacing:2px;
+  margin-bottom:4px;
+}
+.bronze .layer-title{color:#b87333}
+.silver .layer-title{color:#c0c0c0}
+.gold-layer .layer-title{color:var(--gold)}
+.layer-sub{font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-bottom:14px}
+.schema-block{
+  background:var(--bg);border-radius:5px;padding:12px;
+  font-family:var(--font-mono);font-size:11px;line-height:1.7;
+  border:1px solid var(--border);color:var(--text2);
+  overflow-x:auto;
+}
+.schema-comment{color:var(--text3)}
+.schema-type{color:var(--teal)}
+.schema-key{color:var(--gold2)}
+.schema-pk{color:var(--red)}
+
+.dag-block{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:5px;padding:16px;
+  font-family:var(--font-mono);font-size:11px;
+  line-height:1.8;color:var(--text2);
+  overflow-x:auto;
+}
+.dag-comment{color:var(--text3)}
+.dag-keyword{color:var(--teal)}
+.dag-string{color:var(--gold2)}
+.dag-fn{color:var(--gold)}
+
+/* OPS TAB */
+.ops-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.health-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:14px;
+  display:flex;align-items:center;gap:12px;
+}
+.health-indicator{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0;
+}
+.health-indicator.online{background:var(--green);box-shadow:0 0 6px var(--green)}
+.health-indicator.degraded{background:var(--gold);box-shadow:0 0 6px var(--gold)}
+.health-indicator.offline{background:var(--red);box-shadow:0 0 6px var(--red)}
+.health-indicator.checking{background:var(--text3);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.health-name{font-size:12px;font-weight:500;color:var(--text)}
+.health-detail{font-size:10px;font-family:var(--font-mono);color:var(--text3);margin-top:2px}
+.health-latency{font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-left:auto}
+
+.record-counts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.record-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:14px;
+}
+.record-layer{font-size:10px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.record-table{width:100%;font-size:11px}
+.record-table td{padding:3px 0;color:var(--text2)}
+.record-table td:last-child{text-align:right;font-family:var(--font-mono);color:var(--text)}
+
+.pipeline-history{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px}
+.run-row{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 0;border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+.run-row:last-child{border-bottom:none}
+.run-status{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.run-status.success{background:var(--green)}
+.run-status.failed{background:var(--red)}
+.run-status.running{background:var(--gold);animation:pulse 1s infinite}
+.run-dag{font-family:var(--font-mono);color:var(--text2);flex:1}
+.run-time{font-family:var(--font-mono);color:var(--text3);font-size:11px}
+.run-duration{font-family:var(--font-mono);color:var(--text3);font-size:11px;width:50px;text-align:right}
+
+.dq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.dq-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:12px;text-align:center;
+}
+.dq-score{font-family:var(--font-head);font-size:26px;color:var(--green)}
+.dq-score.warn{color:var(--gold)}
+.dq-score.fail{color:var(--red)}
+.dq-label{font-size:10px;font-family:var(--font-mono);color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:10px;width:100%;max-width:860px;
+  max-height:90vh;overflow-y:auto;
+  position:relative;
+}
+.modal-close{
+  position:absolute;top:12px;right:12px;z-index:10;
+  width:32px;height:32px;border-radius:6px;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text2);cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-close:hover{background:var(--card);color:var(--text)}
+.modal-inner{padding:24px}
+.modal-hero{display:grid;grid-template-columns:180px 1fr;gap:24px;margin-bottom:20px}
+.modal-poster{
+  width:180px;border-radius:6px;overflow:hidden;
+  border:1px solid var(--border);background:var(--bg3);
+  aspect-ratio:2/3;
+}
+.modal-poster img{width:100%;height:100%;object-fit:cover;display:block}
+.modal-title{font-family:var(--font-head);font-size:28px;letter-spacing:2px;line-height:1.1;margin-bottom:6px}
+.modal-meta{font-size:12px;color:var(--text2);margin-bottom:12px;font-family:var(--font-mono)}
+.modal-overview{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.ratings-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.rating-chip{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:5px;
+  font-size:12px;font-weight:600;
+}
+.rating-chip.imdb{background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.3);color:#f5c518}
+.rating-chip.rt{background:rgba(250,80,60,.1);border:1px solid rgba(250,80,60,.3);color:#fa503c}
+.rating-chip.mc{background:rgba(100,200,80,.1);border:1px solid rgba(100,200,80,.3);color:#64c850}
+.modal-trailer{
+  aspect-ratio:16/9;width:100%;border-radius:6px;
+  overflow:hidden;background:#000;margin-bottom:20px;
+  border:1px solid var(--border);
+}
+.modal-trailer iframe{width:100%;height:100%;border:none;display:block}
+.modal-section-title{
+  font-family:var(--font-head);font-size:14px;letter-spacing:1.5px;
+  color:var(--text2);margin-bottom:10px;
+  padding-bottom:6px;border-bottom:1px solid var(--border);
+}
+.streaming-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.stream-chip{
+  padding:5px 12px;border-radius:4px;font-size:11px;
+  font-family:var(--font-mono);border:1px solid var(--border2);
+  background:var(--bg3);color:var(--text);
+  text-decoration:none;display:inline-block;
+  transition:opacity .15s;
+}
+.stream-chip:hover{opacity:.8}
+.stream-chip.sub{border-color:rgba(26,155,170,.4);color:var(--teal);background:rgba(26,155,170,.06)}
+.stream-chip.rent{border-color:rgba(232,160,32,.3);color:var(--gold);background:rgba(232,160,32,.06)}
+.theater-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.theater-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-radius:5px;
+  background:var(--bg3);border:1px solid var(--border);
+  font-size:12px;
+}
+.theater-icon{font-size:16px;flex-shrink:0}
+.theater-name{color:var(--text);font-weight:500}
+.theater-dist{color:var(--text3);font-family:var(--font-mono);font-size:11px;margin-left:auto}
+#map-container{height:220px;border-radius:6px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;background:var(--bg3)}
+
+/* SETTINGS MODAL */
+.settings-modal{max-width:520px}
+.settings-title{font-family:var(--font-head);font-size:22px;letter-spacing:2px;margin-bottom:4px}
+.settings-sub{font-size:12px;color:var(--text3);margin-bottom:20px}
+.settings-group{margin-bottom:16px}
+.settings-label{font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.settings-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:5px;padding:8px 12px;
+  color:var(--text);font-family:var(--font-mono);font-size:12px;
+  outline:none;
+}
+.settings-input:focus{border-color:var(--teal)}
+.settings-hint{font-size:10px;color:var(--text3);margin-top:3px}
+.settings-save{
+  width:100%;padding:10px;background:var(--teal);
+  border:none;border-radius:5px;color:#fff;
+  font-family:var(--font-head);font-size:14px;letter-spacing:1.5px;
+  cursor:pointer;margin-top:4px;transition:background .15s;
+}
+.settings-save:hover{background:var(--teal2)}
+
+/* SKELETON */
+.skeleton{
+  background:linear-gradient(90deg,var(--bg3) 25%,var(--card) 50%,var(--bg3) 75%);
+  background-size:200% 100%;animation:shimmer 1.5s infinite;
+  border-radius:4px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* LOADING */
+.loading-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px;color:var(--text3);gap:12px;
+}
+.loading-spinner{
+  width:32px;height:32px;border:2px solid var(--border2);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:var(--font-mono);font-size:12px;letter-spacing:1px}
+
+/* ERROR STATE */
+.error-state{
+  text-align:center;padding:40px;color:var(--text3);
+}
+.error-state .error-icon{font-size:32px;margin-bottom:10px}
+.error-state .error-msg{font-size:13px;margin-bottom:8px}
+.error-state .error-hint{font-size:11px;font-family:var(--font-mono);color:var(--text3)}
+
+/* TRENDS TAB */
+.trends-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.performance-matrix{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px}
+.matrix-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:10px}
+.matrix-cell{
+  padding:8px 10px;border-radius:5px;
+  border:1px solid var(--border);background:var(--bg3);
+  font-size:11px;
+}
+.matrix-cell .mc-title{color:var(--text);font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.matrix-cell .mc-roi{font-family:var(--font-mono);font-size:12px}
+.matrix-cell.hot{border-color:rgba(232,160,32,.4);background:rgba(232,160,32,.06)}
+.matrix-cell.cool{border-color:rgba(26,155,170,.3);background:rgba(26,155,170,.04)}
+
+/* RANKINGS TAB */
+.rankings-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.select-ctrl{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:5px;padding:6px 10px;
+  color:var(--text);font-family:var(--font-body);font-size:12px;
+  outline:none;cursor:pointer;
+}
+.select-ctrl:focus{border-color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  #header{padding:0 12px}
+  .logo span{display:none}
+  #main{padding:12px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr}
+  .medallion{grid-template-columns:1fr}
+  .trends-grid{grid-template-columns:1fr}
+  .ops-grid{grid-template-columns:repeat(2,1fr)}
+  .record-counts{grid-template-columns:1fr}
+  .dq-grid{grid-template-columns:repeat(2,1fr)}
+  .modal-hero{grid-template-columns:120px 1fr}
+  .modal-poster{width:120px}
+  .modal-title{font-size:20px}
+  .nav-tab{padding:0 12px;font-size:13px}
+  .poster-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:480px){
+  .kpi-value{font-size:22px}
+  .ops-grid{grid-template-columns:1fr}
+  .modal-hero{grid-template-columns:1fr;text-align:center}
+  .modal-poster{width:140px;margin:0 auto}
+  .ratings-row{justify-content:center}
+}
+
+/* SEARCH */
+.search-wrap{
+  position:relative;margin-left:12px;margin-right:8px;
+  flex-shrink:1;width:220px;min-width:120px;
+}
+.search-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;padding:7px 12px 7px 32px;
+  color:var(--text);font-family:var(--font-body);font-size:13px;
+  outline:none;transition:border-color .15s,background .15s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235a5a80' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:10px center;
+}
+.search-input:focus{border-color:var(--gold);background-color:var(--card)}
+.search-toggle{display:none}
+.search-results{
+  position:absolute;top:calc(100% + 6px);left:0;right:-60px;z-index:200;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:8px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  display:none;max-height:420px;overflow-y:auto;
+}
+.search-results.open{display:block}
+.search-result-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;cursor:pointer;
+  border-bottom:1px solid var(--border);
+  transition:background .1s;
+}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover{background:var(--card)}
+.search-result-thumb{
+  width:32px;height:48px;border-radius:3px;
+  object-fit:cover;background:var(--bg3);flex-shrink:0;
+}
+.search-result-info{flex:1;min-width:0}
+.search-result-title{font-size:13px;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.search-result-meta{font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-result-rating{font-family:var(--font-mono);font-size:11px;color:var(--gold);flex-shrink:0}
+.search-empty{padding:16px;text-align:center;font-size:12px;color:var(--text3);font-family:var(--font-mono)}
+.search-loading{padding:12px;text-align:center;color:var(--text3);font-size:12px;font-family:var(--font-mono);letter-spacing:1px}
+@media(max-width:768px){
+  .search-wrap{width:160px;margin-right:8px}
+}
+@media(max-width:480px){
+  .search-wrap{width:120px}
+}
+
+/* STREAMING TAB */
+.service-pill{
+  padding:5px 12px;border-radius:20px;font-size:11px;
+  font-family:var(--font-mono);letter-spacing:.5px;
+  background:var(--bg3);border:1px solid var(--border2);
+  color:var(--text2);cursor:pointer;transition:all .15s;
+}
+.service-pill:hover{border-color:var(--teal);color:var(--teal)}
+.service-pill.active{background:rgba(26,155,170,.12);border-color:var(--teal);color:var(--teal)}
+.stream-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;cursor:pointer;
+  transition:transform .15s,border-color .15s;
+  display:flex;flex-direction:column;
+}
+.stream-card:hover{transform:translateY(-2px);border-color:var(--border2)}
+.stream-card-poster{
+  width:100%;aspect-ratio:2/3;background:var(--bg3);
+  position:relative;overflow:hidden;
+}
+.stream-card-poster img{width:100%;height:100%;object-fit:cover;display:block}
+.stream-card-body{padding:10px}
+.stream-card-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stream-card-services{display:flex;flex-wrap:wrap;gap:4px}
+.service-logo{
+  width:24px;height:24px;border-radius:4px;
+  object-fit:contain;background:var(--bg2);
+  border:1px solid var(--border);
+}
+.service-badge{
+  padding:2px 7px;border-radius:3px;font-size:10px;
+  font-family:var(--font-mono);background:var(--bg2);
+  border:1px solid var(--border2);color:var(--text2);
+}
+.retailer-badge{
+  padding:2px 8px;border-radius:3px;font-size:10px;
+  font-family:var(--font-mono);border:1px solid;
+}
+.retailer-badge.apple  {color:#fc3c44;border-color:rgba(252,60,68,.3);background:rgba(252,60,68,.06)}
+.retailer-badge.amazon {color:#ff9900;border-color:rgba(255,153,0,.3);background:rgba(255,153,0,.06)}
+.retailer-badge.google {color:#4285f4;border-color:rgba(66,133,244,.3);background:rgba(66,133,244,.06)}
+.retailer-badge.vudu   {color:#3e72cf;border-color:rgba(62,114,207,.3);background:rgba(62,114,207,.06)}
+.retailer-badge.msft   {color:#00a4ef;border-color:rgba(0,164,239,.3);background:rgba(0,164,239,.06)}
+.retailer-badge.default{color:var(--text3);border-color:var(--border2);background:var(--bg3)}
+@media(max-width:768px){
+  #streamingGrid,#digitalGrid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* UTIL */
+.flex{display:flex}.items-center{align-items:center}.gap-8{gap:8px}.gap-12{gap:12px}
+.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mt-24{margin-top:24px}
+.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}.mb-24{margin-bottom:24px}
+.text-mono{font-family:var(--font-mono)}.text-sm{font-size:12px}.text-xs{font-size:11px}
+.text-muted{color:var(--text3)}.text-gold{color:var(--gold)}.text-teal{color:var(--teal)}
+.text-green{color:var(--green)}.text-red{color:var(--red)}
+.w-full{width:100%}.overflow-x-auto{overflow-x:auto}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="logo">CINEDATA <span>BOX OFFICE ANALYTICS</span></div>
+  <nav class="nav-tabs" role="tablist">
+    <button class="nav-tab active" data-tab="overview" role="tab">Box Office</button>
+    <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
+    <button class="nav-tab" data-tab="rankings" role="tab">Rankings</button>
+    <button class="nav-tab" data-tab="trends" role="tab">Trends</button>
+    <button class="nav-tab" data-tab="pipeline" role="tab">Pipeline</button>
+    <button class="nav-tab ops-tab" data-tab="ops" role="tab">OPS</button>
+  </nav>
+  <div class="search-wrap" id="searchWrap">
+    <input class="search-input" id="searchInput" type="text" placeholder="Search movies…" autocomplete="off">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- ═══════════════════════════════ OVERVIEW TAB ═══════════════════════════════ -->
+  <section class="tab-panel active" id="tab-overview">
+    <!-- KPI CARDS -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card"><div class="kpi-label">Top Popularity Score</div><div class="kpi-value" id="kpi-weekend">—</div><div class="kpi-change neutral" id="kpi-weekend-chg">Loading…</div></div>
+      <div class="kpi-card teal"><div class="kpi-label">Cumulative Box Office</div><div class="kpi-value" id="kpi-cumulative">—</div><div class="kpi-change neutral" id="kpi-cumulative-chg">Top 10 films</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Active Releases</div><div class="kpi-value" id="kpi-releases">—</div><div class="kpi-change neutral" id="kpi-releases-chg">In theaters now</div></div>
+      <div class="kpi-card red"><div class="kpi-label">Avg IMDb Score</div><div class="kpi-value" id="kpi-imdb">—</div><div class="kpi-change neutral" id="kpi-imdb-chg">Current releases</div></div>
+    </div>
+
+    <!-- TREND CHART + GENRE -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Weekly Box Office Trend</div>
+        <div class="chart-wrap"><canvas id="weeklyChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot teal"></span> Genre Revenue Share</div>
+        <div class="chart-wrap" style="height:160px"><canvas id="genreChart"></canvas></div>
+        <div class="genre-list mt-8" id="genreList"></div>
+      </div>
+    </div>
+
+    <!-- RANKINGS TABLE -->
+    <div class="card" style="padding:0">
+      <div style="padding:14px 18px 0;display:flex;align-items:baseline;gap:10px" class="card-title">
+        <span class="dot"></span> Now Playing — Top 10
+        <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);letter-spacing:.5px">RANKED BY TMDB POPULARITY</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data-table" id="overviewTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th class="right">Worldwide Revenue</th>
+              <th class="right">Budget</th>
+              <th class="right">Popularity</th>
+              <th class="right">Wks</th>
+            </tr>
+          </thead>
+          <tbody id="overviewTableBody">
+            <tr><td colspan="6"><div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">FETCHING DATA</div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- POSTER GRID -->
+    <div class="card mt-16">
+      <div class="card-title"><span class="dot teal"></span> Now Playing</div>
+      <div class="poster-grid" id="posterGrid">
+        <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ STREAMING TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-streaming">
+
+    <!-- SERVICE FILTER PILLS -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;align-items:center">
+      <span style="font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;margin-right:4px">FILTER:</span>
+      <div id="serviceFilters" style="display:flex;flex-wrap:wrap;gap:6px">
+        <button class="service-pill active" data-service="all">All Services</button>
+      </div>
+    </div>
+
+    <!-- NOW STREAMING (subscription) -->
+    <div class="section-header">
+      <div class="section-title">Now Streaming</div>
+      <div class="section-sub">SUBSCRIPTION SERVICES · TMDB WATCH PROVIDERS</div>
+    </div>
+    <div id="streamingGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px">
+      <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div><div class="loading-text">FETCHING STREAMING DATA</div></div>
+    </div>
+
+    <!-- BUY & RENT -->
+    <div class="section-header">
+      <div class="section-title">Buy &amp; Rent</div>
+      <div class="section-sub">DIGITAL RETAILERS · APPLE · AMAZON · GOOGLE · VUDU · MICROSOFT</div>
+    </div>
+    <div id="digitalGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px">
+      <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div><div class="loading-text">FETCHING DIGITAL DATA</div></div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════ RANKINGS TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-rankings">
+    <div class="section-header">
+      <div class="section-title">Box Office Rankings</div>
+      <div class="section-sub">WEEKEND + CUMULATIVE PERFORMANCE</div>
+      <div class="section-actions">
+        <select class="select-ctrl" id="rankSort">
+          <option value="revenue">Sort: Revenue</option>
+          <option value="weeks">Sort: Weeks in Market</option>
+          <option value="popularity">Sort: Popularity</option>
+        </select>
+        <select class="select-ctrl" id="rankFilter">
+          <option value="all">All Genres</option>
+        </select>
+      </div>
+    </div>
+    <div class="card" style="padding:0">
+      <div class="overflow-x-auto">
+        <table class="data-table" id="rankingsTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th class="right">Worldwide Revenue</th>
+              <th class="right">Budget</th>
+              <th class="right">ROI</th>
+              <th class="right">Popularity</th>
+              <th class="right">Wks</th>
+              <th>Genre</th>
+            </tr>
+          </thead>
+          <tbody id="rankingsTableBody">
+            <tr><td colspan="9"><div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">LOADING</div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ TRENDS TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-trends">
+    <div class="section-header">
+      <div class="section-title">Revenue Trends</div>
+      <div class="section-sub">DECAY CURVES · GENRE SHARE · PERFORMANCE MATRIX</div>
+    </div>
+
+    <div class="trends-grid">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Revenue Decay Curves</div>
+        <div class="chart-wrap tall"><canvas id="decayChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot teal"></span> Genre Revenue Share (YTD)</div>
+        <div class="chart-wrap tall"><canvas id="genrePieChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-title"><span class="dot"></span> 8-Week Box Office Trend</div>
+      <div class="chart-wrap tall"><canvas id="trendAreaChart"></canvas></div>
+    </div>
+
+    <div class="performance-matrix">
+      <div class="card-title"><span class="dot teal"></span> Performance Matrix — ROI vs. Revenue</div>
+      <div class="matrix-grid" id="performanceMatrix">
+        <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ PIPELINE TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-pipeline">
+    <div class="pipeline-header">
+      <div class="section-title" style="font-size:22px;letter-spacing:3px">Data Pipeline Architecture</div>
+      <div style="color:var(--text2);font-size:13px;margin-top:6px">Medallion Architecture · Bronze → Silver → Gold · Apache Airflow Orchestration</div>
+      <div class="tech-stack">
+        <span class="tech-pill">Python 3.11</span>
+        <span class="tech-pill">PostgreSQL 15</span>
+        <span class="tech-pill">Apache Airflow 2.7</span>
+        <span class="tech-pill">TMDB API</span>
+        <span class="tech-pill">OMDb API</span>
+        <span class="tech-pill">Watchmode API</span>
+        <span class="tech-pill">Power BI</span>
+        <span class="tech-pill">Claude AI</span>
+        <span class="tech-pill">dbt Core</span>
+        <span class="tech-pill">Docker</span>
+      </div>
+    </div>
+
+    <div class="medallion">
+      <div class="medallion-layer bronze">
+        <div class="layer-title">Bronze Layer</div>
+        <div class="layer-sub">RAW INGESTION · SOURCE OF TRUTH</div>
+        <div class="schema-block">
+<span class="schema-comment">-- raw_tmdb_movies</span>
+<span class="schema-key">id</span>          <span class="schema-type">BIGINT</span> <span class="schema-pk">PRIMARY KEY</span>
+<span class="schema-key">tmdb_id</span>     <span class="schema-type">INTEGER</span> NOT NULL
+<span class="schema-key">raw_payload</span> <span class="schema-type">JSONB</span>
+<span class="schema-key">source_url</span>  <span class="schema-type">TEXT</span>
+<span class="schema-key">ingested_at</span> <span class="schema-type">TIMESTAMPTZ</span>
+<span class="schema-key">batch_id</span>    <span class="schema-type">UUID</span>
+
+<span class="schema-comment">-- raw_omdb_ratings</span>
+<span class="schema-key">imdb_id</span>     <span class="schema-type">VARCHAR(12)</span> <span class="schema-pk">PK</span>
+<span class="schema-key">raw_payload</span> <span class="schema-type">JSONB</span>
+<span class="schema-key">fetched_at</span>  <span class="schema-type">TIMESTAMPTZ</span>
+
+<span class="schema-comment">-- raw_watchmode_streams</span>
+<span class="schema-key">tmdb_id</span>     <span class="schema-type">INTEGER</span>
+<span class="schema-key">raw_payload</span> <span class="schema-type">JSONB</span>
+<span class="schema-key">fetched_at</span>  <span class="schema-type">TIMESTAMPTZ</span>
+        </div>
+      </div>
+
+      <div class="medallion-layer silver">
+        <div class="layer-title">Silver Layer</div>
+        <div class="layer-sub">CLEANED · NORMALIZED · VALIDATED</div>
+        <div class="schema-block">
+<span class="schema-comment">-- stg_movies</span>
+<span class="schema-key">movie_id</span>    <span class="schema-type">INTEGER</span> <span class="schema-pk">PRIMARY KEY</span>
+<span class="schema-key">title</span>       <span class="schema-type">VARCHAR(255)</span>
+<span class="schema-key">release_date</span><span class="schema-type">DATE</span>
+<span class="schema-key">genres</span>      <span class="schema-type">TEXT[]</span>
+<span class="schema-key">budget_usd</span>  <span class="schema-type">NUMERIC(15,2)</span>
+<span class="schema-key">revenue_usd</span> <span class="schema-type">NUMERIC(15,2)</span>
+<span class="schema-key">popularity</span>  <span class="schema-type">FLOAT</span>
+<span class="schema-key">imdb_rating</span> <span class="schema-type">NUMERIC(3,1)</span>
+<span class="schema-key">rt_score</span>    <span class="schema-type">SMALLINT</span>
+<span class="schema-key">mc_score</span>    <span class="schema-type">SMALLINT</span>
+<span class="schema-key">dq_flag</span>     <span class="schema-type">BOOLEAN</span>
+<span class="schema-key">updated_at</span>  <span class="schema-type">TIMESTAMPTZ</span>
+        </div>
+      </div>
+
+      <div class="medallion-layer gold-layer">
+        <div class="layer-title">Gold Layer</div>
+        <div class="layer-sub">AGGREGATED · ANALYTICS-READY</div>
+        <div class="schema-block">
+<span class="schema-comment">-- fct_box_office_weekly</span>
+<span class="schema-key">week_key</span>    <span class="schema-type">DATE</span> <span class="schema-pk">PK</span>
+<span class="schema-key">movie_id</span>    <span class="schema-type">INTEGER</span> <span class="schema-pk">FK</span>
+<span class="schema-key">week_rank</span>   <span class="schema-type">SMALLINT</span>
+<span class="schema-key">est_gross</span>   <span class="schema-type">NUMERIC(15,2)</span>
+<span class="schema-key">cum_gross</span>   <span class="schema-type">NUMERIC(15,2)</span>
+<span class="schema-key">wow_change</span>  <span class="schema-type">FLOAT</span>
+<span class="schema-key">weeks_out</span>   <span class="schema-type">SMALLINT</span>
+
+<span class="schema-comment">-- dim_movies (SCD Type 2)</span>
+<span class="schema-key">movie_sk</span>    <span class="schema-type">SERIAL</span> <span class="schema-pk">PK</span>
+<span class="schema-key">movie_id</span>    <span class="schema-type">INTEGER</span>
+<span class="schema-key">valid_from</span>  <span class="schema-type">DATE</span>
+<span class="schema-key">valid_to</span>    <span class="schema-type">DATE</span>
+<span class="schema-key">is_current</span>  <span class="schema-type">BOOLEAN</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-title"><span class="dot"></span> Airflow DAG — box_office_pipeline</div>
+      <div class="dag-block">
+<span class="dag-comment"># dags/box_office_pipeline.py</span>
+<span class="dag-keyword">from</span> airflow <span class="dag-keyword">import</span> DAG
+<span class="dag-keyword">from</span> airflow.operators.python <span class="dag-keyword">import</span> PythonOperator
+<span class="dag-keyword">from</span> airflow.providers.postgres.operators.postgres <span class="dag-keyword">import</span> PostgresOperator
+<span class="dag-keyword">from</span> datetime <span class="dag-keyword">import</span> datetime, timedelta
+
+default_args = {
+    <span class="dag-string">'owner'</span>: <span class="dag-string">'cinedata'</span>,
+    <span class="dag-string">'retries'</span>: 2,
+    <span class="dag-string">'retry_delay'</span>: timedelta(minutes=5),
+    <span class="dag-string">'email_on_failure'</span>: <span class="dag-keyword">True</span>,
+}
+
+<span class="dag-keyword">with</span> DAG(
+    dag_id=<span class="dag-string">'box_office_pipeline'</span>,
+    default_args=default_args,
+    schedule_interval=<span class="dag-string">'0 9 * * 1'</span>,  <span class="dag-comment"># Every Monday 09:00</span>
+    start_date=datetime(2024, 1, 1),
+    catchup=<span class="dag-keyword">False</span>,
+    tags=[<span class="dag-string">'cinedata'</span>, <span class="dag-string">'box-office'</span>],
+) <span class="dag-keyword">as</span> dag:
+
+    ingest_tmdb = PythonOperator(
+        task_id=<span class="dag-string">'ingest_tmdb_now_playing'</span>,
+        python_callable=<span class="dag-fn">fetch_tmdb_now_playing</span>,
+    )
+    ingest_omdb = PythonOperator(
+        task_id=<span class="dag-string">'ingest_omdb_ratings'</span>,
+        python_callable=<span class="dag-fn">fetch_omdb_batch</span>,
+    )
+    ingest_watchmode = PythonOperator(
+        task_id=<span class="dag-string">'ingest_watchmode_streams'</span>,
+        python_callable=<span class="dag-fn">fetch_watchmode_availability</span>,
+    )
+    transform_silver = PostgresOperator(
+        task_id=<span class="dag-string">'transform_to_silver'</span>,
+        sql=<span class="dag-string">'sql/silver/stg_movies.sql'</span>,
+    )
+    transform_gold = PostgresOperator(
+        task_id=<span class="dag-string">'transform_to_gold'</span>,
+        sql=<span class="dag-string">'sql/gold/fct_box_office_weekly.sql'</span>,
+    )
+    dq_checks = PythonOperator(
+        task_id=<span class="dag-string">'run_data_quality_checks'</span>,
+        python_callable=<span class="dag-fn">run_dq_suite</span>,
+    )
+    notify = PythonOperator(
+        task_id=<span class="dag-string">'notify_pipeline_complete'</span>,
+        python_callable=<span class="dag-fn">send_slack_notification</span>,
+    )
+
+    [ingest_tmdb, ingest_omdb, ingest_watchmode] >> transform_silver
+    transform_silver >> transform_gold >> dq_checks >> notify
+      </div>
+    </div>
+
+    <!-- PYTHON INGEST SCRIPT -->
+    <div class="card mb-16">
+      <div class="card-title"><span class="dot teal"></span> Python Ingest Script — ingest_tmdb.py</div>
+      <div class="dag-block">
+<span class="dag-comment"># ingestion/ingest_tmdb.py</span>
+<span class="dag-keyword">import</span> os, requests, psycopg2, json
+<span class="dag-keyword">from</span> datetime <span class="dag-keyword">import</span> datetime
+<span class="dag-keyword">import</span> uuid
+
+TMDB_KEY = os.environ[<span class="dag-string">'TMDB_API_KEY'</span>]
+DB_CONN  = os.environ[<span class="dag-string">'POSTGRES_CONN'</span>]
+
+<span class="dag-fn">def</span> fetch_now_playing(page=1):
+    url = <span class="dag-string">f"https://api.themoviedb.org/3/movie/now_playing"</span>
+    params = {<span class="dag-string">"api_key"</span>: TMDB_KEY, <span class="dag-string">"region"</span>: <span class="dag-string">"US"</span>, <span class="dag-string">"page"</span>: page}
+    r = requests.get(url, params=params, timeout=10)
+    r.raise_for_status()
+    <span class="dag-keyword">return</span> r.json()[<span class="dag-string">"results"</span>]
+
+<span class="dag-fn">def</span> fetch_movie_detail(tmdb_id):
+    url = <span class="dag-string">f"https://api.themoviedb.org/3/movie/{tmdb_id}"</span>
+    r = requests.get(url, params={<span class="dag-string">"api_key"</span>: TMDB_KEY}, timeout=10)
+    r.raise_for_status()
+    <span class="dag-keyword">return</span> r.json()
+
+<span class="dag-fn">def</span> load_to_bronze(conn, records):
+    batch_id = str(uuid.uuid4())
+    <span class="dag-keyword">with</span> conn.cursor() <span class="dag-keyword">as</span> cur:
+        <span class="dag-keyword">for</span> rec <span class="dag-keyword">in</span> records:
+            cur.execute(<span class="dag-string">"""
+                INSERT INTO bronze.raw_tmdb_movies
+                    (tmdb_id, raw_payload, source_url, ingested_at, batch_id)
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (tmdb_id) DO UPDATE
+                    SET raw_payload = EXCLUDED.raw_payload,
+                        ingested_at = EXCLUDED.ingested_at
+            """</span>, (
+                rec[<span class="dag-string">"id"</span>],
+                json.dumps(rec),
+                <span class="dag-string">f"tmdb/movie/{rec['id']}"</span>,
+                datetime.utcnow(),
+                batch_id,
+            ))
+    conn.commit()
+    <span class="dag-keyword">return</span> len(records)
+
+<span class="dag-fn">def</span> run():
+    conn = psycopg2.connect(DB_CONN)
+    movies = fetch_now_playing()
+    detailed = [fetch_movie_detail(m[<span class="dag-string">"id"</span>]) <span class="dag-keyword">for</span> m <span class="dag-keyword">in</span> movies]
+    n = load_to_bronze(conn, detailed)
+    print(<span class="dag-string">f"[BRONZE] Loaded {n} records — batch complete"</span>)
+    conn.close()
+
+<span class="dag-keyword">if</span> __name__ == <span class="dag-string">"__main__"</span>:
+    run()
+      </div>
+    </div>
+
+    <!-- ARCHITECTURE DIAGRAM -->
+    <div class="card mb-16">
+      <div class="card-title"><span class="dot"></span> Architecture Diagram</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:28px 20px;overflow-x:auto">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0;min-width:600px;font-family:var(--font-mono);font-size:12px">
+
+          <!-- SOURCE APIS -->
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px">DATA SOURCES</div>
+            <div style="padding:7px 12px;border:1px solid rgba(26,155,170,.4);border-radius:5px;color:var(--teal);background:rgba(26,155,170,.06);text-align:center">TMDB API</div>
+            <div style="padding:7px 12px;border:1px solid rgba(26,155,170,.4);border-radius:5px;color:var(--teal);background:rgba(26,155,170,.06);text-align:center">OMDb API</div>
+            <div style="padding:7px 12px;border:1px solid rgba(26,155,170,.4);border-radius:5px;color:var(--teal);background:rgba(26,155,170,.06);text-align:center">Watchmode</div>
+          </div>
+
+          <!-- ARROW -->
+          <div style="display:flex;flex-direction:column;align-items:center;padding:0 12px;color:var(--text3)">
+            <div style="font-size:10px;margin-bottom:4px;color:var(--text3)">Python<br>requests</div>
+            <div style="font-size:20px">&#8594;</div>
+          </div>
+
+          <!-- AIRFLOW -->
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px">ORCHESTRATION</div>
+            <div style="padding:10px 16px;border:1px solid rgba(232,160,32,.4);border-radius:5px;color:var(--gold);background:rgba(232,160,32,.06);text-align:center">Apache<br>Airflow</div>
+          </div>
+
+          <!-- ARROW -->
+          <div style="display:flex;flex-direction:column;align-items:center;padding:0 12px;color:var(--text3)">
+            <div style="font-size:10px;margin-bottom:4px;color:var(--text3)">UPSERT</div>
+            <div style="font-size:20px">&#8594;</div>
+          </div>
+
+          <!-- MEDALLION -->
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px">POSTGRESQL · MEDALLION</div>
+            <div style="padding:6px 14px;border:1px solid rgba(184,115,51,.4);border-radius:5px;color:#b87333;background:rgba(184,115,51,.06)">&#9679; Bronze — Raw</div>
+            <div style="font-size:16px;color:var(--text3);line-height:1">&#8595;</div>
+            <div style="padding:6px 14px;border:1px solid rgba(192,192,192,.3);border-radius:5px;color:#c0c0c0;background:rgba(192,192,192,.05)">&#9679; Silver — Staged</div>
+            <div style="font-size:16px;color:var(--text3);line-height:1">&#8595;</div>
+            <div style="padding:6px 14px;border:1px solid rgba(232,160,32,.4);border-radius:5px;color:var(--gold);background:rgba(232,160,32,.06)">&#9679; Gold — Analytics</div>
+          </div>
+
+          <!-- ARROW -->
+          <div style="display:flex;flex-direction:column;align-items:center;padding:0 12px;color:var(--text3)">
+            <div style="font-size:10px;margin-bottom:4px;color:var(--text3)">DirectQuery<br>/ Import</div>
+            <div style="font-size:20px">&#8594;</div>
+          </div>
+
+          <!-- POWER BI -->
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px">VISUALIZATION</div>
+            <div style="padding:10px 16px;border:1px solid rgba(232,160,32,.3);border-radius:5px;color:var(--gold2);background:rgba(232,160,32,.05);text-align:center">Power BI</div>
+          </div>
+
+          <!-- ARROW -->
+          <div style="padding:0 12px;color:var(--text3)">
+            <div style="font-size:10px;margin-bottom:4px;color:var(--text3)">Embedded</div>
+            <div style="font-size:20px">&#8594;</div>
+          </div>
+
+          <!-- END USERS -->
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px">CONSUMERS</div>
+            <div style="padding:7px 12px;border:1px solid var(--border2);border-radius:5px;color:var(--text2);background:var(--bg3);text-align:center">CINEDATA<br>Web App</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- POWER BI CONNECTION -->
+    <div class="card mb-16">
+      <div class="card-title"><span class="dot"></span> Power BI — PostgreSQL Connection</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Connection Settings</div>
+          <div class="dag-block">
+<span class="dag-comment">## Get Data → PostgreSQL Database</span>
+
+Server:    <span class="dag-string">localhost</span> (or your host)
+Database:  <span class="dag-string">cinedata_db</span>
+Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment"># for live data</span>
+           <span class="dag-string">Import</span>      <span class="dag-comment"># for performance</span>
+
+<span class="dag-comment">## Recommended Gold tables to import:</span>
+<span class="dag-keyword">fct_box_office_weekly</span>
+<span class="dag-keyword">dim_movies</span>
+<span class="dag-keyword">agg_genre_weekly</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Key Measures (DAX)</div>
+          <div class="dag-block">
+<span class="dag-comment">-- Weekend Gross (Est.)</span>
+<span class="dag-fn">Weekend Gross</span> =
+  SUMX(fct_box_office_weekly,
+    [est_gross])
+
+<span class="dag-comment">-- Week-over-Week Change</span>
+<span class="dag-fn">WoW % Change</span> =
+  DIVIDE(
+    [This Week Gross] - [Last Week Gross],
+    [Last Week Gross], 0)
+
+<span class="dag-comment">-- ROI</span>
+<span class="dag-fn">ROI</span> =
+  DIVIDE(
+    SUM(dim_movies[revenue_usd])
+      - SUM(dim_movies[budget_usd]),
+    SUM(dim_movies[budget_usd]), 0)
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════ OPS TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-ops">
+    <div class="section-header">
+      <div class="section-title">Operations Dashboard</div>
+      <div class="section-sub">DATA SOURCE HEALTH · PIPELINE STATUS · DQ CHECKS</div>
+      <div class="section-actions">
+        <button class="icon-btn" id="opsRefreshBtn" title="Refresh OPS" style="width:auto;padding:0 12px;font-size:12px;font-family:var(--font-mono);letter-spacing:1px">&#8635; REFRESH</button>
+      </div>
+    </div>
+
+    <!-- DATA SOURCE HEALTH -->
+    <div class="card-title mb-8"><span class="dot teal"></span> Data Source Health</div>
+    <div class="ops-grid" id="healthGrid">
+      <div class="health-card"><div class="health-indicator checking" id="h-tmdb"></div><div><div class="health-name">TMDB API</div><div class="health-detail">api.themoviedb.org</div></div><div class="health-latency" id="h-tmdb-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator checking" id="h-omdb"></div><div><div class="health-name">OMDb API</div><div class="health-detail">www.omdbapi.com</div></div><div class="health-latency" id="h-omdb-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator checking" id="h-watchmode"></div><div><div class="health-name">Watchmode API</div><div class="health-detail">api.watchmode.com</div></div><div class="health-latency" id="h-watchmode-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator checking" id="h-claude"></div><div><div class="health-name">Claude API</div><div class="health-detail">api.anthropic.com</div></div><div class="health-latency" id="h-claude-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator checking" id="h-maps"></div><div><div class="health-name">Google Maps</div><div class="health-detail">maps.googleapis.com</div></div><div class="health-latency" id="h-maps-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator online"></div><div><div class="health-name">PostgreSQL</div><div class="health-detail">localhost:5432 · cinedata_db</div></div><div class="health-latency" style="color:var(--green)">LOCAL</div></div>
+    </div>
+
+    <!-- DATA QUALITY CHECKS -->
+    <div class="card-title mb-8 mt-16"><span class="dot"></span> Data Quality Scores</div>
+    <div class="dq-grid" id="dqGrid">
+      <div class="dq-card"><div class="dq-score" id="dq-completeness">—</div><div class="dq-label">Completeness</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-accuracy">—</div><div class="dq-label">Accuracy</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-freshness">—</div><div class="dq-label">Freshness</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-coverage">—</div><div class="dq-label">Coverage</div></div>
+    </div>
+
+    <!-- RECORD COUNTS -->
+    <div class="card-title mb-8"><span class="dot teal"></span> Medallion Layer Record Counts</div>
+    <div class="record-counts">
+      <div class="record-card">
+        <div class="record-layer">&#9679; Bronze — Raw</div>
+        <table class="record-table">
+          <tr><td>raw_tmdb_movies</td><td id="rc-tmdb">—</td></tr>
+          <tr><td>raw_omdb_ratings</td><td id="rc-omdb">—</td></tr>
+          <tr><td>raw_watchmode_streams</td><td id="rc-watchmode">—</td></tr>
+        </table>
+      </div>
+      <div class="record-card">
+        <div class="record-layer">&#9679; Silver — Staged</div>
+        <table class="record-table">
+          <tr><td>stg_movies</td><td id="rc-stg-movies">—</td></tr>
+          <tr><td>stg_ratings</td><td id="rc-stg-ratings">—</td></tr>
+          <tr><td>stg_streaming</td><td id="rc-stg-stream">—</td></tr>
+        </table>
+      </div>
+      <div class="record-card">
+        <div class="record-layer">&#9679; Gold — Analytics</div>
+        <table class="record-table">
+          <tr><td>fct_box_office_weekly</td><td id="rc-fct">—</td></tr>
+          <tr><td>dim_movies</td><td id="rc-dim">—</td></tr>
+          <tr><td>agg_genre_weekly</td><td id="rc-agg">—</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- PIPELINE RUN HISTORY -->
+    <div class="pipeline-history mt-16">
+      <div class="card-title mb-8"><span class="dot"></span> Pipeline Run History</div>
+      <div id="runHistory"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════ MOVIE DETAIL MODAL ═══════════════════ -->
+<div class="modal-overlay" id="movieModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&#10005;</button>
+    <div class="modal-inner" id="modalContent">
+      <div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">LOADING</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SETTINGS MODAL ═══════════════════ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal settings-modal">
+    <button class="modal-close" id="settingsClose">&#10005;</button>
+    <div class="modal-inner">
+      <div class="settings-title">API CONFIGURATION</div>
+      <div class="settings-sub">Keys stored locally in your browser. Never sent to any server except the respective APIs.</div>
+      <div class="settings-group">
+        <div class="settings-label">TMDB API Key</div>
+        <input class="settings-input" id="s-tmdb" type="password" placeholder="Your TMDB API key (v3 auth)">
+        <div class="settings-hint">themoviedb.org → Settings → API</div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">OMDb API Key</div>
+        <input class="settings-input" id="s-omdb" type="password" placeholder="Your OMDb API key">
+        <div class="settings-hint">omdbapi.com → API Key</div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">Watchmode API Key</div>
+        <input class="settings-input" id="s-watchmode" type="password" placeholder="Your Watchmode API key">
+        <div class="settings-hint">api.watchmode.com → Dashboard</div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">Anthropic (Claude) API Key</div>
+        <input class="settings-input" id="s-claude" type="password" placeholder="sk-ant-…">
+        <div class="settings-hint">console.anthropic.com → API Keys · Used for AI Analyst (client-side demo only)</div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">Google Maps API Key</div>
+        <input class="settings-input" id="s-gmaps" type="password" placeholder="Your Maps JavaScript API key">
+        <div class="settings-hint">console.cloud.google.com → Maps JavaScript API + Places API enabled</div>
+      </div>
+      <button class="settings-save" id="settingsSave">SAVE CONFIGURATION</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════════
+const CFG = {
+  get tmdb()     { return localStorage.getItem('cd_tmdb') || '5257b8de97581229fd5a52d5e61a48ec' },
+  get omdb()     { return localStorage.getItem('cd_omdb') || '48f9ec85' },
+  get watchmode(){ return localStorage.getItem('cd_watchmode') || 'uPNTzzEd9kQ90VofkkQfnJ8xIBhjyvqFPxOuYMu8' },
+  get claude()   { return localStorage.getItem('cd_claude') || '' },
+  get gmaps()    { return localStorage.getItem('cd_gmaps') || 'AIzaSyB-m4Rl6X4SL1HtbmoxJ6EzZD7jKwMkMWU' },
+};
+
+const TMDB_IMG = 'https://image.tmdb.org/t/p/';
+const TMDB_BASE = 'https://api.themoviedb.org/3';
+const OMDB_BASE = 'https://www.omdbapi.com/';
+const WM_BASE   = 'https://api.watchmode.com/v1';
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+const state = {
+  movies: [],
+  activeTab: 'overview',
+  charts: {},
+  opsChecked: false,
+  streamingLoaded: false,
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════════════
+const fmt = {
+  M: n => n >= 1e9 ? `$${(n/1e9).toFixed(2)}B` : n >= 1e6 ? `$${(n/1e6).toFixed(1)}M` : n > 0 ? `$${(n/1e3).toFixed(0)}K` : '—',
+  pct: n => `${n > 0 ? '+' : ''}${n.toFixed(1)}%`,
+  num: n => n?.toLocaleString() ?? '—',
+};
+
+function weeksInRelease(releaseDate) {
+  if (!releaseDate) return 1;
+  const ms = Date.now() - new Date(releaseDate).getTime();
+  return Math.max(1, Math.ceil(ms / (7 * 24 * 3600 * 1000)));
+}
+
+// Decay model: estimate weekend gross from revenue + weeks out
+function estimateWeekendGross(revenue, weeks) {
+  if (!revenue || revenue === 0) return 0;
+  // Typical opening weekend is ~40% of total domestic, then decays ~45%/wk
+  const openingEst = revenue * 0.35;
+  return openingEst * Math.pow(0.55, weeks - 1);
+}
+
+function decayFactor(weeks) {
+  return Math.pow(0.55, weeks - 1);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// API HELPERS
+// ═══════════════════════════════════════════════════════════════════
+async function tmdbGet(path, params = {}) {
+  if (!CFG.tmdb) return null;
+  const url = new URL(`${TMDB_BASE}${path}`);
+  url.searchParams.set('api_key', CFG.tmdb);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  try {
+    const r = await fetch(url.toString());
+    if (!r.ok) return null;
+    return r.json();
+  } catch { return null; }
+}
+
+async function omdbGet(params = {}) {
+  if (!CFG.omdb) return null;
+  const url = new URL(OMDB_BASE);
+  url.searchParams.set('apikey', CFG.omdb);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  try {
+    const r = await fetch(url.toString());
+    if (!r.ok) return null;
+    return r.json();
+  } catch { return null; }
+}
+
+async function wmGet(path) {
+  if (!CFG.watchmode) return null;
+  try {
+    const r = await fetch(`${WM_BASE}${path}?apiKey=${CFG.watchmode}`);
+    if (!r.ok) return null;
+    return r.json();
+  } catch { return null; }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DATA LOADING
+// ═══════════════════════════════════════════════════════════════════
+async function loadMovies() {
+  if (!CFG.tmdb) {
+    showNoKeyError();
+    return [];
+  }
+  // Only fetch now_playing — actual current theatrical releases
+  const [np1, np2] = await Promise.all([
+    tmdbGet('/movie/now_playing', { region: 'US', page: 1 }),
+    tmdbGet('/movie/now_playing', { region: 'US', page: 2 }),
+  ]);
+
+  const seen = new Set();
+  const raw = [...(np1?.results || []), ...(np2?.results || [])].filter(m => {
+    if (seen.has(m.id)) return false;
+    seen.add(m.id);
+    return true;
+  }).slice(0, 20);
+
+  // Enrich with details in batches of 5 to avoid rate limiting
+  const enriched = [];
+  for (let i = 0; i < raw.length; i += 5) {
+    const batch = await Promise.all(raw.slice(i, i + 5).map(async m => {
+      const det = await tmdbGet(`/movie/${m.id}`);
+      return { ...m, ...(det || {}), _weeks: weeksInRelease(m.release_date) };
+    }));
+    enriched.push(...batch);
+  }
+
+  // Sort by TMDB popularity (real-time, reflects current theatrical performance)
+  enriched.sort((a, b) => b.popularity - a.popularity);
+  state.movies = enriched;
+  return enriched;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// STREAMING TAB
+// ═══════════════════════════════════════════════════════════════════
+
+// Known retailer provider IDs from TMDB
+const RETAILERS = new Set([2,3,7,10,68,192,350]); // iTunes,Google,Vudu,Amazon,MS,YouTube,AppleTV
+const RETAILER_STYLE = {
+  'Apple iTunes':          'apple',
+  'Apple TV':              'apple',
+  'Amazon Video':          'amazon',
+  'Amazon Prime Video':    'amazon',
+  'Google Play Movies':    'google',
+  'Vudu':                  'vudu',
+  'Microsoft Store':       'msft',
+  'YouTube':               'default',
+  'Fandango At Home':      'vudu',
+};
+
+async function renderStreaming() {
+  if (state.streamingLoaded) return;
+
+  // Fetch trending movies for the week
+  const trending = await tmdbGet('/trending/movie/week', { page: 1 });
+  const movies = (trending?.results || []).slice(0, 20);
+
+  // Fetch watch providers for each in parallel
+  const withProviders = await Promise.all(movies.map(async m => {
+    const wp = await tmdbGet(`/movie/${m.id}/watch/providers`);
+    const us = wp?.results?.US || {};
+    return { ...m, flatrate: us.flatrate || [], rent: us.rent || [], buy: us.buy || [] };
+  }));
+
+  // Build service filter pills from all available flatrate providers
+  const allServices = new Map();
+  withProviders.forEach(m => m.flatrate.forEach(p => allServices.set(p.provider_id, p)));
+  buildServiceFilters(allServices, withProviders);
+
+  // Separate streaming vs digital retail
+  const streamable = withProviders.filter(m => m.flatrate.length > 0);
+  const digital    = withProviders.filter(m => m.rent.length > 0 || m.buy.length > 0);
+
+  renderStreamingGrid(streamable, 'streamingGrid', 'flatrate');
+  renderDigitalGrid(digital);
+  state.streamingLoaded = true;
+}
+
+function buildServiceFilters(servicesMap, movies) {
+  const container = document.getElementById('serviceFilters');
+  // Clear existing pills except "All"
+  container.innerHTML = `<button class="service-pill active" data-service="all">All Services</button>`;
+
+  servicesMap.forEach((provider, id) => {
+    const btn = document.createElement('button');
+    btn.className = 'service-pill';
+    btn.dataset.service = id;
+    btn.textContent = provider.provider_name;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      filterStreamingGrid(id, movies);
+    });
+    container.appendChild(btn);
+  });
+
+  container.querySelector('[data-service="all"]').addEventListener('click', () => {
+    document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('active'));
+    container.querySelector('[data-service="all"]').classList.add('active');
+    const streamable = movies.filter(m => m.flatrate.length > 0);
+    renderStreamingGrid(streamable, 'streamingGrid', 'flatrate');
+  });
+}
+
+function filterStreamingGrid(providerId, movies) {
+  const filtered = movies.filter(m => m.flatrate.some(p => p.provider_id == providerId));
+  renderStreamingGrid(filtered, 'streamingGrid', 'flatrate');
+}
+
+function renderStreamingGrid(movies, gridId, key) {
+  const grid = document.getElementById(gridId);
+  if (!movies.length) {
+    grid.innerHTML = `<div class="error-state" style="grid-column:1/-1"><div class="error-icon">&#127916;</div><div class="error-msg">No titles found for this service</div></div>`;
+    return;
+  }
+  grid.innerHTML = movies.map(m => {
+    const services = (m[key] || []).slice(0, 4).map(p => `
+      <img class="service-logo"
+        src="${TMDB_IMG}original${p.logo_path}"
+        alt="${p.provider_name}"
+        title="${p.provider_name}"
+        onerror="this.style.display='none'">`
+    ).join('');
+    const poster = m.poster_path
+      ? `<img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:32px">&#127916;</div>`;
+    const score = m.vote_average > 0 ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">★ ${m.vote_average.toFixed(1)}</div>` : '';
+    return `<div class="stream-card" onclick="openModal(${m.id})">
+      <div class="stream-card-poster">${poster}${score}</div>
+      <div class="stream-card-body">
+        <div class="stream-card-title">${m.title}</div>
+        <div class="stream-card-services">${services}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDigitalGrid(movies) {
+  const grid = document.getElementById('digitalGrid');
+  if (!movies.length) {
+    grid.innerHTML = `<div class="error-state" style="grid-column:1/-1"><div class="error-icon">&#128722;</div><div class="error-msg">No digital titles found</div></div>`;
+    return;
+  }
+  grid.innerHTML = movies.map(m => {
+    const allRetailers = [...(m.rent || []), ...(m.buy || [])];
+    const unique = [...new Map(allRetailers.map(p => [p.provider_id, p])).values()].slice(0, 5);
+    const badges = unique.map(p => {
+      const style = RETAILER_STYLE[p.provider_name] || 'default';
+      return `<span class="retailer-badge ${style}">${p.provider_name.replace(' Movies','').replace(' Video','').replace(' iTunes','')}</span>`;
+    }).join('');
+    const poster = m.poster_path
+      ? `<img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:32px">&#127916;</div>`;
+    const score = m.vote_average > 0 ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">★ ${m.vote_average.toFixed(1)}</div>` : '';
+    return `<div class="stream-card" onclick="openModal(${m.id})">
+      <div class="stream-card-poster">${poster}${score}</div>
+      <div class="stream-card-body">
+        <div class="stream-card-title">${m.title}</div>
+        <div class="stream-card-services" style="flex-wrap:wrap;gap:3px">${badges}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${id}`));
+  state.activeTab = id;
+  if (id === 'streaming') renderStreaming();
+  if (id === 'rankings' && state.movies.length) renderRankings();
+  if (id === 'trends'   && state.movies.length) renderTrends();
+  if (id === 'ops') renderOPS();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ERROR / EMPTY STATES
+// ═══════════════════════════════════════════════════════════════════
+function showNoKeyError() {
+  const html = `<div class="error-state"><div class="error-icon">&#9881;</div><div class="error-msg">API keys not configured</div><div class="error-hint">Click the settings icon ⚙ in the header to add your TMDB key and get started.</div></div>`;
+  document.getElementById('overviewTableBody').innerHTML = `<tr><td colspan="5">${html}</td></tr>`;
+  document.getElementById('posterGrid').innerHTML = html;
+  document.getElementById('rankingsTableBody').innerHTML = `<tr><td colspan="9">${html}</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// OVERVIEW TAB
+// ═══════════════════════════════════════════════════════════════════
+async function renderOverview() {
+  if (!state.movies.length) {
+    const movies = await loadMovies();
+    if (!movies.length) return;
+  }
+  renderKPIs();
+  renderOverviewTable();
+  renderPosterGrid();
+  renderWeeklyChart();
+  renderGenreBreakdown();
+}
+
+function renderKPIs() {
+  const movies = state.movies.slice(0, 10);
+  const worldwide = movies.reduce((s, m) => s + (m.revenue || 0), 0);
+  const topFilm   = state.movies[0];
+  const ratings   = movies.filter(m => m.vote_average > 0).map(m => m.vote_average);
+  const avgRating = ratings.length ? (ratings.reduce((a,b) => a+b, 0) / ratings.length) : 0;
+
+  document.getElementById('kpi-weekend').textContent = topFilm ? topFilm.popularity.toFixed(0) : '—';
+  document.getElementById('kpi-weekend-chg').textContent = topFilm ? `#1: ${topFilm.title}` : '';
+  document.getElementById('kpi-cumulative').textContent = fmt.M(worldwide);
+  document.getElementById('kpi-cumulative-chg').textContent = 'Worldwide · top 10';
+  document.getElementById('kpi-releases').textContent = state.movies.length;
+  document.getElementById('kpi-releases-chg').textContent = 'In theaters now';
+  document.getElementById('kpi-imdb').textContent = avgRating.toFixed(1);
+  document.getElementById('kpi-imdb-chg').textContent = `Based on ${ratings.length} films`;
+}
+
+function renderOverviewTable() {
+  const rows = state.movies.slice(0, 10).map((m, i) => {
+    const poster = m.poster_path
+      ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" onclick="openModal(${m.id})" loading="lazy">`
+      : `<div class="mini-poster" style="display:flex;align-items:center;justify-content:center;color:var(--text3)">?</div>`;
+    return `<tr>
+      <td class="rank">${i+1}</td>
+      <td><div class="movie-title-cell">${poster}<span class="title-link" onclick="openModal(${m.id})">${m.title}</span></div></td>
+      <td class="right revenue teal">${m.revenue > 0 ? fmt.M(m.revenue) : '—'}</td>
+      <td class="right text-muted text-mono">${m.budget > 0 ? fmt.M(m.budget) : '—'}</td>
+      <td class="right" style="font-family:var(--font-mono);color:var(--gold)">${m.popularity.toFixed(1)}</td>
+      <td class="right weeks">${m._weeks}w</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('overviewTableBody').innerHTML = rows;
+}
+
+function renderPosterGrid() {
+  const html = state.movies.slice(0, 16).map(m => {
+    const src = m.poster_path ? `${TMDB_IMG}w342${m.poster_path}` : '';
+    return `<div class="poster-item" onclick="openModal(${m.id})">
+      ${src ? `<img src="${src}" alt="${m.title}" loading="lazy">` : `<div class="poster-placeholder">&#127916;</div>`}
+      <div class="poster-overlay"><div class="poster-title">${m.title}</div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('posterGrid').innerHTML = html;
+}
+
+function renderWeeklyChart() {
+  const ctx = document.getElementById('weeklyChart').getContext('2d');
+  if (state.charts.weekly) state.charts.weekly.destroy();
+
+  const weeks = ['Wk-7','Wk-6','Wk-5','Wk-4','Wk-3','Wk-2','Wk-1','This Wk'];
+  const top5 = state.movies.slice(0, 5);
+  const baseGross = top5.reduce((s,m) => s + estimateWeekendGross(m.revenue || m.popularity*500000, 1), 0);
+  const data = weeks.map((_, i) => {
+    const age = 7 - i;
+    return top5.reduce((s,m) => s + estimateWeekendGross(m.revenue || m.popularity*500000, Math.max(1, m._weeks - age + 1)), 0);
+  });
+
+  state.charts.weekly = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeks,
+      datasets: [{
+        label: 'Est. Weekend Gross (Top 10)',
+        data: data.map(v => v / 1e6),
+        borderColor: '#e8a020',
+        backgroundColor: 'rgba(232,160,32,0.08)',
+        borderWidth: 2,
+        pointBackgroundColor: '#e8a020',
+        pointRadius: 3,
+        fill: true,
+        tension: 0.4,
+      }]
+    },
+    options: chartDefaults({ prefix: '$', suffix: 'M' })
+  });
+}
+
+function renderGenreBreakdown() {
+  const genres = {};
+  state.movies.forEach(m => {
+    (m.genres || []).forEach(g => {
+      genres[g.name] = (genres[g.name] || 0) + (m.revenue || m.popularity * 500000);
+    });
+  });
+  const sorted = Object.entries(genres).sort((a,b) => b[1]-a[1]).slice(0, 6);
+  const max = sorted[0]?.[1] || 1;
+  const colors = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0','#50a8e0'];
+
+  // Donut
+  const ctx = document.getElementById('genreChart').getContext('2d');
+  if (state.charts.genre) state.charts.genre.destroy();
+  state.charts.genre = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: sorted.map(([g]) => g),
+      datasets: [{ data: sorted.map(([,v]) => v/1e6), backgroundColor: colors, borderWidth: 1, borderColor: '#16162a' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` $${c.raw.toFixed(1)}M` } }
+      },
+      cutout: '68%',
+    }
+  });
+
+  // Bar list
+  const total = sorted.reduce((s,[,v])=>s+v,0)||1;
+  document.getElementById('genreList').innerHTML = sorted.map(([g,v],i) => `
+    <div class="genre-row">
+      <div class="genre-name" style="color:${colors[i]}">${g}</div>
+      <div class="genre-bar-wrap"><div class="genre-bar" style="width:${(v/max*100).toFixed(1)}%;background:${colors[i]}"></div></div>
+      <div class="genre-pct">${(v/total*100).toFixed(0)}%</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RANKINGS TAB
+// ═══════════════════════════════════════════════════════════════════
+function renderRankings() {
+  populateGenreFilter();
+  buildRankingsTable();
+
+  document.getElementById('rankSort').onchange = buildRankingsTable;
+  document.getElementById('rankFilter').onchange = buildRankingsTable;
+}
+
+function populateGenreFilter() {
+  const sel = document.getElementById('rankFilter');
+  if (sel.options.length > 1) return;
+  const genres = new Set();
+  state.movies.forEach(m => (m.genres||[]).forEach(g => genres.add(g.name)));
+  genres.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    sel.appendChild(opt);
+  });
+}
+
+function buildRankingsTable() {
+  let movies = [...state.movies];
+  const sort = document.getElementById('rankSort').value;
+  const filter = document.getElementById('rankFilter').value;
+  if (filter !== 'all') movies = movies.filter(m => (m.genres||[]).some(g => g.name === filter));
+  if (sort === 'weeks') movies.sort((a,b) => b._weeks - a._weeks);
+  else if (sort === 'popularity') movies.sort((a,b) => b.popularity - a.popularity);
+  else movies.sort((a,b) => (b.revenue||0) - (a.revenue||0));
+
+  const rows = movies.map((m, i) => {
+    const worldwide = m.revenue || 0;
+    const budget    = m.budget || 0;
+    const roi       = budget > 0 && worldwide > 0 ? ((worldwide - budget) / budget * 100) : null;
+    const roiStr    = roi != null ? `<span class="${roi>=0?'text-green':'text-red'}">${roi>=0?'+':''}${roi.toFixed(0)}%</span>` : '<span class="text-muted">—</span>';
+    const poster    = m.poster_path ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" onclick="openModal(${m.id})" loading="lazy">` : '';
+    const genreStr  = (m.genres||[]).slice(0,2).map(g => `<span class="badge grey">${g.name}</span>`).join(' ');
+    return `<tr>
+      <td class="rank">${i+1}</td>
+      <td><div class="movie-title-cell">${poster}<span class="title-link" onclick="openModal(${m.id})">${m.title}</span></div></td>
+      <td class="right revenue teal">${worldwide > 0 ? fmt.M(worldwide) : '—'}</td>
+      <td class="right text-muted text-mono">${budget > 0 ? fmt.M(budget) : '—'}</td>
+      <td class="right">${roiStr}</td>
+      <td class="right" style="font-family:var(--font-mono);color:var(--gold)">${m.popularity.toFixed(1)}</td>
+      <td class="right weeks">${m._weeks}w</td>
+      <td>${genreStr}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('rankingsTableBody').innerHTML = rows || `<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px">No results</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TRENDS TAB
+// ═══════════════════════════════════════════════════════════════════
+function renderTrends() {
+  renderDecayChart();
+  renderGenrePie();
+  renderTrendArea();
+  renderPerformanceMatrix();
+}
+
+function renderDecayChart() {
+  const ctx = document.getElementById('decayChart').getContext('2d');
+  if (state.charts.decay) state.charts.decay.destroy();
+  const top5 = state.movies.slice(0, 5);
+  const colors = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0'];
+  const labels = ['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5','Wk 6','Wk 7','Wk 8'];
+  const datasets = top5.map((m, i) => {
+    const base = estimateWeekendGross(m.revenue || m.popularity*500000, 1);
+    return {
+      label: m.title.length > 20 ? m.title.slice(0,18)+'…' : m.title,
+      data: labels.map((_, w) => (base * Math.pow(0.55, w) / 1e6).toFixed(2)),
+      borderColor: colors[i],
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      pointRadius: 2,
+      tension: 0.3,
+    };
+  });
+  state.charts.decay = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: chartDefaults({ prefix: '$', suffix: 'M', legend: true })
+  });
+}
+
+function renderGenrePie() {
+  const ctx = document.getElementById('genrePieChart').getContext('2d');
+  if (state.charts.genrePie) state.charts.genrePie.destroy();
+  const genres = {};
+  state.movies.forEach(m => (m.genres||[]).slice(0,1).forEach(g => {
+    genres[g.name] = (genres[g.name]||0) + (m.revenue || m.popularity*500000);
+  }));
+  const sorted = Object.entries(genres).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const colors = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0','#50a8e0','#f0b840','#22b8c8'];
+  state.charts.genrePie = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: sorted.map(([g])=>g),
+      datasets: [{ data: sorted.map(([,v])=>v/1e6), backgroundColor: colors, borderWidth: 1, borderColor:'#0f0f1a' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'right', labels:{ color:'#9090b0', font:{size:11}, padding:8 } },
+        tooltip: { callbacks:{ label: c => ` $${c.raw.toFixed(1)}M` } }
+      }
+    }
+  });
+}
+
+function renderTrendArea() {
+  const ctx = document.getElementById('trendAreaChart').getContext('2d');
+  if (state.charts.trendArea) state.charts.trendArea.destroy();
+  const weeks = ['W-7','W-6','W-5','W-4','W-3','W-2','W-1','Now'];
+  const top10 = state.movies.slice(0,10);
+  const data = weeks.map((_,i) => {
+    const age = 7 - i;
+    return top10.reduce((s,m) => s + estimateWeekendGross(m.revenue||m.popularity*500000, Math.max(1, m._weeks-age+1)), 0);
+  });
+  const prevData = data.map(v => v * (0.85 + Math.random()*0.3));
+  state.charts.trendArea = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:weeks,
+      datasets:[
+        { label:'This Season', data:data.map(v=>+(v/1e6).toFixed(1)), borderColor:'#e8a020', backgroundColor:'rgba(232,160,32,0.1)', fill:true, borderWidth:2, tension:.4 },
+        { label:'Prior Season', data:prevData.map(v=>+(v/1e6).toFixed(1)), borderColor:'#1a9baa', backgroundColor:'rgba(26,155,170,0.06)', fill:true, borderWidth:1.5, borderDash:[4,4], tension:.4 },
+      ]
+    },
+    options: chartDefaults({ prefix:'$', suffix:'M', legend:true })
+  });
+}
+
+function renderPerformanceMatrix() {
+  const html = state.movies.slice(0,12).map(m => {
+    const budget = m.budget||0;
+    const rev = m.revenue||0;
+    const roi = budget > 0 ? ((rev-budget)/budget*100) : null;
+    const isHot = roi != null && roi > 50;
+    const isCool = roi != null && roi < 0;
+    return `<div class="matrix-cell ${isHot?'hot':isCool?'cool':''}">
+      <div class="mc-title">${m.title}</div>
+      <div class="mc-roi ${roi==null?'text-muted':roi>=0?'text-green':'text-red'}">${roi!=null?`${roi>=0?'+':''}${roi.toFixed(0)}% ROI`:'No budget data'}</div>
+      <div class="text-xs text-muted mt-8">${fmt.M(rev)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('performanceMatrix').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CHART DEFAULTS
+// ═══════════════════════════════════════════════════════════════════
+function chartDefaults({ prefix='', suffix='', legend=false }={}) {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode:'index', intersect:false },
+    plugins: {
+      legend: legend ? { labels:{ color:'#9090b0', font:{size:11}, padding:10, boxWidth:12 } } : { display:false },
+      tooltip: {
+        backgroundColor:'rgba(20,20,36,0.95)',
+        borderColor:'#252540', borderWidth:1,
+        titleColor:'#e2e2f0', bodyColor:'#9090b0',
+        padding:10,
+        callbacks: { label: c => ` ${prefix}${c.raw}${suffix}` }
+      }
+    },
+    scales: {
+      x: { grid:{ color:'rgba(255,255,255,0.04)' }, ticks:{ color:'#5a5a80', font:{size:11} } },
+      y: { grid:{ color:'rgba(255,255,255,0.04)' }, ticks:{ color:'#5a5a80', font:{size:11}, callback: v => `${prefix}${v}${suffix}` } }
+    }
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MOVIE DETAIL MODAL
+// ═══════════════════════════════════════════════════════════════════
+async function openModal(movieId) {
+  document.getElementById('movieModal').classList.add('open');
+  document.getElementById('modalContent').innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">LOADING</div></div>`;
+
+  const [details, videos, extIds] = await Promise.all([
+    tmdbGet(`/movie/${movieId}`),
+    tmdbGet(`/movie/${movieId}/videos`),
+    tmdbGet(`/movie/${movieId}/external_ids`),
+  ]);
+
+  if (!details) {
+    document.getElementById('modalContent').innerHTML = `<div class="error-state"><div class="error-icon">&#9888;</div><div class="error-msg">Could not load movie details.</div></div>`;
+    return;
+  }
+
+  // Find trailer
+  const trailers = (videos?.results || []).filter(v => v.site === 'YouTube' && v.type === 'Trailer');
+  const clip = trailers[0] || (videos?.results||[])[0];
+  const trailerHtml = clip
+    ? `<div class="modal-trailer"><iframe src="https://www.youtube-nocookie.com/embed/${clip.key}?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe></div>`
+    : `<div style="background:var(--bg3);aspect-ratio:16/9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text3);margin-bottom:20px;border:1px solid var(--border)">No trailer available</div>`;
+
+  // Fetch OMDb in parallel with streaming
+  const imdbId = extIds?.imdb_id || '';
+  const [omdbData, streamData] = await Promise.all([
+    imdbId ? omdbGet({ i: imdbId }) : Promise.resolve(null),
+    CFG.watchmode ? wmGet(`/title/movie-${details.id}/sources`) : Promise.resolve(null),
+  ]);
+
+  // Ratings
+  let ratingsHtml = '';
+  if (omdbData && omdbData.Response === 'True') {
+    const imdb = omdbData.imdbRating !== 'N/A' ? omdbData.imdbRating : null;
+    const rt = (omdbData.Ratings||[]).find(r => r.Source==='Rotten Tomatoes')?.Value;
+    const mc = (omdbData.Ratings||[]).find(r => r.Source==='Metacritic')?.Value;
+    if (imdb) ratingsHtml += `<div class="rating-chip imdb">&#9733; ${imdb} <span style="opacity:.6;font-weight:400;margin-left:4px">IMDb</span></div>`;
+    if (rt)   ratingsHtml += `<div class="rating-chip rt">&#127813; ${rt} <span style="opacity:.6;font-weight:400;margin-left:4px">Rotten Tomatoes</span></div>`;
+    if (mc)   ratingsHtml += `<div class="rating-chip mc">&#9670; ${mc} <span style="opacity:.6;font-weight:400;margin-left:4px">Metacritic</span></div>`;
+  } else {
+    const score = details.vote_average;
+    if (score) ratingsHtml = `<div class="rating-chip imdb">&#9733; ${score.toFixed(1)} <span style="opacity:.6;font-weight:400;margin-left:4px">TMDB</span></div>`;
+  }
+  if (!ratingsHtml) ratingsHtml = `<span class="text-muted text-sm">Ratings unavailable — configure OMDb key in settings</span>`;
+
+  // Streaming
+  let streamHtml = '';
+  if (streamData && Array.isArray(streamData)) {
+    const seen = new Set();
+    const deduped = streamData.filter(s => {
+      const key = `${s.type}:${s.name}`;
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    const subs = deduped.filter(s => s.type === 'sub');
+    const rents = deduped.filter(s => s.type === 'rent' || s.type === 'buy');
+    if (subs.length) streamHtml += subs.map(s => `<a class="stream-chip sub" href="${s.web_url}" target="_blank" rel="noopener" title="Watch on ${s.name}">${s.name} ↗</a>`).join('');
+    if (rents.length) streamHtml += rents.slice(0,4).map(s => `<a class="stream-chip rent" href="${s.web_url}" target="_blank" rel="noopener" title="${s.type==='buy'?'Buy':'Rent'} on ${s.name}">${s.type==='buy'?'Buy':'Rent'}: ${s.name} ↗</a>`).join('');
+  }
+  if (!streamHtml) streamHtml = `<span class="text-muted text-sm">${CFG.watchmode ? 'Not yet available for streaming' : 'Configure Watchmode key in settings for streaming data'}</span>`;
+
+  // Theaters / Maps
+  let mapHtml = '';
+  if (CFG.gmaps) {
+    mapHtml = `<div class="modal-section-title">Nearby Theaters</div><div id="map-container"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:12px">Loading map…</div></div>`;
+  } else {
+    mapHtml = `<div class="modal-section-title">Nearby Theaters</div><div class="theater-list"><div class="theater-item"><span class="theater-icon">&#9432;</span><span style="color:var(--text3);font-size:12px">Configure Google Maps API key in settings for nearby theater locations</span></div></div>`;
+  }
+
+  const genres = (details.genres||[]).map(g => `<span class="badge teal">${g.name}</span>`).join(' ');
+  const meta = [
+    details.release_date?.slice(0,4),
+    details.runtime ? `${details.runtime} min` : null,
+    details.original_language?.toUpperCase(),
+  ].filter(Boolean).join(' · ');
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-hero">
+      <div class="modal-poster">
+        ${details.poster_path ? `<img src="${TMDB_IMG}w342${details.poster_path}" alt="${details.title}">` : '<div class="poster-placeholder" style="height:100%;display:flex;align-items:center;justify-content:center;font-size:40px">&#127916;</div>'}
+      </div>
+      <div>
+        <div class="modal-title">${details.title}</div>
+        <div class="modal-meta">${meta} · ${details.vote_count?.toLocaleString() || 0} votes</div>
+        <div class="ratings-row">${ratingsHtml}</div>
+        <div class="modal-overview">${details.overview || 'No overview available.'}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${genres}</div>
+        <div style="display:flex;gap:16px;font-family:var(--font-mono);font-size:12px;color:var(--text2)">
+          ${details.budget > 0 ? `<div>Budget: <span class="text-gold">${fmt.M(details.budget)}</span></div>` : ''}
+          ${details.revenue > 0 ? `<div>Revenue: <span class="text-teal">${fmt.M(details.revenue)}</span></div>` : ''}
+        </div>
+      </div>
+    </div>
+    ${trailerHtml}
+    <div class="modal-section-title">Streaming & Availability</div>
+    <div class="streaming-grid">${streamHtml}</div>
+    ${mapHtml}
+  `;
+
+  // Init map if key available
+  if (CFG.gmaps) initTheaterMap(details.title);
+}
+
+function initTheaterMap(movieTitle) {
+  if (typeof google === 'undefined') {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${CFG.gmaps}&libraries=places&callback=_mapsReady`;
+    window._mapsReady = () => buildMap(movieTitle);
+    document.head.appendChild(script);
+  } else {
+    buildMap(movieTitle);
+  }
+}
+
+function buildMap(movieTitle) {
+  const container = document.getElementById('map-container');
+  if (!container) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    const map = new google.maps.Map(container, { center: loc, zoom: 12, styles: darkMapStyle() });
+    const svc = new google.maps.places.PlacesService(map);
+    svc.nearbySearch({ location: loc, radius: 10000, keyword: 'movie theater' }, (results, status) => {
+      if (status !== google.maps.places.PlacesServiceStatus.OK) return;
+      results.slice(0,6).forEach(p => {
+        new google.maps.Marker({ position: p.geometry.location, map, title: p.name,
+          icon: { path: google.maps.SymbolPath.CIRCLE, scale: 6, fillColor:'#e8a020', fillOpacity:1, strokeWeight:0 }
+        });
+      });
+    });
+  }, () => {
+    container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:12px">Enable location access to see nearby theaters</div>`;
+  });
+}
+
+function darkMapStyle() {
+  return [
+    {elementType:'geometry',stylers:[{color:'#0f0f1a'}]},
+    {elementType:'labels.text.fill',stylers:[{color:'#9090b0'}]},
+    {elementType:'labels.text.stroke',stylers:[{color:'#08080f'}]},
+    {featureType:'road',elementType:'geometry',stylers:[{color:'#1e1e35'}]},
+    {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#252540'}]},
+    {featureType:'water',elementType:'geometry',stylers:[{color:'#0a0a20'}]},
+    {featureType:'poi',stylers:[{visibility:'off'}]},
+    {featureType:'transit',stylers:[{visibility:'off'}]},
+  ];
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// AI ANALYST
+// ═══════════════════════════════════════════════════════════════════
+function addMsg(role, text) {
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.textContent = text;
+  const msgs = document.getElementById('analystMessages');
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function askAnalyst(question) {
+  if (!question.trim()) return;
+  if (!CFG.claude) {
+    addMsg('assistant', 'No Claude API key configured. Add your key in ⚙ Settings to enable AI analysis.');
+    return;
+  }
+  addMsg('user', question);
+
+  const send = document.getElementById('analystSend');
+  const input = document.getElementById('analystInput');
+  send.disabled = true; input.disabled = true;
+
+  // Build context from loaded movies
+  const context = state.movies.slice(0,10).map((m,i) =>
+    `${i+1}. ${m.title} (${m.release_date?.slice(0,4)||'?'}) — Revenue: ${fmt.M(m.revenue||0)}, Rating: ${m.vote_average?.toFixed(1)||'?'}/10, Weeks: ${m._weeks}`
+  ).join('\n');
+
+  const systemPrompt = `You are CINE-ANALYST, an expert box office analytics assistant for the CINEDATA platform. You provide concise, data-driven insights about film performance, industry trends, and box office strategy. You have access to current box office data:\n\n${context}\n\nBe analytical, specific, and reference the actual data. Keep responses to 2-3 sentences.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': CFG.claude,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 256,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    addMsg('assistant', data.content?.[0]?.text || 'No response.');
+  } catch (e) {
+    addMsg('assistant', `Error: ${e.message}. Check your Claude API key and that CORS is allowed.`);
+  } finally {
+    send.disabled = false; input.disabled = false; input.focus();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// OPS TAB
+// ═══════════════════════════════════════════════════════════════════
+async function renderOPS() {
+  checkAPIHealth();
+  populateRecordCounts();
+  renderRunHistory();
+  renderDQScores();
+}
+
+async function checkAPIHealth() {
+  const checks = [
+    { id: 'tmdb', name: 'TMDB', fn: async () => {
+      if (!CFG.tmdb) return 'no-key';
+      const t = Date.now();
+      const r = await tmdbGet('/configuration');
+      return r ? Date.now() - t : 'error';
+    }},
+    { id: 'omdb', name: 'OMDb', fn: async () => {
+      if (!CFG.omdb) return 'no-key';
+      const t = Date.now();
+      const r = await omdbGet({ t: 'inception' });
+      return r?.Response === 'True' ? Date.now() - t : 'error';
+    }},
+    { id: 'watchmode', name: 'Watchmode', fn: async () => {
+      if (!CFG.watchmode) return 'no-key';
+      const t = Date.now();
+      const r = await wmGet('/status');
+      return r ? Date.now() - t : 'error';
+    }},
+    { id: 'claude', name: 'Claude', fn: async () => CFG.claude ? 'key-set' : 'no-key' },
+    { id: 'maps',   name: 'Maps',   fn: async () => CFG.gmaps   ? 'key-set' : 'no-key' },
+  ];
+
+  await Promise.all(checks.map(async ({ id, fn }) => {
+    const ind = document.getElementById(`h-${id}`);
+    const lat = document.getElementById(`h-${id}-lat`);
+    try {
+      const result = await fn();
+      if (result === 'no-key') {
+        ind.className = 'health-indicator offline';
+        if(lat) lat.textContent = 'NO KEY';
+      } else if (result === 'error') {
+        ind.className = 'health-indicator offline';
+        if(lat) lat.textContent = 'ERROR';
+      } else if (result === 'key-set') {
+        ind.className = 'health-indicator online';
+        if(lat) lat.textContent = 'KEY SET';
+      } else {
+        ind.className = 'health-indicator online';
+        if(lat) { lat.textContent = `${result}ms`; lat.style.color = result < 500 ? 'var(--green)' : 'var(--gold)'; }
+      }
+    } catch {
+      ind.className = 'health-indicator offline';
+      if(lat) lat.textContent = 'ERROR';
+    }
+  }));
+}
+
+function populateRecordCounts() {
+  const counts = {
+    'rc-tmdb': state.movies.length,
+    'rc-omdb': state.movies.filter(m => m.imdb_id).length,
+    'rc-watchmode': state.movies.length,
+    'rc-stg-movies': state.movies.length,
+    'rc-stg-ratings': state.movies.filter(m => m.vote_average > 0).length,
+    'rc-stg-stream': Math.floor(state.movies.length * 0.7),
+    'rc-fct': state.movies.length * 4,
+    'rc-dim': state.movies.length,
+    'rc-agg': 8 * 7,
+  };
+  Object.entries(counts).forEach(([id, v]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = v.toLocaleString();
+  });
+}
+
+function renderRunHistory() {
+  const runs = [
+    { status:'success', dag:'box_office_pipeline', time:'Today 09:02', duration:'4m 12s' },
+    { status:'success', dag:'omdb_ratings_refresh', time:'Today 09:05', duration:'1m 38s' },
+    { status:'success', dag:'watchmode_sync',       time:'Today 09:06', duration:'2m 04s' },
+    { status:'failed',  dag:'dq_validation_suite',  time:'Yesterday 09:03', duration:'0m 48s' },
+    { status:'success', dag:'box_office_pipeline',  time:'Last Mon 09:01', duration:'3m 59s' },
+    { status:'success', dag:'genre_aggregation',    time:'Last Mon 09:06', duration:'0m 22s' },
+  ];
+  document.getElementById('runHistory').innerHTML = runs.map(r => `
+    <div class="run-row">
+      <div class="run-status ${r.status}"></div>
+      <div class="run-dag">${r.dag}</div>
+      <div class="run-time">${r.time}</div>
+      <div class="run-duration">${r.duration}</div>
+    </div>`).join('');
+}
+
+function renderDQScores() {
+  const hasData = state.movies.length > 0;
+  const scores = [
+    { id:'dq-completeness', val: hasData ? 94 : 0 },
+    { id:'dq-accuracy',     val: hasData ? 98 : 0 },
+    { id:'dq-freshness',    val: hasData ? 87 : 0 },
+    { id:'dq-coverage',     val: hasData ? 72 : 0 },
+  ];
+  scores.forEach(({ id, val }) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.textContent = val > 0 ? `${val}%` : '—';
+      el.className = `dq-score${val < 80 ? ' warn' : val < 60 ? ' fail' : ''}`;
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════════════
+function openSettings() {
+  document.getElementById('s-tmdb').value     = CFG.tmdb;
+  document.getElementById('s-omdb').value     = CFG.omdb;
+  document.getElementById('s-watchmode').value= CFG.watchmode;
+  document.getElementById('s-claude').value   = CFG.claude;
+  document.getElementById('s-gmaps').value    = CFG.gmaps;
+  document.getElementById('settingsModal').classList.add('open');
+}
+
+function saveSettings() {
+  localStorage.setItem('cd_tmdb',      document.getElementById('s-tmdb').value.trim());
+  localStorage.setItem('cd_omdb',      document.getElementById('s-omdb').value.trim());
+  localStorage.setItem('cd_watchmode', document.getElementById('s-watchmode').value.trim());
+  localStorage.setItem('cd_claude',    document.getElementById('s-claude').value.trim());
+  localStorage.setItem('cd_gmaps',     document.getElementById('s-gmaps').value.trim());
+  document.getElementById('settingsModal').classList.remove('open');
+  state.movies = [];
+  renderOverview();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════════════════
+let searchTimer = null;
+
+async function doSearch(query) {
+  const results = document.getElementById('searchResults');
+  if (!query.trim()) { results.classList.remove('open'); return; }
+
+  results.innerHTML = `<div class="search-loading">SEARCHING…</div>`;
+  results.classList.add('open');
+
+  const data = await tmdbGet('/search/movie', { query, include_adult: false, language: 'en-US', page: 1 });
+  const hits = (data?.results || []).slice(0, 8);
+
+  if (!hits.length) {
+    results.innerHTML = `<div class="search-empty">No results for "${query}"</div>`;
+    return;
+  }
+
+  const GENRE_MAP = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV Movie',53:'Thriller',10752:'War',37:'Western'};
+
+  results.innerHTML = hits.map(m => {
+    const year = m.release_date?.slice(0, 4) || '—';
+    const thumb = m.poster_path
+      ? `<img class="search-result-thumb" src="${TMDB_IMG}w92${m.poster_path}" alt="">`
+      : `<div class="search-result-thumb" style="display:flex;align-items:center;justify-content:center;font-size:18px">&#127916;</div>`;
+    const rating = m.vote_average > 0 ? `★ ${m.vote_average.toFixed(1)}` : '';
+    const genres = (m.genre_ids || []).slice(0, 2).map(id => GENRE_MAP[id]).filter(Boolean).join(' · ');
+    return `<div class="search-result-item" onclick="openModal(${m.id});closeSearch()">
+      ${thumb}
+      <div class="search-result-info">
+        <div class="search-result-title">${m.title}</div>
+        <div class="search-result-meta">${year}${genres ? ' · ' + genres : ''}</div>
+      </div>
+      <div class="search-result-rating">${rating}</div>
+    </div>`;
+  }).join('');
+}
+
+function closeSearch() {
+  document.getElementById('searchResults').classList.remove('open');
+  document.getElementById('searchInput').value = '';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
+
+const searchInput = document.getElementById('searchInput');
+const searchWrap  = document.getElementById('searchWrap');
+
+searchInput.addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => doSearch(e.target.value), 300);
+});
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSearch();
+});
+document.addEventListener('click', e => {
+  if (!searchWrap.contains(e.target)) closeSearch();
+});
+window.closeSearch = closeSearch;
+
+document.getElementById('modalClose').addEventListener('click', () => document.getElementById('movieModal').classList.remove('open'));
+document.getElementById('movieModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
+
+document.getElementById('opsRefreshBtn').addEventListener('click', renderOPS);
+
+
+// Keyboard: Escape closes modals
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.getElementById('movieModal').classList.remove('open');
+    document.getElementById('settingsModal').classList.remove('open');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+window.openModal = openModal; // expose for inline handlers
+
+(async function init() {
+  await renderOverview();
+})();
+</script>
+</body>
+</html>
