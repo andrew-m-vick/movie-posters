@@ -1936,29 +1936,12 @@ async function openModal(movieId) {
   const isInTheaters = state.movies.some(m => m.id === movieId);
   let mapHtml = '';
   if (isInTheaters) {
-    const titleEnc = encodeURIComponent(details.title + ' showtimes');
     mapHtml = `
       <div class="modal-section-title">Showtimes & Theaters</div>
       <div class="showtimes-links">
-        <a href="https://www.google.com/search?q=${titleEnc}" target="_blank" rel="noopener"
-          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.3);color:var(--gold);text-decoration:none">
-          Google Showtimes ↗
-        </a>
         <a href="https://www.fandango.com/search?q=${encodeURIComponent(details.title)}" target="_blank" rel="noopener"
-          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
+          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.3);color:var(--gold);text-decoration:none">
           Fandango ↗
-        </a>
-        <a href="https://www.amctheatres.com/movies/search?q=${encodeURIComponent(details.title)}" target="_blank" rel="noopener"
-          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
-          AMC ↗
-        </a>
-        <a href="https://www.regmovies.com/movies" target="_blank" rel="noopener"
-          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
-          Regal ↗
-        </a>
-        <a href="https://www.cinemark.com/movies-now-playing" target="_blank" rel="noopener"
-          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
-          Cinemark ↗
         </a>
       </div>`;
   }
