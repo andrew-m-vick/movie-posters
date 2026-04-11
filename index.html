@@ -450,7 +450,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .theater-icon{font-size:16px;flex-shrink:0}
 .theater-name{color:var(--text);font-weight:500}
 .theater-dist{color:var(--text3);font-family:var(--font-mono);font-size:11px;margin-left:auto}
-#map-container{height:220px;border-radius:6px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;background:var(--bg3)}
+.showtimes-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 
 /* SETTINGS MODAL */
 .settings-modal{max-width:520px}
@@ -1909,11 +1909,12 @@ async function openModal(movieId) {
     if (imdb) ratingsHtml += `<div class="rating-chip imdb">&#9733; ${imdb} <span style="opacity:.6;font-weight:400;margin-left:4px">IMDb</span></div>`;
     if (rt)   ratingsHtml += `<div class="rating-chip rt">&#127813; ${rt} <span style="opacity:.6;font-weight:400;margin-left:4px">Rotten Tomatoes</span></div>`;
     if (mc)   ratingsHtml += `<div class="rating-chip mc">&#9670; ${mc} <span style="opacity:.6;font-weight:400;margin-left:4px">Metacritic</span></div>`;
-  } else {
-    const score = details.vote_average;
-    if (score) ratingsHtml = `<div class="rating-chip imdb">&#9733; ${score.toFixed(1)} <span style="opacity:.6;font-weight:400;margin-left:4px">TMDB</span></div>`;
   }
-  if (!ratingsHtml) ratingsHtml = `<span class="text-muted text-sm">Ratings unavailable — configure OMDb key in settings</span>`;
+  // Always fall back to TMDB score if no third-party ratings yet (new releases)
+  if (!ratingsHtml && details.vote_average > 0) {
+    ratingsHtml = `<div class="rating-chip imdb">&#9733; ${details.vote_average.toFixed(1)} <span style="opacity:.6;font-weight:400;margin-left:4px">TMDB · ${details.vote_count?.toLocaleString()} votes</span></div>`;
+  }
+  if (!ratingsHtml) ratingsHtml = `<span class="text-muted text-sm">No ratings yet — too new for aggregators</span>`;
 
   // Streaming
   let streamHtml = '';
@@ -1931,12 +1932,35 @@ async function openModal(movieId) {
   }
   if (!streamHtml) streamHtml = `<span class="text-muted text-sm">${CFG.watchmode ? 'Not yet available for streaming' : 'Configure Watchmode key in settings for streaming data'}</span>`;
 
-  // Theaters / Maps
+  // Theaters — only show if confirmed in now_playing list
+  const isInTheaters = state.movies.some(m => m.id === movieId);
   let mapHtml = '';
-  if (CFG.gmaps) {
-    mapHtml = `<div class="modal-section-title">Nearby Theaters</div><div id="map-container"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:12px">Loading map…</div></div>`;
-  } else {
-    mapHtml = `<div class="modal-section-title">Nearby Theaters</div><div class="theater-list"><div class="theater-item"><span class="theater-icon">&#9432;</span><span style="color:var(--text3);font-size:12px">Configure Google Maps API key in settings for nearby theater locations</span></div></div>`;
+  if (isInTheaters) {
+    const titleEnc = encodeURIComponent(details.title + ' showtimes');
+    mapHtml = `
+      <div class="modal-section-title">Showtimes & Theaters</div>
+      <div class="showtimes-links">
+        <a href="https://www.google.com/search?q=${titleEnc}" target="_blank" rel="noopener"
+          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:rgba(232,160,32,.12);border:1px solid rgba(232,160,32,.3);color:var(--gold);text-decoration:none">
+          Google Showtimes ↗
+        </a>
+        <a href="https://www.fandango.com/search?q=${encodeURIComponent(details.title)}" target="_blank" rel="noopener"
+          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
+          Fandango ↗
+        </a>
+        <a href="https://www.amctheatres.com/movies/search?q=${encodeURIComponent(details.title)}" target="_blank" rel="noopener"
+          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
+          AMC ↗
+        </a>
+        <a href="https://www.regmovies.com/movies" target="_blank" rel="noopener"
+          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
+          Regal ↗
+        </a>
+        <a href="https://www.cinemark.com/movies-now-playing" target="_blank" rel="noopener"
+          style="padding:7px 14px;border-radius:5px;font-size:12px;font-family:var(--font-mono);background:var(--bg3);border:1px solid var(--border2);color:var(--text2);text-decoration:none">
+          Cinemark ↗
+        </a>
+      </div>`;
   }
 
   const genres = (details.genres||[]).map(g => `<span class="badge teal">${g.name}</span>`).join(' ');
@@ -1969,52 +1993,6 @@ async function openModal(movieId) {
     ${mapHtml}
   `;
 
-  // Init map if key available
-  if (CFG.gmaps) initTheaterMap(details.title);
-}
-
-function initTheaterMap(movieTitle) {
-  if (typeof google === 'undefined') {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${CFG.gmaps}&libraries=places&callback=_mapsReady`;
-    window._mapsReady = () => buildMap(movieTitle);
-    document.head.appendChild(script);
-  } else {
-    buildMap(movieTitle);
-  }
-}
-
-function buildMap(movieTitle) {
-  const container = document.getElementById('map-container');
-  if (!container) return;
-  navigator.geolocation.getCurrentPosition(pos => {
-    const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-    const map = new google.maps.Map(container, { center: loc, zoom: 12, styles: darkMapStyle() });
-    const svc = new google.maps.places.PlacesService(map);
-    svc.nearbySearch({ location: loc, radius: 10000, keyword: 'movie theater' }, (results, status) => {
-      if (status !== google.maps.places.PlacesServiceStatus.OK) return;
-      results.slice(0,6).forEach(p => {
-        new google.maps.Marker({ position: p.geometry.location, map, title: p.name,
-          icon: { path: google.maps.SymbolPath.CIRCLE, scale: 6, fillColor:'#e8a020', fillOpacity:1, strokeWeight:0 }
-        });
-      });
-    });
-  }, () => {
-    container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);font-size:12px">Enable location access to see nearby theaters</div>`;
-  });
-}
-
-function darkMapStyle() {
-  return [
-    {elementType:'geometry',stylers:[{color:'#0f0f1a'}]},
-    {elementType:'labels.text.fill',stylers:[{color:'#9090b0'}]},
-    {elementType:'labels.text.stroke',stylers:[{color:'#08080f'}]},
-    {featureType:'road',elementType:'geometry',stylers:[{color:'#1e1e35'}]},
-    {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#252540'}]},
-    {featureType:'water',elementType:'geometry',stylers:[{color:'#0a0a20'}]},
-    {featureType:'poi',stylers:[{visibility:'off'}]},
-    {featureType:'transit',stylers:[{visibility:'off'}]},
-  ];
 }
 
 // ═══════════════════════════════════════════════════════════════════
