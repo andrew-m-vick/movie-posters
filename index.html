@@ -376,6 +376,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .dq-score.warn{color:var(--gold)}
 .dq-score.fail{color:var(--red)}
 .dq-label{font-size:10px;font-family:var(--font-mono);color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.dq-def{font-size:10px;font-family:var(--font-body);color:var(--text3);margin-top:5px;line-height:1.4;opacity:.7}
 
 /* MODAL */
 .modal-overlay{
@@ -570,9 +571,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .search-input:focus{border-color:var(--gold);background-color:var(--card)}
 .search-toggle{display:none}
 .search-results{
-  position:absolute;top:calc(100% + 6px);left:0;right:-60px;z-index:200;
+  position:absolute;top:calc(100% + 6px);right:0;min-width:360px;z-index:200;
   background:var(--bg2);border:1px solid var(--border2);
-  border-radius:8px;overflow:hidden;
+  border-radius:8px;
   box-shadow:0 8px 32px rgba(0,0,0,.5);
   display:none;max-height:420px;overflow-y:auto;
 }
@@ -589,10 +590,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   width:32px;height:48px;border-radius:3px;
   object-fit:cover;background:var(--bg3);flex-shrink:0;
 }
-.search-result-info{flex:1;min-width:0}
-.search-result-title{font-size:13px;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.search-result-info{flex:1;min-width:0;overflow:hidden}
+.search-result-title{font-size:13px;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .search-result-meta{font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.search-result-rating{font-family:var(--font-mono);font-size:11px;color:var(--gold);flex-shrink:0}
+.search-result-rating{font-family:var(--font-mono);font-size:11px;color:var(--gold);flex-shrink:0;padding-left:8px}
 .search-empty{padding:16px;text-align:center;font-size:12px;color:var(--text3);font-family:var(--font-mono)}
 .search-loading{padding:12px;text-align:center;color:var(--text3);font-size:12px;font-family:var(--font-mono);letter-spacing:1px}
 @media(max-width:768px){
@@ -658,17 +659,131 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .text-muted{color:var(--text3)}.text-gold{color:var(--gold)}.text-teal{color:var(--teal)}
 .text-green{color:var(--green)}.text-red{color:var(--red)}
 .w-full{width:100%}.overflow-x-auto{overflow-x:auto}
+
+/* HOME TAB */
+.home-hero{
+  text-align:center;padding:64px 24px 48px;
+  max-width:720px;margin:0 auto;
+}
+.home-eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:3px;
+  color:var(--teal);text-transform:uppercase;margin-bottom:16px;
+}
+.home-headline{
+  font-family:var(--font-head);font-size:clamp(42px,7vw,80px);
+  letter-spacing:4px;line-height:1;color:var(--text);margin-bottom:8px;
+}
+.home-headline span{color:var(--gold)}
+.home-blurb{
+  font-size:14px;color:var(--text2);line-height:1.7;
+  max-width:580px;margin:0 auto 36px;
+}
+.home-search-wrap{
+  position:relative;max-width:560px;margin:0 auto;
+}
+.home-search-input{
+  width:100%;background:var(--card);border:1px solid var(--border2);
+  border-radius:8px;padding:14px 20px 14px 48px;
+  color:var(--text);font-family:var(--font-body);font-size:15px;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%235a5a80' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:16px center;
+}
+.home-search-input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(232,160,32,.12);
+}
+.home-search-hint{
+  font-size:11px;font-family:var(--font-mono);color:var(--text3);
+  margin-top:10px;letter-spacing:.5px;
+}
+.home-poster-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:16px;
+  max-width:1400px;margin:0 auto;padding:0 0 48px;
+}
+.home-poster-card{
+  position:relative;border-radius:8px;overflow:hidden;
+  cursor:pointer;background:var(--card);
+  aspect-ratio:2/3;
+  transition:transform .2s,box-shadow .2s;
+}
+.home-poster-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.home-poster-card img{width:100%;height:100%;object-fit:cover;display:block}
+.home-poster-no-img{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  color:var(--text3);font-size:32px;background:var(--bg3);
+}
+.home-poster-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.4) 45%, transparent 70%);
+  opacity:0;transition:opacity .2s;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:12px;
+}
+.home-poster-card:hover .home-poster-overlay{opacity:1}
+.home-poster-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:3px}
+.home-poster-year{font-size:10px;font-family:var(--font-mono);color:rgba(255,255,255,.5)}
+.home-poster-rating{
+  position:absolute;top:8px;right:8px;
+  background:rgba(0,0,0,.78);border-radius:3px;
+  padding:3px 7px;font-family:var(--font-mono);font-size:10px;color:var(--gold);
+}
+.home-empty{
+  text-align:center;padding:64px 24px;
+  color:var(--text3);font-family:var(--font-mono);font-size:12px;letter-spacing:1px;
+}
+.home-divider{
+  border:none;border-top:1px solid var(--border);
+  max-width:1400px;margin:0 auto 32px;
+}
+.logo-btn{
+  background:none;border:none;cursor:pointer;padding:0;
+  font-family:var(--font-head);font-size:22px;letter-spacing:2px;
+  color:var(--gold);margin-right:16px;white-space:nowrap;flex-shrink:0;
+  transition:opacity .15s;
+}
+.logo-btn:hover{opacity:.8}
+.logo-btn span{color:var(--text3);font-size:11px;font-family:var(--font-mono);letter-spacing:1px;vertical-align:middle;margin-left:6px}
+
+/* POSTER LIGHTBOX */
+.poster-lightbox{
+  display:none;position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.92);
+  align-items:center;justify-content:center;flex-direction:column;
+  gap:16px;cursor:zoom-out;
+}
+.poster-lightbox.open{display:flex}
+.poster-lightbox-img{
+  max-height:88vh;max-width:min(500px,90vw);
+  border-radius:8px;
+  box-shadow:0 24px 80px rgba(0,0,0,.8);
+  object-fit:contain;
+  animation:posterIn .2s ease;
+}
+@keyframes posterIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.poster-lightbox-title{
+  font-family:var(--font-head);font-size:18px;letter-spacing:2px;
+  color:var(--text2);text-align:center;
+}
+.poster-lightbox-close{
+  position:fixed;top:20px;right:24px;
+  background:none;border:none;color:var(--text2);
+  font-size:22px;cursor:pointer;z-index:301;
+  transition:color .15s;line-height:1;
+}
+.poster-lightbox-close:hover{color:var(--text)}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <header id="header">
-  <div class="logo">CINEDATA <span>BOX OFFICE ANALYTICS</span></div>
+  <button class="logo-btn" onclick="switchTab('home')">CINEDATA <span>FILM ANALYTICS</span></button>
   <nav class="nav-tabs" role="tablist">
-    <button class="nav-tab active" data-tab="overview" role="tab">Box Office</button>
+    <button class="nav-tab" data-tab="overview" role="tab">Box Office</button>
     <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
-    <button class="nav-tab" data-tab="rankings" role="tab">Rankings</button>
     <button class="nav-tab" data-tab="trends" role="tab">Trends</button>
     <button class="nav-tab" data-tab="pipeline" role="tab">Pipeline</button>
     <button class="nav-tab ops-tab" data-tab="ops" role="tab">OPS</button>
@@ -682,61 +797,66 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 <!-- MAIN CONTENT -->
 <main id="main">
 
+  <!-- ═══════════════════════════════ HOME TAB ═══════════════════════════════ -->
+  <section class="tab-panel active" id="tab-home">
+    <div class="home-hero">
+      <div class="home-eyebrow">Est. 2025 · Live Data · TMDB · OMDb · Watchmode</div>
+      <div class="home-headline">MOVIE<br><span>POSTERS!</span></div>
+      <p class="home-blurb">
+        I wanted to make a movie poster search engine to see if I could, then I wanted to see what else
+        I could do. That curiosity took me to what this web app is now, but I wanted to leave the
+        original movie poster search engine. Have fun!
+      </p>
+      <div class="home-search-wrap">
+        <input class="home-search-input" id="homeSearchInput" type="text" placeholder="Search any movie…" autocomplete="off">
+        <div class="home-search-hint">Type to search · Click any poster to enlarge image</div>
+      </div>
+    </div>
+    <hr class="home-divider">
+    <div class="home-poster-grid" id="homePosterGrid">
+      <div class="home-empty" style="grid-column:1/-1">Start typing to search for any film</div>
+    </div>
+  </section>
+
   <!-- ═══════════════════════════════ OVERVIEW TAB ═══════════════════════════════ -->
-  <section class="tab-panel active" id="tab-overview">
-    <!-- KPI CARDS -->
-    <div class="kpi-grid" id="kpiGrid">
-      <div class="kpi-card"><div class="kpi-label">Top Popularity Score</div><div class="kpi-value" id="kpi-weekend">—</div><div class="kpi-change neutral" id="kpi-weekend-chg">Loading…</div></div>
-      <div class="kpi-card teal"><div class="kpi-label">Cumulative Box Office</div><div class="kpi-value" id="kpi-cumulative">—</div><div class="kpi-change neutral" id="kpi-cumulative-chg">Top 10 films</div></div>
-      <div class="kpi-card green"><div class="kpi-label">Active Releases</div><div class="kpi-value" id="kpi-releases">—</div><div class="kpi-change neutral" id="kpi-releases-chg">In theaters now</div></div>
-      <div class="kpi-card red"><div class="kpi-label">Avg IMDb Score</div><div class="kpi-value" id="kpi-imdb">—</div><div class="kpi-change neutral" id="kpi-imdb-chg">Current releases</div></div>
-    </div>
-
-    <!-- TREND CHART + GENRE -->
-    <div class="two-col">
-      <div class="card">
-        <div class="card-title"><span class="dot"></span> Weekly Box Office Trend</div>
-        <div class="chart-wrap"><canvas id="weeklyChart"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title"><span class="dot teal"></span> Genre Revenue Share</div>
-        <div class="chart-wrap" style="height:160px"><canvas id="genreChart"></canvas></div>
-        <div class="genre-list mt-8" id="genreList"></div>
+  <section class="tab-panel" id="tab-overview">
+    <!-- BOX OFFICE RANKINGS TABLE -->
+    <div class="section-header">
+      <div class="section-title">Now Playing</div>
+      <div class="section-sub">SORTED BY POPULARITY · WORLDWIDE CUMULATIVE REVENUE</div>
+      <div class="section-actions">
+        <select class="select-ctrl" id="rankSort">
+          <option value="popularity">Sort: Popularity</option>
+          <option value="revenue">Sort: Revenue</option>
+          <option value="weeks">Sort: Weeks in Market</option>
+        </select>
+        <select class="select-ctrl" id="rankFilter">
+          <option value="all">All Genres</option>
+        </select>
       </div>
     </div>
-
-    <!-- RANKINGS TABLE -->
     <div class="card" style="padding:0">
-      <div style="padding:14px 18px 0;display:flex;align-items:baseline;gap:10px" class="card-title">
-        <span class="dot"></span> Now Playing — Top 10
-        <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);letter-spacing:.5px">RANKED BY TMDB POPULARITY</span>
-      </div>
       <div class="overflow-x-auto">
-        <table class="data-table" id="overviewTable">
+        <table class="data-table" id="rankingsTable">
           <thead>
             <tr>
               <th>#</th>
               <th>Title</th>
               <th class="right">Worldwide Revenue</th>
               <th class="right">Budget</th>
+              <th class="right">ROI</th>
               <th class="right">Popularity</th>
               <th class="right">Wks</th>
+              <th>Genre</th>
             </tr>
           </thead>
-          <tbody id="overviewTableBody">
-            <tr><td colspan="6"><div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">FETCHING DATA</div></div></td></tr>
+          <tbody id="rankingsTableBody">
+            <tr><td colspan="9"><div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">FETCHING DATA</div></div></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- POSTER GRID -->
-    <div class="card mt-16">
-      <div class="card-title"><span class="dot teal"></span> Now Playing</div>
-      <div class="poster-grid" id="posterGrid">
-        <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div></div>
-      </div>
-    </div>
   </section>
 
   <!-- ═══════════════════════════════ STREAMING TAB ═══════════════════════════════ -->
@@ -771,64 +891,48 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   </section>
 
   <!-- ═══════════════════════════════ RANKINGS TAB ═══════════════════════════════ -->
-  <section class="tab-panel" id="tab-rankings">
-    <div class="section-header">
-      <div class="section-title">Box Office Rankings</div>
-      <div class="section-sub">WEEKEND + CUMULATIVE PERFORMANCE</div>
-      <div class="section-actions">
-        <select class="select-ctrl" id="rankSort">
-          <option value="revenue">Sort: Revenue</option>
-          <option value="weeks">Sort: Weeks in Market</option>
-          <option value="popularity">Sort: Popularity</option>
-        </select>
-        <select class="select-ctrl" id="rankFilter">
-          <option value="all">All Genres</option>
-        </select>
-      </div>
-    </div>
-    <div class="card" style="padding:0">
-      <div class="overflow-x-auto">
-        <table class="data-table" id="rankingsTable">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th class="right">Worldwide Revenue</th>
-              <th class="right">Budget</th>
-              <th class="right">ROI</th>
-              <th class="right">Popularity</th>
-              <th class="right">Wks</th>
-              <th>Genre</th>
-            </tr>
-          </thead>
-          <tbody id="rankingsTableBody">
-            <tr><td colspan="9"><div class="loading-state"><div class="loading-spinner"></div><div class="loading-text">LOADING</div></div></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
 
   <!-- ═══════════════════════════════ TRENDS TAB ═══════════════════════════════ -->
   <section class="tab-panel" id="tab-trends">
+    <!-- KPI CARDS -->
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="kpi-card"><div class="kpi-label">This Week's #1 Film</div><div class="kpi-value" id="kpi-weekend" style="font-size:clamp(16px,2.5vw,26px);line-height:1.2">—</div><div class="kpi-change neutral" id="kpi-weekend-chg">Loading…</div></div>
+      <div class="kpi-card teal"><div class="kpi-label">Combined Worldwide Revenue</div><div class="kpi-value" id="kpi-cumulative">—</div><div class="kpi-change neutral" id="kpi-cumulative-chg">Top 10 films in theaters</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Films in Theaters</div><div class="kpi-value" id="kpi-releases">—</div><div class="kpi-change neutral" id="kpi-releases-chg">Active now-playing releases</div></div>
+      <div class="kpi-card red"><div class="kpi-label">Avg Rating</div><div class="kpi-value" id="kpi-imdb">—</div><div class="kpi-change neutral" id="kpi-imdb-chg">IMDb · current releases</div></div>
+    </div>
+
+    <!-- REVENUE BAR + GENRE -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Revenue by Film — Worldwide Total</div>
+        <div class="chart-wrap"><canvas id="weeklyChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot teal"></span> Genre Revenue Share</div>
+        <div class="chart-wrap" style="height:160px"><canvas id="genreChart"></canvas></div>
+        <div class="genre-list mt-8" id="genreList"></div>
+      </div>
+    </div>
+
     <div class="section-header">
-      <div class="section-title">Revenue Trends</div>
-      <div class="section-sub">DECAY CURVES · GENRE SHARE · PERFORMANCE MATRIX</div>
+      <div class="section-title">Deep Dive</div>
+      <div class="section-sub">BUDGET VS. REVENUE · GENRE DISTRIBUTION · TIME IN THEATERS · ROI MATRIX</div>
     </div>
 
     <div class="trends-grid">
       <div class="card">
-        <div class="card-title"><span class="dot"></span> Revenue Decay Curves</div>
+        <div class="card-title"><span class="dot"></span> Budget vs. Revenue</div>
         <div class="chart-wrap tall"><canvas id="decayChart"></canvas></div>
       </div>
       <div class="card">
-        <div class="card-title"><span class="dot teal"></span> Genre Revenue Share (YTD)</div>
+        <div class="card-title"><span class="dot teal"></span> Genre Distribution</div>
         <div class="chart-wrap tall"><canvas id="genrePieChart"></canvas></div>
       </div>
     </div>
 
     <div class="card mb-16">
-      <div class="card-title"><span class="dot"></span> 8-Week Box Office Trend</div>
+      <div class="card-title"><span class="dot"></span> Weeks in Theaters</div>
       <div class="chart-wrap tall"><canvas id="trendAreaChart"></canvas></div>
     </div>
 
@@ -843,8 +947,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   <!-- ═══════════════════════════════ PIPELINE TAB ═══════════════════════════════ -->
   <section class="tab-panel" id="tab-pipeline">
     <div class="pipeline-header">
-      <div class="section-title" style="font-size:22px;letter-spacing:3px">Data Pipeline Architecture</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+        <div class="section-title" style="font-size:22px;letter-spacing:3px">Data Pipeline Architecture</div>
+        <span style="font-size:10px;font-family:var(--font-mono);letter-spacing:1.5px;padding:3px 8px;border-radius:3px;border:1px solid rgba(26,155,170,.4);color:var(--teal);background:rgba(26,155,170,.08)">ARCHITECTURE REFERENCE</span>
+      </div>
       <div style="color:var(--text2);font-size:13px;margin-top:6px">Medallion Architecture · Bronze → Silver → Gold · Apache Airflow Orchestration</div>
+      <div style="color:var(--text3);font-size:11px;font-family:var(--font-mono);margin-top:4px">Design document for production implementation · Live data ingested via browser APIs</div>
       <div class="tech-stack">
         <span class="tech-pill">Python 3.11</span>
         <span class="tech-pill">PostgreSQL 15</span>
@@ -853,7 +961,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
         <span class="tech-pill">OMDb API</span>
         <span class="tech-pill">Watchmode API</span>
         <span class="tech-pill">Power BI</span>
-        <span class="tech-pill">Claude AI</span>
         <span class="tech-pill">dbt Core</span>
         <span class="tech-pill">Docker</span>
       </div>
@@ -912,10 +1019,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 <span class="schema-key">week_key</span>    <span class="schema-type">DATE</span> <span class="schema-pk">PK</span>
 <span class="schema-key">movie_id</span>    <span class="schema-type">INTEGER</span> <span class="schema-pk">FK</span>
 <span class="schema-key">week_rank</span>   <span class="schema-type">SMALLINT</span>
-<span class="schema-key">est_gross</span>   <span class="schema-type">NUMERIC(15,2)</span>
-<span class="schema-key">cum_gross</span>   <span class="schema-type">NUMERIC(15,2)</span>
-<span class="schema-key">wow_change</span>  <span class="schema-type">FLOAT</span>
+<span class="schema-key">worldwide_revenue</span> <span class="schema-type">NUMERIC(15,2)</span>
+<span class="schema-key">budget</span>      <span class="schema-type">NUMERIC(15,2)</span>
+<span class="schema-key">roi_pct</span>     <span class="schema-type">FLOAT</span>
 <span class="schema-key">weeks_out</span>   <span class="schema-type">SMALLINT</span>
+<span class="schema-key">popularity</span>  <span class="schema-type">FLOAT</span>
 
 <span class="schema-comment">-- dim_movies (SCD Type 2)</span>
 <span class="schema-key">movie_sk</span>    <span class="schema-type">SERIAL</span> <span class="schema-pk">PK</span>
@@ -947,7 +1055,7 @@ default_args = {
     dag_id=<span class="dag-string">'box_office_pipeline'</span>,
     default_args=default_args,
     schedule_interval=<span class="dag-string">'0 9 * * 1'</span>,  <span class="dag-comment"># Every Monday 09:00</span>
-    start_date=datetime(2024, 1, 1),
+    start_date=datetime(2026, 1, 1),
     catchup=<span class="dag-keyword">False</span>,
     tags=[<span class="dag-string">'cinedata'</span>, <span class="dag-string">'box-office'</span>],
 ) <span class="dag-keyword">as</span> dag:
@@ -1101,14 +1209,14 @@ DB_CONN  = os.environ[<span class="dag-string">'POSTGRES_CONN'</span>]
 
           <!-- ARROW -->
           <div style="padding:0 12px;color:var(--text3)">
-            <div style="font-size:10px;margin-bottom:4px;color:var(--text3)">Embedded</div>
+            <div style="font-size:10px;margin-bottom:4px;color:var(--text3)">Publish</div>
             <div style="font-size:20px">&#8594;</div>
           </div>
 
           <!-- END USERS -->
           <div style="display:flex;flex-direction:column;align-items:center">
             <div style="font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px">CONSUMERS</div>
-            <div style="padding:7px 12px;border:1px solid var(--border2);border-radius:5px;color:var(--text2);background:var(--bg3);text-align:center">CINEDATA<br>Web App</div>
+            <div style="padding:7px 12px;border:1px solid var(--border2);border-radius:5px;color:var(--text2);background:var(--bg3);text-align:center">Analyst<br>Dashboard</div>
           </div>
 
         </div>
@@ -1138,10 +1246,10 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div>
           <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Key Measures (DAX)</div>
           <div class="dag-block">
-<span class="dag-comment">-- Weekend Gross (Est.)</span>
-<span class="dag-fn">Weekend Gross</span> =
-  SUMX(fct_box_office_weekly,
-    [est_gross])
+<span class="dag-comment">-- Worldwide Revenue</span>
+<span class="dag-fn">Total Revenue</span> =
+  SUM(fct_box_office_weekly
+    [worldwide_revenue])
 
 <span class="dag-comment">-- Week-over-Week Change</span>
 <span class="dag-fn">WoW % Change</span> =
@@ -1166,7 +1274,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
   <section class="tab-panel" id="tab-ops">
     <div class="section-header">
       <div class="section-title">Operations Dashboard</div>
-      <div class="section-sub">DATA SOURCE HEALTH · PIPELINE STATUS · DQ CHECKS</div>
+      <div class="section-sub">DATA SOURCE HEALTH · SESSION FETCH LOG · DQ CHECKS</div>
       <div class="section-actions">
         <button class="icon-btn" id="opsRefreshBtn" title="Refresh OPS" style="width:auto;padding:0 12px;font-size:12px;font-family:var(--font-mono);letter-spacing:1px">&#8635; REFRESH</button>
       </div>
@@ -1178,22 +1286,19 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="health-card"><div class="health-indicator checking" id="h-tmdb"></div><div><div class="health-name">TMDB API</div><div class="health-detail">api.themoviedb.org</div></div><div class="health-latency" id="h-tmdb-lat">—</div></div>
       <div class="health-card"><div class="health-indicator checking" id="h-omdb"></div><div><div class="health-name">OMDb API</div><div class="health-detail">www.omdbapi.com</div></div><div class="health-latency" id="h-omdb-lat">—</div></div>
       <div class="health-card"><div class="health-indicator checking" id="h-watchmode"></div><div><div class="health-name">Watchmode API</div><div class="health-detail">api.watchmode.com</div></div><div class="health-latency" id="h-watchmode-lat">—</div></div>
-      <div class="health-card"><div class="health-indicator checking" id="h-claude"></div><div><div class="health-name">Claude API</div><div class="health-detail">api.anthropic.com</div></div><div class="health-latency" id="h-claude-lat">—</div></div>
-      <div class="health-card"><div class="health-indicator checking" id="h-maps"></div><div><div class="health-name">Google Maps</div><div class="health-detail">maps.googleapis.com</div></div><div class="health-latency" id="h-maps-lat">—</div></div>
-      <div class="health-card"><div class="health-indicator online"></div><div><div class="health-name">PostgreSQL</div><div class="health-detail">localhost:5432 · cinedata_db</div></div><div class="health-latency" style="color:var(--green)">LOCAL</div></div>
     </div>
 
     <!-- DATA QUALITY CHECKS -->
     <div class="card-title mb-8 mt-16"><span class="dot"></span> Data Quality Scores</div>
     <div class="dq-grid" id="dqGrid">
-      <div class="dq-card"><div class="dq-score" id="dq-completeness">—</div><div class="dq-label">Completeness</div></div>
-      <div class="dq-card"><div class="dq-score" id="dq-accuracy">—</div><div class="dq-label">Accuracy</div></div>
-      <div class="dq-card"><div class="dq-score" id="dq-freshness">—</div><div class="dq-label">Freshness</div></div>
-      <div class="dq-card"><div class="dq-score" id="dq-coverage">—</div><div class="dq-label">Coverage</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-completeness">—</div><div class="dq-label">Completeness</div><div class="dq-def">% of films with revenue data</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-accuracy">—</div><div class="dq-label">Accuracy</div><div class="dq-def">% with both budget + revenue confirmed</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-freshness">—</div><div class="dq-label">Freshness</div><div class="dq-def">% of films within 16-week window</div></div>
+      <div class="dq-card"><div class="dq-score" id="dq-coverage">—</div><div class="dq-label">Coverage</div><div class="dq-def">% of films with rating data (≥10 votes)</div></div>
     </div>
 
     <!-- RECORD COUNTS -->
-    <div class="card-title mb-8"><span class="dot teal"></span> Medallion Layer Record Counts</div>
+    <div class="card-title mb-8"><span class="dot teal"></span> Session Record Counts <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">— browser memory this session, mapped to medallion layers</span></div>
     <div class="record-counts">
       <div class="record-card">
         <div class="record-layer">&#9679; Bronze — Raw</div>
@@ -1223,12 +1328,19 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
 
     <!-- PIPELINE RUN HISTORY -->
     <div class="pipeline-history mt-16">
-      <div class="card-title mb-8"><span class="dot"></span> Pipeline Run History</div>
+      <div class="card-title mb-8"><span class="dot"></span> Session Fetch Log <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">— real API calls made this session</span></div>
       <div id="runHistory"></div>
     </div>
   </section>
 
 </main>
+
+<!-- ═══════════════════ POSTER LIGHTBOX ═══════════════════ -->
+<div class="poster-lightbox" id="posterLightbox">
+  <button class="poster-lightbox-close" id="posterLightboxClose">&#10005;</button>
+  <img class="poster-lightbox-img" id="posterLightboxImg" src="" alt="">
+  <div class="poster-lightbox-title" id="posterLightboxTitle"></div>
+</div>
 
 <!-- ═══════════════════ MOVIE DETAIL MODAL ═══════════════════ -->
 <div class="modal-overlay" id="movieModal">
@@ -1262,16 +1374,6 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <input class="settings-input" id="s-watchmode" type="password" placeholder="Your Watchmode API key">
         <div class="settings-hint">api.watchmode.com → Dashboard</div>
       </div>
-      <div class="settings-group">
-        <div class="settings-label">Anthropic (Claude) API Key</div>
-        <input class="settings-input" id="s-claude" type="password" placeholder="sk-ant-…">
-        <div class="settings-hint">console.anthropic.com → API Keys · Used for AI Analyst (client-side demo only)</div>
-      </div>
-      <div class="settings-group">
-        <div class="settings-label">Google Maps API Key</div>
-        <input class="settings-input" id="s-gmaps" type="password" placeholder="Your Maps JavaScript API key">
-        <div class="settings-hint">console.cloud.google.com → Maps JavaScript API + Places API enabled</div>
-      </div>
       <button class="settings-save" id="settingsSave">SAVE CONFIGURATION</button>
     </div>
   </div>
@@ -1285,8 +1387,6 @@ const CFG = {
   get tmdb()     { return localStorage.getItem('cd_tmdb') || '5257b8de97581229fd5a52d5e61a48ec' },
   get omdb()     { return localStorage.getItem('cd_omdb') || '48f9ec85' },
   get watchmode(){ return localStorage.getItem('cd_watchmode') || 'uPNTzzEd9kQ90VofkkQfnJ8xIBhjyvqFPxOuYMu8' },
-  get claude()   { return localStorage.getItem('cd_claude') || '' },
-  get gmaps()    { return localStorage.getItem('cd_gmaps') || 'AIzaSyB-m4Rl6X4SL1HtbmoxJ6EzZD7jKwMkMWU' },
 };
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p/';
@@ -1303,6 +1403,8 @@ const state = {
   charts: {},
   opsChecked: false,
   streamingLoaded: false,
+  streamingCount: null,
+  fetchLog: [],
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1389,12 +1491,20 @@ async function loadMovies() {
     return true;
   }).slice(0, 20);
 
-  // Enrich with details in batches of 5 to avoid rate limiting
+  // Enrich with details + OMDb IMDb rating in batches of 5
   const enriched = [];
   for (let i = 0; i < raw.length; i += 5) {
     const batch = await Promise.all(raw.slice(i, i + 5).map(async m => {
       const det = await tmdbGet(`/movie/${m.id}`);
-      return { ...m, ...(det || {}), _weeks: weeksInRelease(m.release_date) };
+      const movie = { ...m, ...(det || {}), _weeks: weeksInRelease(m.release_date) };
+      // Fetch IMDb rating via OMDb using the IMDb ID from TMDB details
+      if (det?.imdb_id && CFG.omdb) {
+        const omdb = await omdbGet({ i: det.imdb_id });
+        if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
+          movie.imdb_rating = parseFloat(omdb.imdbRating);
+        }
+      }
+      return movie;
     }));
     enriched.push(...batch);
   }
@@ -1402,6 +1512,10 @@ async function loadMovies() {
   // Sort by TMDB popularity (real-time, reflects current theatrical performance)
   enriched.sort((a, b) => b.popularity - a.popularity);
   state.movies = enriched;
+  state.fetchLog.push({
+    status: 'success', source: 'TMDB', action: 'now_playing fetch',
+    time: new Date(), detail: `${enriched.length} films loaded`
+  });
   return enriched;
 }
 
@@ -1430,11 +1544,22 @@ async function renderStreaming() {
   const trending = await tmdbGet('/trending/movie/week', { page: 1 });
   const movies = (trending?.results || []).slice(0, 20);
 
-  // Fetch watch providers for each in parallel
+  // Fetch watch providers + OMDb IMDb rating for each in parallel
   const withProviders = await Promise.all(movies.map(async m => {
-    const wp = await tmdbGet(`/movie/${m.id}/watch/providers`);
+    const year = m.release_date?.slice(0, 4) || '';
+    const [wp, extIds] = await Promise.all([
+      tmdbGet(`/movie/${m.id}/watch/providers`),
+      tmdbGet(`/movie/${m.id}/external_ids`),
+    ]);
     const us = wp?.results?.US || {};
-    return { ...m, flatrate: us.flatrate || [], rent: us.rent || [], buy: us.buy || [] };
+    let imdb_rating = null;
+    if (extIds?.imdb_id && CFG.omdb) {
+      const omdb = await omdbGet({ i: extIds.imdb_id });
+      if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
+        imdb_rating = parseFloat(omdb.imdbRating);
+      }
+    }
+    return { ...m, flatrate: us.flatrate || [], rent: us.rent || [], buy: us.buy || [], imdb_rating };
   }));
 
   // Build service filter pills from all available flatrate providers
@@ -1448,7 +1573,12 @@ async function renderStreaming() {
 
   renderStreamingGrid(streamable, 'streamingGrid', 'flatrate');
   renderDigitalGrid(digital);
+  state.streamingCount = withProviders.filter(m => m.flatrate.length || m.rent.length || m.buy.length).length;
   state.streamingLoaded = true;
+  state.fetchLog.push({
+    status: 'success', source: 'TMDB Watch Providers', action: 'streaming data fetch',
+    time: new Date(), detail: `${state.streamingCount} titles with availability data`
+  });
 }
 
 function buildServiceFilters(servicesMap, movies) {
@@ -1499,7 +1629,8 @@ function renderStreamingGrid(movies, gridId, key) {
     const poster = m.poster_path
       ? `<img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">`
       : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:32px">&#127916;</div>`;
-    const score = m.vote_average > 0 ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">★ ${m.vote_average.toFixed(1)}</div>` : '';
+    const ratingVal = m.imdb_rating || (m.vote_average > 0 ? m.vote_average : null);
+    const score = ratingVal ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">★ ${ratingVal.toFixed(1)}</div>` : '';
     return `<div class="stream-card" onclick="openModal(${m.id})">
       <div class="stream-card-poster">${poster}${score}</div>
       <div class="stream-card-body">
@@ -1526,7 +1657,8 @@ function renderDigitalGrid(movies) {
     const poster = m.poster_path
       ? `<img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">`
       : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:32px">&#127916;</div>`;
-    const score = m.vote_average > 0 ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">★ ${m.vote_average.toFixed(1)}</div>` : '';
+    const ratingVal = m.imdb_rating || (m.vote_average > 0 ? m.vote_average : null);
+    const score = ratingVal ? `<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);border-radius:3px;padding:2px 6px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">★ ${ratingVal.toFixed(1)}</div>` : '';
     return `<div class="stream-card" onclick="openModal(${m.id})">
       <div class="stream-card-poster">${poster}${score}</div>
       <div class="stream-card-body">
@@ -1544,8 +1676,9 @@ function switchTab(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${id}`));
   state.activeTab = id;
+  if (id === 'home')      { document.getElementById('homeSearchInput').focus(); }
+  if (id === 'overview')  renderOverview();
   if (id === 'streaming') renderStreaming();
-  if (id === 'rankings' && state.movies.length) renderRankings();
   if (id === 'trends'   && state.movies.length) renderTrends();
   if (id === 'ops') renderOPS();
 }
@@ -1568,11 +1701,8 @@ async function renderOverview() {
     const movies = await loadMovies();
     if (!movies.length) return;
   }
-  renderKPIs();
-  renderOverviewTable();
+  renderRankings();
   renderPosterGrid();
-  renderWeeklyChart();
-  renderGenreBreakdown();
 }
 
 function renderKPIs() {
@@ -1582,14 +1712,14 @@ function renderKPIs() {
   const ratings   = movies.filter(m => m.vote_average > 0).map(m => m.vote_average);
   const avgRating = ratings.length ? (ratings.reduce((a,b) => a+b, 0) / ratings.length) : 0;
 
-  document.getElementById('kpi-weekend').textContent = topFilm ? topFilm.popularity.toFixed(0) : '—';
-  document.getElementById('kpi-weekend-chg').textContent = topFilm ? `#1: ${topFilm.title}` : '';
+  document.getElementById('kpi-weekend').textContent = topFilm ? topFilm.title : '—';
+  document.getElementById('kpi-weekend-chg').textContent = topFilm ? `popularity score: ${topFilm.popularity.toFixed(0)}` : '';
   document.getElementById('kpi-cumulative').textContent = fmt.M(worldwide);
-  document.getElementById('kpi-cumulative-chg').textContent = 'Worldwide · top 10';
+  document.getElementById('kpi-cumulative-chg').textContent = 'Top 10 films in theaters';
   document.getElementById('kpi-releases').textContent = state.movies.length;
-  document.getElementById('kpi-releases-chg').textContent = 'In theaters now';
-  document.getElementById('kpi-imdb').textContent = avgRating.toFixed(1);
-  document.getElementById('kpi-imdb-chg').textContent = `Based on ${ratings.length} films`;
+  document.getElementById('kpi-releases-chg').textContent = 'Active now-playing releases';
+  document.getElementById('kpi-imdb').textContent = avgRating > 0 ? `${avgRating.toFixed(1)}/10` : '—';
+  document.getElementById('kpi-imdb-chg').textContent = `IMDb · ${ratings.length} films`;
 }
 
 function renderOverviewTable() {
@@ -1623,29 +1753,19 @@ function renderPosterGrid() {
 function renderWeeklyChart() {
   const ctx = document.getElementById('weeklyChart').getContext('2d');
   if (state.charts.weekly) state.charts.weekly.destroy();
-
-  const weeks = ['Wk-7','Wk-6','Wk-5','Wk-4','Wk-3','Wk-2','Wk-1','This Wk'];
-  const top5 = state.movies.slice(0, 5);
-  const baseGross = top5.reduce((s,m) => s + estimateWeekendGross(m.revenue || m.popularity*500000, 1), 0);
-  const data = weeks.map((_, i) => {
-    const age = 7 - i;
-    return top5.reduce((s,m) => s + estimateWeekendGross(m.revenue || m.popularity*500000, Math.max(1, m._weeks - age + 1)), 0);
-  });
-
+  const top10 = [...state.movies]
+    .filter(m => m.revenue > 0)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 10);
   state.charts.weekly = new Chart(ctx, {
-    type: 'line',
+    type: 'bar',
     data: {
-      labels: weeks,
+      labels: top10.map(m => m.title.length > 18 ? m.title.slice(0,16)+'…' : m.title),
       datasets: [{
-        label: 'Est. Weekend Gross (Top 10)',
-        data: data.map(v => v / 1e6),
-        borderColor: '#e8a020',
-        backgroundColor: 'rgba(232,160,32,0.08)',
-        borderWidth: 2,
-        pointBackgroundColor: '#e8a020',
-        pointRadius: 3,
-        fill: true,
-        tension: 0.4,
+        label: 'Worldwide Revenue',
+        data: top10.map(m => +(m.revenue / 1e6).toFixed(1)),
+        backgroundColor: top10.map((_, i) => i === 0 ? '#e8a020' : 'rgba(232,160,32,0.4)'),
+        borderRadius: 3,
       }]
     },
     options: chartDefaults({ prefix: '$', suffix: 'M' })
@@ -1655,8 +1775,9 @@ function renderWeeklyChart() {
 function renderGenreBreakdown() {
   const genres = {};
   state.movies.forEach(m => {
+    if (!m.revenue) return;
     (m.genres || []).forEach(g => {
-      genres[g.name] = (genres[g.name] || 0) + (m.revenue || m.popularity * 500000);
+      genres[g.name] = (genres[g.name] || 0) + m.revenue;
     });
   });
   const sorted = Object.entries(genres).sort((a,b) => b[1]-a[1]).slice(0, 6);
@@ -1698,7 +1819,6 @@ function renderGenreBreakdown() {
 function renderRankings() {
   populateGenreFilter();
   buildRankingsTable();
-
   document.getElementById('rankSort').onchange = buildRankingsTable;
   document.getElementById('rankFilter').onchange = buildRankingsTable;
 }
@@ -1749,6 +1869,9 @@ function buildRankingsTable() {
 // TRENDS TAB
 // ═══════════════════════════════════════════════════════════════════
 function renderTrends() {
+  renderKPIs();
+  renderWeeklyChart();
+  renderGenreBreakdown();
   renderDecayChart();
   renderGenrePie();
   renderTrendArea();
@@ -1758,25 +1881,37 @@ function renderTrends() {
 function renderDecayChart() {
   const ctx = document.getElementById('decayChart').getContext('2d');
   if (state.charts.decay) state.charts.decay.destroy();
-  const top5 = state.movies.slice(0, 5);
-  const colors = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0'];
-  const labels = ['Wk 1','Wk 2','Wk 3','Wk 4','Wk 5','Wk 6','Wk 7','Wk 8'];
-  const datasets = top5.map((m, i) => {
-    const base = estimateWeekendGross(m.revenue || m.popularity*500000, 1);
-    return {
-      label: m.title.length > 20 ? m.title.slice(0,18)+'…' : m.title,
-      data: labels.map((_, w) => (base * Math.pow(0.55, w) / 1e6).toFixed(2)),
-      borderColor: colors[i],
-      backgroundColor: 'transparent',
-      borderWidth: 2,
-      pointRadius: 2,
-      tension: 0.3,
-    };
-  });
+  const films = state.movies.filter(m => m.budget > 0 && m.revenue > 0);
+  const colors = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0','#50a8e0','#f0b840','#22b8c8','#c060e0','#60c060'];
   state.charts.decay = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets },
-    options: chartDefaults({ prefix: '$', suffix: 'M', legend: true })
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'Films',
+        data: films.map((m, i) => ({ x: +(m.budget/1e6).toFixed(1), y: +(m.revenue/1e6).toFixed(1), title: m.title })),
+        backgroundColor: films.map((_, i) => colors[i % colors.length]),
+        pointRadius: 7,
+        pointHoverRadius: 9,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(20,20,36,0.95)', borderColor: '#252540', borderWidth: 1,
+          titleColor: '#e2e2f0', bodyColor: '#9090b0', padding: 10,
+          callbacks: {
+            title: items => items[0].raw.title,
+            label: item => [`Budget: $${item.raw.x}M`, `Revenue: $${item.raw.y}M`],
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Budget ($M)', color: '#9090b0', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a80', font: { size: 11 }, callback: v => `$${v}M` } },
+        y: { title: { display: true, text: 'Revenue ($M)', color: '#9090b0', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a80', font: { size: 11 }, callback: v => `$${v}M` } }
+      }
+    }
   });
 }
 
@@ -1784,9 +1919,12 @@ function renderGenrePie() {
   const ctx = document.getElementById('genrePieChart').getContext('2d');
   if (state.charts.genrePie) state.charts.genrePie.destroy();
   const genres = {};
-  state.movies.forEach(m => (m.genres||[]).slice(0,1).forEach(g => {
-    genres[g.name] = (genres[g.name]||0) + (m.revenue || m.popularity*500000);
-  }));
+  state.movies.forEach(m => {
+    if (!m.revenue) return;
+    (m.genres||[]).slice(0,1).forEach(g => {
+      genres[g.name] = (genres[g.name]||0) + m.revenue;
+    });
+  });
   const sorted = Object.entries(genres).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const colors = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0','#50a8e0','#f0b840','#22b8c8'];
   state.charts.genrePie = new Chart(ctx, {
@@ -1808,23 +1946,35 @@ function renderGenrePie() {
 function renderTrendArea() {
   const ctx = document.getElementById('trendAreaChart').getContext('2d');
   if (state.charts.trendArea) state.charts.trendArea.destroy();
-  const weeks = ['W-7','W-6','W-5','W-4','W-3','W-2','W-1','Now'];
-  const top10 = state.movies.slice(0,10);
-  const data = weeks.map((_,i) => {
-    const age = 7 - i;
-    return top10.reduce((s,m) => s + estimateWeekendGross(m.revenue||m.popularity*500000, Math.max(1, m._weeks-age+1)), 0);
-  });
-  const prevData = data.map(v => v * (0.85 + Math.random()*0.3));
+  const sorted = [...state.movies].sort((a, b) => b._weeks - a._weeks);
+  const colors = sorted.map(m => m._weeks >= 8 ? '#e8a020' : m._weeks >= 4 ? '#1a9baa' : '#3ab870');
   state.charts.trendArea = new Chart(ctx, {
-    type:'line',
-    data:{
-      labels:weeks,
-      datasets:[
-        { label:'This Season', data:data.map(v=>+(v/1e6).toFixed(1)), borderColor:'#e8a020', backgroundColor:'rgba(232,160,32,0.1)', fill:true, borderWidth:2, tension:.4 },
-        { label:'Prior Season', data:prevData.map(v=>+(v/1e6).toFixed(1)), borderColor:'#1a9baa', backgroundColor:'rgba(26,155,170,0.06)', fill:true, borderWidth:1.5, borderDash:[4,4], tension:.4 },
-      ]
+    type: 'bar',
+    data: {
+      labels: sorted.map(m => m.title.length > 18 ? m.title.slice(0,16)+'…' : m.title),
+      datasets: [{
+        label: 'Weeks in Theaters',
+        data: sorted.map(m => m._weeks),
+        backgroundColor: colors,
+        borderRadius: 3,
+      }]
     },
-    options: chartDefaults({ prefix:'$', suffix:'M', legend:true })
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(20,20,36,0.95)', borderColor: '#252540', borderWidth: 1,
+          titleColor: '#e2e2f0', bodyColor: '#9090b0', padding: 10,
+          callbacks: { label: c => ` ${c.raw} week${c.raw !== 1 ? 's' : ''} in theaters` }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a80', font: { size: 11 }, callback: v => `${v}w` } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#9090b0', font: { size: 11 } } }
+      }
+    }
   });
 }
 
@@ -1893,26 +2043,34 @@ async function openModal(movieId) {
     ? `<div class="modal-trailer"><iframe src="https://www.youtube-nocookie.com/embed/${clip.key}?rel=0&modestbranding=1" allowfullscreen loading="lazy"></iframe></div>`
     : `<div style="background:var(--bg3);aspect-ratio:16/9;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text3);margin-bottom:20px;border:1px solid var(--border)">No trailer available</div>`;
 
-  // Fetch OMDb in parallel with streaming
+  // Fetch OMDb + streaming in parallel
   const imdbId = extIds?.imdb_id || '';
-  const [omdbData, streamData] = await Promise.all([
+  const year = details.release_date?.slice(0, 4) || '';
+  const [omdbById, streamData] = await Promise.all([
     imdbId ? omdbGet({ i: imdbId }) : Promise.resolve(null),
     CFG.watchmode ? wmGet(`/title/movie-${details.id}/sources`) : Promise.resolve(null),
   ]);
 
+  // If ID lookup returned no useful ratings, try title+year fallback
+  const hasRatings = d => d?.Response === 'True' && (
+    (d.imdbRating && d.imdbRating !== 'N/A') ||
+    (d.Ratings || []).some(r => r.Value && r.Value !== 'N/A')
+  );
+  let omdbData = hasRatings(omdbById) ? omdbById : null;
+  if (!omdbData && details.title) {
+    const byTitle = await omdbGet({ t: details.title, ...(year ? { y: year } : {}) });
+    if (hasRatings(byTitle)) omdbData = byTitle;
+  }
+
   // Ratings
   let ratingsHtml = '';
-  if (omdbData && omdbData.Response === 'True') {
+  if (omdbData) {
     const imdb = omdbData.imdbRating !== 'N/A' ? omdbData.imdbRating : null;
     const rt = (omdbData.Ratings||[]).find(r => r.Source==='Rotten Tomatoes')?.Value;
     const mc = (omdbData.Ratings||[]).find(r => r.Source==='Metacritic')?.Value;
     if (imdb) ratingsHtml += `<div class="rating-chip imdb">&#9733; ${imdb} <span style="opacity:.6;font-weight:400;margin-left:4px">IMDb</span></div>`;
     if (rt)   ratingsHtml += `<div class="rating-chip rt">&#127813; ${rt} <span style="opacity:.6;font-weight:400;margin-left:4px">Rotten Tomatoes</span></div>`;
     if (mc)   ratingsHtml += `<div class="rating-chip mc">&#9670; ${mc} <span style="opacity:.6;font-weight:400;margin-left:4px">Metacritic</span></div>`;
-  }
-  // Always fall back to TMDB score if no third-party ratings yet (new releases)
-  if (!ratingsHtml && details.vote_average > 0) {
-    ratingsHtml = `<div class="rating-chip imdb">&#9733; ${details.vote_average.toFixed(1)} <span style="opacity:.6;font-weight:400;margin-left:4px">TMDB · ${details.vote_count?.toLocaleString()} votes</span></div>`;
   }
   if (!ratingsHtml) ratingsHtml = `<span class="text-muted text-sm">No ratings yet — too new for aggregators</span>`;
 
@@ -2065,8 +2223,6 @@ async function checkAPIHealth() {
       const r = await wmGet('/status');
       return r ? Date.now() - t : 'error';
     }},
-    { id: 'claude', name: 'Claude', fn: async () => CFG.claude ? 'key-set' : 'no-key' },
-    { id: 'maps',   name: 'Maps',   fn: async () => CFG.gmaps   ? 'key-set' : 'no-key' },
   ];
 
   await Promise.all(checks.map(async ({ id, fn }) => {
@@ -2095,54 +2251,92 @@ async function checkAPIHealth() {
 }
 
 function populateRecordCounts() {
+  const movies = state.movies;
+  const withRatings = movies.filter(m => m.vote_average > 0 && m.vote_count >= 10).length;
+  const withRevenue = movies.filter(m => m.revenue > 0).length;
+  const genres = new Set(movies.flatMap(m => (m.genres||[]).map(g => g.name)));
+
   const counts = {
-    'rc-tmdb': state.movies.length,
-    'rc-omdb': state.movies.filter(m => m.imdb_id).length,
-    'rc-watchmode': state.movies.length,
-    'rc-stg-movies': state.movies.length,
-    'rc-stg-ratings': state.movies.filter(m => m.vote_average > 0).length,
-    'rc-stg-stream': Math.floor(state.movies.length * 0.7),
-    'rc-fct': state.movies.length * 4,
-    'rc-dim': state.movies.length,
-    'rc-agg': 8 * 7,
+    'rc-tmdb':       movies.length,
+    'rc-omdb':       withRatings,
+    'rc-watchmode':  state.streamingCount !== null ? state.streamingCount : '—',
+    'rc-stg-movies': movies.length,
+    'rc-stg-ratings': withRatings,
+    'rc-stg-stream': state.streamingCount !== null ? state.streamingCount : '—',
+    'rc-fct':        withRevenue,
+    'rc-dim':        movies.length,
+    'rc-agg':        genres.size,
   };
   Object.entries(counts).forEach(([id, v]) => {
     const el = document.getElementById(id);
-    if (el) el.textContent = v.toLocaleString();
+    if (el) el.textContent = typeof v === 'number' ? v.toLocaleString() : v;
   });
 }
 
 function renderRunHistory() {
-  const runs = [
-    { status:'success', dag:'box_office_pipeline', time:'Today 09:02', duration:'4m 12s' },
-    { status:'success', dag:'omdb_ratings_refresh', time:'Today 09:05', duration:'1m 38s' },
-    { status:'success', dag:'watchmode_sync',       time:'Today 09:06', duration:'2m 04s' },
-    { status:'failed',  dag:'dq_validation_suite',  time:'Yesterday 09:03', duration:'0m 48s' },
-    { status:'success', dag:'box_office_pipeline',  time:'Last Mon 09:01', duration:'3m 59s' },
-    { status:'success', dag:'genre_aggregation',    time:'Last Mon 09:06', duration:'0m 22s' },
-  ];
-  document.getElementById('runHistory').innerHTML = runs.map(r => `
-    <div class="run-row">
+  const log = state.fetchLog;
+  if (!log.length) {
+    document.getElementById('runHistory').innerHTML =
+      `<div style="padding:12px 0;font-size:12px;color:var(--text3);font-family:var(--font-mono)">No fetches recorded this session yet.</div>`;
+    return;
+  }
+  document.getElementById('runHistory').innerHTML = [...log].reverse().map(r => {
+    const t = r.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return `<div class="run-row">
       <div class="run-status ${r.status}"></div>
-      <div class="run-dag">${r.dag}</div>
-      <div class="run-time">${r.time}</div>
-      <div class="run-duration">${r.duration}</div>
-    </div>`).join('');
+      <div class="run-dag">${r.source} — ${r.action}</div>
+      <div class="run-time">${t}</div>
+      <div class="run-duration" style="color:var(--text3)">${r.detail}</div>
+    </div>`;
+  }).join('');
 }
 
 function renderDQScores() {
-  const hasData = state.movies.length > 0;
+  const movies = state.movies;
+  if (!movies.length) {
+    ['dq-completeness','dq-accuracy','dq-freshness','dq-coverage'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = '—'; el.className = 'dq-score'; }
+    });
+    return;
+  }
+
+  const total = movies.length;
+
+  // Completeness: % of movies with revenue data (the core metric)
+  const withRevenue = movies.filter(m => m.revenue > 0).length;
+  const completeness = Math.round(withRevenue / total * 100);
+
+  // Coverage: % of movies with ratings (vote_average > 0 and meaningful vote count)
+  const withRatings = movies.filter(m => m.vote_average > 0 && m.vote_count >= 10).length;
+  const coverage = Math.round(withRatings / total * 100);
+
+  // Freshness: % of movies released within 16 weeks (current theatrical window)
+  const now = Date.now();
+  const fresh = movies.filter(m => {
+    if (!m.release_date) return false;
+    const weeks = (now - new Date(m.release_date).getTime()) / (7 * 24 * 60 * 60 * 1000);
+    return weeks <= 16;
+  }).length;
+  const freshness = Math.round(fresh / total * 100);
+
+  // Accuracy: % of movies with both budget and revenue (fully verifiable records)
+  const withBoth = movies.filter(m => m.budget > 0 && m.revenue > 0).length;
+  const accuracy = Math.round(withBoth / total * 100);
+
   const scores = [
-    { id:'dq-completeness', val: hasData ? 94 : 0 },
-    { id:'dq-accuracy',     val: hasData ? 98 : 0 },
-    { id:'dq-freshness',    val: hasData ? 87 : 0 },
-    { id:'dq-coverage',     val: hasData ? 72 : 0 },
+    { id: 'dq-completeness', val: completeness, label: `${withRevenue}/${total} films have revenue data` },
+    { id: 'dq-accuracy',     val: accuracy,     label: `${withBoth}/${total} films have full budget+revenue` },
+    { id: 'dq-freshness',    val: freshness,    label: `${fresh}/${total} films within 16-week window` },
+    { id: 'dq-coverage',     val: coverage,     label: `${withRatings}/${total} films have rating data` },
   ];
-  scores.forEach(({ id, val }) => {
+
+  scores.forEach(({ id, val, label }) => {
     const el = document.getElementById(id);
     if (el) {
-      el.textContent = val > 0 ? `${val}%` : '—';
-      el.className = `dq-score${val < 80 ? ' warn' : val < 60 ? ' fail' : ''}`;
+      el.textContent = `${val}%`;
+      el.className = `dq-score${val < 60 ? ' fail' : val < 80 ? ' warn' : ''}`;
+      el.title = label;
     }
   });
 }
@@ -2154,8 +2348,6 @@ function openSettings() {
   document.getElementById('s-tmdb').value     = CFG.tmdb;
   document.getElementById('s-omdb').value     = CFG.omdb;
   document.getElementById('s-watchmode').value= CFG.watchmode;
-  document.getElementById('s-claude').value   = CFG.claude;
-  document.getElementById('s-gmaps').value    = CFG.gmaps;
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -2163,8 +2355,6 @@ function saveSettings() {
   localStorage.setItem('cd_tmdb',      document.getElementById('s-tmdb').value.trim());
   localStorage.setItem('cd_omdb',      document.getElementById('s-omdb').value.trim());
   localStorage.setItem('cd_watchmode', document.getElementById('s-watchmode').value.trim());
-  localStorage.setItem('cd_claude',    document.getElementById('s-claude').value.trim());
-  localStorage.setItem('cd_gmaps',     document.getElementById('s-gmaps').value.trim());
   document.getElementById('settingsModal').classList.remove('open');
   state.movies = [];
   renderOverview();
@@ -2192,12 +2382,30 @@ async function doSearch(query) {
 
   const GENRE_MAP = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV Movie',53:'Thriller',10752:'War',37:'Western'};
 
-  results.innerHTML = hits.map(m => {
+  // Build a lookup from state.movies (already has imdb_rating)
+  const cached = new Map(state.movies.map(m => [m.id, m]));
+
+  // For hits not in cache, fetch external_ids + OMDb in parallel
+  const enriched = await Promise.all(hits.map(async m => {
+    const cached_movie = cached.get(m.id);
+    if (cached_movie?.imdb_rating) return { ...m, imdb_rating: cached_movie.imdb_rating };
+    if (!CFG.omdb) return m;
+    const extIds = await tmdbGet(`/movie/${m.id}/external_ids`);
+    if (!extIds?.imdb_id) return m;
+    const omdb = await omdbGet({ i: extIds.imdb_id });
+    if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
+      return { ...m, imdb_rating: parseFloat(omdb.imdbRating) };
+    }
+    return m;
+  }));
+
+  results.innerHTML = enriched.map(m => {
     const year = m.release_date?.slice(0, 4) || '—';
     const thumb = m.poster_path
       ? `<img class="search-result-thumb" src="${TMDB_IMG}w92${m.poster_path}" alt="">`
       : `<div class="search-result-thumb" style="display:flex;align-items:center;justify-content:center;font-size:18px">&#127916;</div>`;
-    const rating = m.vote_average > 0 ? `★ ${m.vote_average.toFixed(1)}` : '';
+    const ratingVal = m.imdb_rating || (m.vote_average > 0 ? m.vote_average : null);
+    const rating = ratingVal ? `★ ${ratingVal.toFixed(1)}` : '';
     const genres = (m.genre_ids || []).slice(0, 2).map(id => GENRE_MAP[id]).filter(Boolean).join(' · ');
     return `<div class="search-result-item" onclick="openModal(${m.id});closeSearch()">
       ${thumb}
@@ -2213,6 +2421,59 @@ async function doSearch(query) {
 function closeSearch() {
   document.getElementById('searchResults').classList.remove('open');
   document.getElementById('searchInput').value = '';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HOME SEARCH
+// ═══════════════════════════════════════════════════════════════════
+let homeSearchTimer = null;
+
+async function doHomeSearch(query) {
+  const grid = document.getElementById('homePosterGrid');
+  if (!query.trim()) {
+    grid.innerHTML = `<div class="home-empty" style="grid-column:1/-1">Start typing to search for any film</div>`;
+    return;
+  }
+
+  grid.innerHTML = `<div class="home-empty" style="grid-column:1/-1"><div class="loading-spinner" style="margin:0 auto 12px"></div>SEARCHING…</div>`;
+
+  const data = await tmdbGet('/search/movie', { query, include_adult: false, language: 'en-US', page: 1 });
+  const hits = (data?.results || []).filter(m => m.poster_path).slice(0, 20);
+
+  if (!hits.length) {
+    grid.innerHTML = `<div class="home-empty" style="grid-column:1/-1">No results for "${query}"</div>`;
+    return;
+  }
+
+  // Enrich with IMDb ratings in parallel
+  const enriched = await Promise.all(hits.map(async m => {
+    const cached = state.movies.find(s => s.id === m.id);
+    if (cached?.imdb_rating) return { ...m, imdb_rating: cached.imdb_rating };
+    if (!CFG.omdb) return m;
+    const extIds = await tmdbGet(`/movie/${m.id}/external_ids`);
+    if (!extIds?.imdb_id) return m;
+    const omdb = await omdbGet({ i: extIds.imdb_id });
+    if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
+      return { ...m, imdb_rating: parseFloat(omdb.imdbRating) };
+    }
+    return m;
+  }));
+
+  grid.innerHTML = enriched.map(m => {
+    const year = m.release_date?.slice(0, 4) || '';
+    const ratingVal = m.imdb_rating || (m.vote_average > 0 ? m.vote_average : null);
+    const rating = ratingVal ? `<div class="home-poster-rating">★ ${ratingVal.toFixed(1)}</div>` : '';
+    const fullImg = `${TMDB_IMG}original${m.poster_path}`;
+    const title = m.title.replace(/'/g, "\\'");
+    return `<div class="home-poster-card" onclick="openPoster('${fullImg}','${title}')">
+      <img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">
+      ${rating}
+      <div class="home-poster-overlay">
+        <div class="home-poster-title">${m.title}</div>
+        <div class="home-poster-year">${year}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2242,12 +2503,31 @@ document.getElementById('movieModal').addEventListener('click', e => { if (e.tar
 
 document.getElementById('opsRefreshBtn').addEventListener('click', renderOPS);
 
+function openPoster(src, title) {
+  document.getElementById('posterLightboxImg').src = src;
+  document.getElementById('posterLightboxTitle').textContent = title;
+  document.getElementById('posterLightbox').classList.add('open');
+}
+function closePoster() {
+  document.getElementById('posterLightbox').classList.remove('open');
+  document.getElementById('posterLightboxImg').src = '';
+}
+document.getElementById('posterLightboxClose').addEventListener('click', closePoster);
+document.getElementById('posterLightbox').addEventListener('click', e => { if (e.target === e.currentTarget || e.target === document.getElementById('posterLightboxImg')) closePoster(); });
+
+const homeSearchInput = document.getElementById('homeSearchInput');
+homeSearchInput.addEventListener('input', () => {
+  clearTimeout(homeSearchTimer);
+  homeSearchTimer = setTimeout(() => doHomeSearch(homeSearchInput.value), 350);
+});
+
 
 // Keyboard: Escape closes modals
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     document.getElementById('movieModal').classList.remove('open');
     document.getElementById('settingsModal').classList.remove('open');
+    closePoster();
   }
 });
 
@@ -2257,7 +2537,8 @@ document.addEventListener('keydown', e => {
 window.openModal = openModal; // expose for inline handlers
 
 (async function init() {
-  await renderOverview();
+  // Start on home tab — Box Office loads lazily when that tab is clicked
+  switchTab('home');
 })();
 </script>
 </body>
