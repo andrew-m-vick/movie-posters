@@ -600,21 +600,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   .search-wrap{width:160px;margin-right:8px}
 }
 @media(max-width:600px){
-  .search-wrap{width:40px;overflow:visible;margin-right:4px}
-  .search-input{
-    width:40px;padding:7px;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235a5a80' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-    background-position:center;color:transparent;
-    cursor:pointer;transition:width .25s,color .25s,padding .25s;
+  .search-wrap{
+    position:fixed;top:0;left:0;right:0;z-index:150;
+    width:100%;margin:0;padding:0;
+    background:var(--bg);border-bottom:1px solid var(--border);
+    display:none;height:56px;align-items:center;padding:0 12px;
   }
-  .search-input::placeholder{color:transparent}
-  .search-input.expanded{
-    width:180px;padding:7px 12px 7px 32px;
-    background-position:10px center;
-    color:var(--text);cursor:text;
-  }
-  .search-input.expanded::placeholder{color:var(--text3)}
-  .search-results{min-width:260px;right:0;left:auto}
+  .search-wrap.mobile-open{display:flex}
+  .search-input{width:100%;font-size:14px}
+  .search-results{min-width:0;width:100%;right:0;left:0;top:100%}
+  .mobile-search-btn{display:flex}
 }
 
 /* STREAMING TAB */
@@ -807,7 +802,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
     <button class="nav-tab" data-tab="pipeline" role="tab">Pipeline</button>
     <button class="nav-tab ops-tab" data-tab="ops" role="tab">OPS</button>
   </nav>
+  <button class="icon-btn mobile-search-btn" id="mobileSearchBtn" title="Search" style="display:none">&#128269;</button>
   <div class="search-wrap" id="searchWrap">
+    <button class="icon-btn" id="mobileSearchClose" title="Close" style="display:none;flex-shrink:0">&#10005;</button>
     <input class="search-input" id="searchInput" type="text" placeholder="Search movies…" autocomplete="off">
     <div class="search-results" id="searchResults"></div>
   </div>
@@ -2504,18 +2501,39 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
 const searchInput = document.getElementById('searchInput');
 const searchWrap  = document.getElementById('searchWrap');
 
-// Mobile: tap icon to expand, tap away to collapse
-searchInput.addEventListener('click', () => {
-  if (window.innerWidth <= 600 && !searchInput.classList.contains('expanded')) {
-    searchInput.classList.add('expanded');
-    searchInput.focus();
+// Mobile search toggle
+const mobileSearchBtn   = document.getElementById('mobileSearchBtn');
+const mobileSearchClose = document.getElementById('mobileSearchClose');
+
+function isMobile() { return window.innerWidth <= 600; }
+
+function applyMobileSearch() {
+  if (isMobile()) {
+    mobileSearchBtn.style.display = 'flex';
+    mobileSearchClose.style.display = 'none';
+    searchWrap.classList.remove('mobile-open');
+  } else {
+    mobileSearchBtn.style.display = 'none';
+    mobileSearchClose.style.display = 'none';
+    searchWrap.classList.remove('mobile-open');
   }
+}
+
+mobileSearchBtn.addEventListener('click', () => {
+  searchWrap.classList.add('mobile-open');
+  mobileSearchClose.style.display = 'flex';
+  searchInput.focus();
 });
-document.addEventListener('click', e => {
-  if (window.innerWidth <= 600 && !searchWrap.contains(e.target)) {
-    searchInput.classList.remove('expanded');
-  }
+
+mobileSearchClose.addEventListener('click', () => {
+  searchWrap.classList.remove('mobile-open');
+  mobileSearchClose.style.display = 'none';
+  searchInput.value = '';
+  document.getElementById('searchResults').classList.remove('open');
 });
+
+window.addEventListener('resize', applyMobileSearch);
+applyMobileSearch();
 
 searchInput.addEventListener('input', e => {
   clearTimeout(searchTimer);
