@@ -1266,37 +1266,6 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
       <div class="section-sub">MULTIPLE LINEAR REGRESSION · TRAINED ON TMDB HISTORICAL DATA</div>
     </div>
 
-    <!-- Explainer card -->
-    <div class="card mb-16" style="padding:20px 24px">
-      <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
-        <div style="flex:1;min-width:260px">
-          <div class="card-title mb-8"><span class="dot"></span> How This Works</div>
-          <p style="font-size:13px;color:var(--text2);line-height:1.7">
-            This model uses <strong style="color:var(--text)">ridge regression</strong> (L2-regularized linear regression) — a supervised ML algorithm —
-            trained on historical films from TMDB. Ridge regression adds a regularization term λ to prevent
-            overfitting and guarantee a stable solution even when feature columns have low variance.
-            Predictions are made on a log scale to account for the lognormal distribution of box office earnings.
-          </p>
-          <p style="font-size:12px;color:var(--text3);margin-top:10px;font-family:var(--font-mono)">
-            Note: marketing budgets are not available via any public API and are not included. Predictions reflect production budget signals only.
-          </p>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;min-width:200px">
-          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;margin-bottom:2px">MODEL FEATURES</div>
-          <div class="forecast-feature-pill">log(Production Budget)</div>
-          <div class="forecast-feature-pill">log(Popularity Score)</div>
-          <div class="forecast-feature-pill">IMDb / TMDB Rating</div>
-          <div class="forecast-feature-pill">Genre Encoding (6 classes)</div>
-        </div>
-      </div>
-      <div style="margin-top:20px;text-align:center">
-        <button class="forecast-train-btn" id="mlTrainBtn">
-          <span id="mlTrainBtnText">&#9654; Load Historical Data &amp; Train Model</span>
-        </button>
-        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:8px" id="mlTrainHint">Fetches ~160 historical films from TMDB · trains in browser · no backend required</div>
-      </div>
-    </div>
-
     <!-- Why prediction is hard -->
     <div class="card mb-16" style="padding:20px 24px">
       <div class="card-title mb-14"><span class="dot red"></span> Why Box Office Is Nearly Impossible to Predict</div>
@@ -1325,6 +1294,37 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
           <div class="forecast-hard-label">Even studios get it wrong</div>
           <div class="forecast-hard-body">Professional tracking firms with full marketing data, audience polling, and social sentiment tools routinely miss opening weekends by 30–50%. A model trained on public data is working with a fraction of what they have.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Explainer card -->
+    <div class="card mb-16" style="padding:20px 24px">
+      <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
+        <div style="flex:1;min-width:260px">
+          <div class="card-title mb-8"><span class="dot"></span> How This Works</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7">
+            This model uses <strong style="color:var(--text)">ridge regression</strong> (L2-regularized linear regression) — a supervised ML algorithm —
+            trained on historical films from TMDB. Ridge regression adds a regularization term λ to prevent
+            overfitting and guarantee a stable solution even when feature columns have low variance.
+            Predictions are made on a log scale to account for the lognormal distribution of box office earnings.
+          </p>
+          <p style="font-size:12px;color:var(--text3);margin-top:10px;font-family:var(--font-mono)">
+            Note: marketing budgets are not available via any public API and are not included. Predictions reflect production budget signals only.
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:200px">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;margin-bottom:2px">MODEL FEATURES</div>
+          <div class="forecast-feature-pill">log(Production Budget)</div>
+          <div class="forecast-feature-pill">log(Popularity Score)</div>
+          <div class="forecast-feature-pill">IMDb / TMDB Rating</div>
+          <div class="forecast-feature-pill">Genre Encoding (6 classes)</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;text-align:center">
+        <button class="forecast-train-btn" id="mlTrainBtn">
+          <span id="mlTrainBtnText">&#9654; Load Historical Data &amp; Train Model</span>
+        </button>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:8px" id="mlTrainHint">Fetches ~160 historical films from TMDB · trains in browser · no backend required</div>
       </div>
     </div>
 
