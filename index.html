@@ -874,6 +874,21 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .imax-poster-title{font-size:11px;color:#fff;font-weight:700;line-height:1.3;margin-bottom:3px}
 .imax-poster-note{font-size:9px;color:rgba(255,255,255,.6);font-family:var(--font-mono);line-height:1.4}
 .imax-poster-loading{color:var(--text3);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;padding:40px 0;text-align:center}
+.imax-grid-divider{
+  grid-column:1/-1;
+  display:flex;align-items:center;gap:14px;
+  padding:10px 0 4px;
+}
+.imax-grid-divider-line{flex:1;height:1px}
+.imax-grid-divider-line.gold{background:linear-gradient(90deg,rgba(212,175,55,.5),rgba(212,175,55,.08))}
+.imax-grid-divider-line.teal{background:linear-gradient(90deg,rgba(26,155,170,.08),rgba(26,155,170,.5))}
+.imax-grid-divider-label{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:2.5px;
+  text-transform:uppercase;white-space:nowrap;padding:3px 10px;
+  border-radius:3px;
+}
+.imax-grid-divider-label.gold{color:#D4AF37;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.22)}
+.imax-grid-divider-label.teal{color:var(--teal2);background:rgba(26,155,170,.08);border:1px solid rgba(26,155,170,.22)}
 
 /* IMAX INFO MODAL */
 .imax-modal{
@@ -2587,9 +2602,25 @@ async function renderIMAX() {
   // Store globally so click handlers can reference by index
   _imaxFilms = sorted;
 
+  const divider = (type) => type === '70mm'
+    ? `<div class="imax-grid-divider">
+        <div class="imax-grid-divider-line gold"></div>
+        <div class="imax-grid-divider-label gold">15 / 70mm Film</div>
+        <div class="imax-grid-divider-line gold" style="transform:scaleX(-1)"></div>
+       </div>`
+    : `<div class="imax-grid-divider">
+        <div class="imax-grid-divider-line teal" style="transform:scaleX(-1)"></div>
+        <div class="imax-grid-divider-label teal">Digital</div>
+        <div class="imax-grid-divider-line teal"></div>
+       </div>`;
+
+  let lastGroup = null;
   grid.innerHTML = sorted.map((f, i) => {
+    const group = f.format.includes('70mm') ? '70mm' : 'digital';
+    let header = '';
+    if (group !== lastGroup) { header = divider(group); lastGroup = group; }
     const img500 = `${TMDB_IMG}w500${f.poster_path}`;
-    return `
+    return `${header}
       <div class="imax-poster-card" onclick="openImaxInfo(${i})">
         <img src="${img500}" alt="${f.title}" loading="lazy">
         <div class="imax-poster-overlay">
