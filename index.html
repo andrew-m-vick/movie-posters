@@ -762,6 +762,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .logo-btn span{color:var(--text3);font-size:11px;font-family:var(--font-mono);letter-spacing:1px;vertical-align:middle;margin-left:6px}
 
 /* FORECAST TAB */
+.forecast-hard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.forecast-hard-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.forecast-hard-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:7px}
+.forecast-hard-body{font-size:12.5px;color:var(--text2);line-height:1.7}
 .forecast-feature-pill{
   font-size:11px;font-family:var(--font-mono);color:var(--teal);
   border:1px solid rgba(26,155,170,.3);background:rgba(26,155,170,.06);
@@ -1290,6 +1294,37 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
           <span id="mlTrainBtnText">&#9654; Load Historical Data &amp; Train Model</span>
         </button>
         <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:8px" id="mlTrainHint">Fetches ~160 historical films from TMDB · trains in browser · no backend required</div>
+      </div>
+    </div>
+
+    <!-- Why prediction is hard -->
+    <div class="card mb-16" style="padding:20px 24px">
+      <div class="card-title mb-14"><span class="dot red"></span> Why Box Office Is Nearly Impossible to Predict</div>
+      <div class="forecast-hard-grid">
+        <div class="forecast-hard-item">
+          <div class="forecast-hard-label">Marketing spend is secret</div>
+          <div class="forecast-hard-body">The single strongest predictor of opening weekend is marketing spend — typically $50–150M on a major release — and studios never publish it. No public model has access to this number.</div>
+        </div>
+        <div class="forecast-hard-item">
+          <div class="forecast-hard-label">Word of mouth is unknowable</div>
+          <div class="forecast-hard-body">A film's legs — how long it stays in theaters — are driven almost entirely by audience reaction after opening night. No pre-release signal reliably captures whether a crowd will tell their friends to go.</div>
+        </div>
+        <div class="forecast-hard-item">
+          <div class="forecast-hard-label">Cultural timing can't be modeled</div>
+          <div class="forecast-hard-body">Top Gun: Maverick and Barbie weren't just films — they were cultural events. The difference between a $200M and a $700M gross is often a zeitgeist effect that no algorithm can anticipate.</div>
+        </div>
+        <div class="forecast-hard-item">
+          <div class="forecast-hard-label">Competition changes weekly</div>
+          <div class="forecast-hard-body">Release date strategy — what opens against you, counterprogramming, whether a competitor gets pushed — can shift a film's total gross by tens of millions and is set months after production budgets are locked.</div>
+        </div>
+        <div class="forecast-hard-item">
+          <div class="forecast-hard-label">The distribution has a fat tail</div>
+          <div class="forecast-hard-body">Box office follows a lognormal distribution with extreme outliers. A handful of films earn 10–50× their budget; the majority earn back less than 3×. Predicting which side of that divide a film lands on is the hardest part.</div>
+        </div>
+        <div class="forecast-hard-item">
+          <div class="forecast-hard-label">Even studios get it wrong</div>
+          <div class="forecast-hard-body">Professional tracking firms with full marketing data, audience polling, and social sentiment tools routinely miss opening weekends by 30–50%. A model trained on public data is working with a fraction of what they have.</div>
+        </div>
       </div>
     </div>
 
