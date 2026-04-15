@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "WebSearch",
+      "WebFetch(domain:shotonwhat.com)",
+      "WebFetch(domain:nofilmschool.com)",
+      "WebFetch(domain:www.imdb.com)",
+      "WebFetch(domain:newsshooter.com)",
+      "WebFetch(domain:petapixel.com)",
+      "WebFetch(domain:www.newsshooter.com)",
+      "WebFetch(domain:variety.com)",
+      "WebFetch(domain:letterboxd.com)",
+      "WebFetch(domain:www.imax.com)",
+      "WebFetch(domain:ymcinema.com)",
+      "WebFetch(domain:www.kodak.com)",
+      "WebFetch(domain:www.indiewire.com)",
+      "WebFetch(domain:en.wikipedia.org)"
     ]
   }
 }

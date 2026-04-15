@@ -761,6 +761,235 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .logo-btn:hover{opacity:.8}
 .logo-btn span{color:var(--text3);font-size:11px;font-family:var(--font-mono);letter-spacing:1px;vertical-align:middle;margin-left:6px}
 
+/* FORECAST TAB */
+.forecast-feature-pill{
+  font-size:11px;font-family:var(--font-mono);color:var(--teal);
+  border:1px solid rgba(26,155,170,.3);background:rgba(26,155,170,.06);
+  border-radius:4px;padding:4px 10px;
+}
+.forecast-train-btn{
+  background:var(--gold);color:#000;border:none;border-radius:6px;
+  padding:12px 32px;font-family:var(--font-head);font-size:15px;letter-spacing:1.5px;
+  cursor:pointer;transition:background .15s,transform .1s;
+}
+.forecast-train-btn:hover{background:var(--gold2);transform:translateY(-1px)}
+.forecast-train-btn:disabled{background:var(--text3);cursor:not-allowed;transform:none}
+.forecast-metrics-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;
+}
+.forecast-metric-card{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:16px;text-align:center;
+}
+.forecast-metric-val{font-family:var(--font-head);font-size:28px;letter-spacing:1px;color:var(--gold)}
+.forecast-metric-label{font-size:10px;font-family:var(--font-mono);color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.forecast-metric-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.forecast-inputs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px 20px;
+}
+@media(max-width:860px){.forecast-inputs{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.forecast-inputs{grid-template-columns:1fr}}
+.forecast-input-group{display:flex;flex-direction:column;gap:5px}
+.forecast-label{
+  font-size:10px;font-family:var(--font-mono);color:var(--text3);
+  letter-spacing:.8px;text-transform:uppercase;
+  display:flex;align-items:center;gap:5px;min-height:16px;
+}
+.forecast-label-note{font-size:9px;color:var(--text3);opacity:.7;font-style:normal;text-transform:none;letter-spacing:0}
+.forecast-input{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:6px;
+  padding:0 12px;height:38px;color:var(--text);font-family:var(--font-body);font-size:13px;
+  outline:none;transition:border-color .15s;box-sizing:border-box;width:100%;
+}
+.forecast-input:focus{border-color:var(--gold)}
+select.forecast-input{appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer;
+}
+.ml-variance-pos{color:var(--green)}
+.ml-variance-neg{color:var(--red)}
+.ml-acc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.ml-acc-stat{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.ml-acc-stat-val{font-family:var(--font-head);font-size:clamp(22px,3vw,30px);color:var(--text);letter-spacing:1px;line-height:1}
+.ml-acc-stat-label{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;color:var(--text3);margin-top:5px;text-transform:uppercase}
+.ml-acc-bar-wrap{margin-bottom:6px}
+.ml-acc-bar-label{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:.5px;margin-bottom:5px}
+.ml-acc-bar-track{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.ml-acc-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.ml-acc-bar-fill.acc-20{background:var(--green)}
+.ml-acc-bar-fill.acc-40{background:var(--teal2)}
+.ml-acc-footer{font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:.5px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+@media(max-width:540px){.ml-acc-stats{grid-template-columns:repeat(3,1fr);gap:8px}.ml-acc-stat-val{font-size:20px}}
+
+/* ── IMAX PAGE ── */
+.imax-hero{
+  text-align:center;padding:56px 24px 40px;
+  background:linear-gradient(180deg,rgba(212,175,55,.07) 0%,transparent 100%);
+  border-bottom:1px solid var(--border);margin-bottom:40px;
+}
+.imax-hero-eyebrow{font-size:10px;font-family:var(--font-mono);letter-spacing:3px;color:var(--gold);margin-bottom:12px}
+.imax-hero-title{font-family:var(--font-head);font-size:clamp(36px,6vw,72px);letter-spacing:6px;color:var(--text);line-height:1}
+.imax-hero-sub{font-size:13px;color:var(--text3);margin-top:14px;font-family:var(--font-mono);letter-spacing:.5px}
+.imax-section{padding:0 0 48px}
+.imax-section-title{font-family:var(--font-head);font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.imax-compare-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch}
+@media(max-width:700px){.imax-compare-grid{grid-template-columns:1fr;gap:16px}}
+.imax-compare-vs{display:flex;align-items:center;justify-content:center;padding:0 24px;font-family:var(--font-head);font-size:18px;letter-spacing:3px;color:var(--text3)}
+.imax-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.imax-card.lie{border-color:rgba(224,80,80,.3)}
+.imax-card.real{border-color:rgba(212,175,55,.3)}
+.imax-card-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-family:var(--font-mono);letter-spacing:1.5px;padding:4px 10px;border-radius:3px;width:fit-content}
+.imax-card-badge.lie{background:rgba(224,80,80,.12);color:#e05050;border:1px solid rgba(224,80,80,.3)}
+.imax-card-badge.real{background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.3)}
+.imax-card h3{font-family:var(--font-head);font-size:16px;letter-spacing:2px;color:var(--text);margin:0}
+.imax-card p{font-size:13px;color:var(--text2);line-height:1.7;margin:0}
+.imax-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px}
+.imax-card ul li{font-size:12px;font-family:var(--font-mono);color:var(--text3);padding-left:16px;position:relative}
+.imax-card ul li::before{content:'·';position:absolute;left:4px;color:var(--gold)}
+.imax-card.real ul li::before{color:var(--gold)}
+.imax-card.lie ul li::before{color:#e05050}
+.imax-ratio-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:32px;display:flex;flex-direction:column;align-items:center;gap:28px}
+.imax-ratio-svg{width:100%;max-width:640px}
+.imax-ratio-legend{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+.imax-ratio-legend-item{display:flex;align-items:center;gap:8px;font-size:11px;font-family:var(--font-mono);color:var(--text3)}
+.imax-ratio-legend-swatch{width:24px;height:3px;border-radius:2px}
+.imax-filmed-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.imax-filmed-grid{grid-template-columns:1fr}}
+.imax-filmed-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:20px}
+.imax-filmed-card h4{font-family:var(--font-head);font-size:13px;letter-spacing:2px;color:var(--gold);margin:0 0 8px}
+.imax-filmed-card p{font-size:12px;color:var(--text2);line-height:1.7;margin:0}
+.imax-poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.imax-poster-card{position:relative;border-radius:6px;overflow:hidden;cursor:pointer;aspect-ratio:.667;background:var(--bg3);transition:transform .2s}
+.imax-poster-card:hover{transform:scale(1.03)}
+.imax-poster-card img{width:100%;height:100%;object-fit:cover;display:block}
+.imax-poster-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:28px 9px 9px;
+  background:linear-gradient(0deg,rgba(0,0,0,.96) 0%,rgba(0,0,0,.75) 55%,transparent 100%);
+  pointer-events:none;
+}
+.imax-poster-format{font-size:8px;font-family:var(--font-mono);color:var(--gold);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:3px}
+.imax-poster-title{font-size:11px;color:#fff;font-weight:700;line-height:1.3;margin-bottom:3px}
+.imax-poster-note{font-size:9px;color:rgba(255,255,255,.6);font-family:var(--font-mono);line-height:1.4}
+.imax-poster-loading{color:var(--text3);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;padding:40px 0;text-align:center}
+
+/* IMAX INFO MODAL */
+.imax-modal{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.imax-modal.open{display:flex}
+.imax-modal-card{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:12px;overflow:hidden;
+  display:flex;max-width:660px;width:100%;
+  max-height:90vh;box-shadow:0 28px 80px rgba(0,0,0,.85);
+  animation:posterIn .2s ease;
+}
+.imax-modal-poster{
+  width:210px;flex-shrink:0;
+  object-fit:cover;align-self:stretch;
+  display:block;background:var(--bg3);
+}
+.imax-modal-body{
+  padding:28px 24px 24px;display:flex;flex-direction:column;
+  gap:12px;overflow-y:auto;flex:1;
+}
+.imax-modal-format-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:9px;font-family:var(--font-mono);letter-spacing:2px;font-weight:700;
+  padding:3px 10px;border-radius:3px;width:fit-content;
+}
+.imax-modal-format-badge.fmt-70mm{
+  color:#D4AF37;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);
+}
+.imax-modal-format-badge.fmt-digital{
+  color:var(--teal2);background:rgba(26,155,170,.12);border:1px solid rgba(26,155,170,.3);
+}
+.imax-modal-title{
+  font-family:var(--font-head);font-size:clamp(22px,3.5vw,32px);
+  letter-spacing:2px;color:var(--text);line-height:1.1;
+}
+.imax-modal-year{
+  font-family:var(--font-mono);font-size:11px;color:var(--text3);letter-spacing:1px;
+}
+.imax-modal-divider{height:1px;background:var(--border);margin:2px 0}
+.imax-modal-note-label{
+  font-size:9px;font-family:var(--font-mono);letter-spacing:2px;
+  color:var(--text3);text-transform:uppercase;
+}
+.imax-modal-note{
+  font-size:13.5px;color:var(--text2);line-height:1.8;flex:1;
+}
+.imax-modal-close{
+  position:absolute;top:14px;right:18px;z-index:401;
+  background:none;border:none;color:var(--text2);
+  font-size:20px;cursor:pointer;line-height:1;transition:color .15s;
+}
+.imax-modal-close:hover{color:var(--text)}
+@media(max-width:520px){
+  .imax-modal-card{flex-direction:column}
+  .imax-modal-poster{width:100%;height:260px;object-position:center 15%}
+  .imax-modal-body{padding:20px 18px}
+}
+
+/* NOW PLAYING IN IMAX */
+.imax-now-wrap{display:flex;justify-content:center;margin-bottom:0}
+.imax-now-card{
+  background:var(--bg2);
+  border:1px solid rgba(212,175,55,.22);
+  border-radius:12px;overflow:hidden;
+  display:flex;gap:0;width:100%;max-width:680px;
+}
+.imax-now-poster{
+  width:190px;flex-shrink:0;
+  aspect-ratio:.667;object-fit:cover;display:block;
+  background:var(--bg3);
+}
+.imax-now-info{
+  padding:26px 24px 22px;
+  display:flex;flex-direction:column;gap:10px;flex:1;min-width:0;
+}
+.imax-now-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:9px;font-family:var(--font-mono);letter-spacing:2px;
+  color:var(--gold);padding:3px 10px;border-radius:3px;
+  background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.25);
+  width:fit-content;
+}
+.imax-now-badge::before{content:'▶';font-size:7px}
+.imax-now-title{
+  font-family:var(--font-head);font-size:clamp(20px,3vw,30px);
+  letter-spacing:2px;color:var(--text);line-height:1.1;
+}
+.imax-now-meta{
+  font-family:var(--font-mono);font-size:10.5px;
+  color:var(--text3);letter-spacing:.5px;display:flex;gap:16px;flex-wrap:wrap;
+}
+.imax-now-overview{
+  font-size:12.5px;color:var(--text2);line-height:1.7;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
+  flex:1;
+}
+.imax-now-fandango{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:9px 18px;border-radius:6px;text-decoration:none;
+  background:rgba(255,120,30,.12);border:1px solid rgba(255,120,30,.35);
+  color:#ff8040;font-family:var(--font-mono);font-size:10px;
+  letter-spacing:1.5px;font-weight:600;transition:all .15s;
+  width:fit-content;margin-top:auto;
+}
+.imax-now-fandango:hover{background:rgba(255,120,30,.22);border-color:rgba(255,120,30,.6);color:#ffaa70}
+.imax-now-fandango::after{content:'→';margin-left:4px}
+.imax-now-loading{color:var(--text3);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;padding:24px 0;text-align:center}
+@media(max-width:560px){
+  .imax-now-card{flex-direction:column}
+  .imax-now-poster{width:100%;aspect-ratio:2.5/1;object-position:center 20%}
+}
+
 /* POSTER LIGHTBOX */
 .poster-lightbox{
   display:none;position:fixed;inset:0;z-index:300;
@@ -781,6 +1010,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   font-family:var(--font-head);font-size:18px;letter-spacing:2px;
   color:var(--text2);text-align:center;
 }
+.poster-lightbox-inner{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.poster-lightbox-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;gap:16px;
+}
+.poster-lightbox-counter{
+  font-family:var(--font-mono);font-size:11px;color:var(--text3);
+  white-space:nowrap;flex-shrink:0;
+}
 .poster-lightbox-close{
   position:fixed;top:20px;right:24px;
   background:none;border:none;color:var(--text2);
@@ -788,6 +1028,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   transition:color .15s;line-height:1;
 }
 .poster-lightbox-close:hover{color:var(--text)}
+.poster-thumb-strip{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px;
+  min-height:0;
+}
+.poster-thumb{
+  width:52px;height:78px;border-radius:4px;object-fit:cover;
+  cursor:pointer;opacity:.55;border:2px solid transparent;
+  transition:opacity .15s,border-color .15s,transform .15s;
+  flex-shrink:0;
+}
+.poster-thumb:hover{opacity:.85;transform:translateY(-2px)}
+.poster-thumb.active{opacity:1;border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -798,7 +1050,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   <nav class="nav-tabs" role="tablist">
     <button class="nav-tab" data-tab="overview" role="tab">Box Office</button>
     <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
+    <button class="nav-tab" data-tab="imax" role="tab">IMAX</button>
     <button class="nav-tab" data-tab="trends" role="tab">Trends</button>
+    <button class="nav-tab" data-tab="forecast" role="tab">Forecast</button>
     <button class="nav-tab" data-tab="pipeline" role="tab">Pipeline</button>
     <button class="nav-tab ops-tab" data-tab="ops" role="tab">OPS</button>
   </nav>
@@ -820,7 +1074,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
       <div class="home-headline">MOVIE<br><span>POSTERS!</span></div>
       <p class="home-blurb">
         This started as a movie poster search engine just to see if I was capable of doing it.
-        Then I built something more ambitious, but I kept the original functionality here. Have fun!
+        Then I built something more ambitious, but I kept the original functionality here.
+        The search bar below is the poster engine — search any movie and click a poster to view it full size.
+        The search bar in the top right searches the full movie database across all tabs. Have fun!
       </p>
       <div class="home-search-wrap">
         <input class="home-search-input" id="homeSearchInput" type="text" placeholder="Search any movie…" autocomplete="off">
@@ -859,7 +1115,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
               <th>Title</th>
               <th class="right">Worldwide Revenue</th>
               <th class="right">Budget</th>
-              <th class="right">ROI</th>
+              <th class="right" title="Revenue ÷ Production Budget · Marketing costs not included">Rev/Budget</th>
               <th class="right">Popularity</th>
               <th class="right">Wks</th>
               <th>Genre</th>
@@ -932,7 +1188,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 
     <div class="section-header">
       <div class="section-title">Deep Dive</div>
-      <div class="section-sub">BUDGET VS. REVENUE · GENRE DISTRIBUTION · TIME IN THEATERS · ROI MATRIX</div>
+      <div class="section-sub">BUDGET VS. REVENUE · GENRE DISTRIBUTION · TIME IN THEATERS · REVENUE RATIO</div>
     </div>
 
     <div class="trends-grid">
@@ -952,10 +1208,319 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
     </div>
 
     <div class="performance-matrix">
-      <div class="card-title"><span class="dot teal"></span> Performance Matrix — ROI vs. Revenue</div>
+      <div class="card-title"><span class="dot teal"></span> Performance Matrix — Revenue vs. Production Budget <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">· marketing costs not included</span></div>
       <div class="matrix-grid" id="performanceMatrix">
         <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div></div>
       </div>
+    </div>
+
+    <!-- ── MARKET ANALYSIS SECTION ── -->
+    <div class="section-header mt-24">
+      <div class="section-title">Market Analysis</div>
+      <div class="section-sub">PARETO · RATING CORRELATION · GENRE RISK/RETURN</div>
+    </div>
+
+    <!-- Pareto Chart -->
+    <div class="card mb-16">
+      <div class="card-title"><span class="dot"></span> Revenue Concentration — Pareto Analysis
+        <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">· what % of box office do the top films control?</span>
+      </div>
+      <div style="position:relative;height:240px"><canvas id="paretoChart"></canvas></div>
+    </div>
+
+    <!-- Rating Correlation + Genre Risk/Return -->
+    <div class="trends-grid mb-16">
+      <div class="card">
+        <div class="card-title"><span class="dot teal"></span> Rating vs. Revenue Correlation
+          <span id="r2Badge" style="font-size:10px;font-family:var(--font-mono);color:var(--teal);margin-left:8px"></span>
+        </div>
+        <div style="position:relative;height:240px"><canvas id="ratingRevenueChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Genre Risk / Return
+          <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">· return = avg rev/budget · risk = variance</span>
+        </div>
+        <div style="position:relative;height:240px"><canvas id="genreRiskChart"></canvas></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════ FORECAST TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-forecast">
+    <div class="section-header">
+      <div class="section-title">Revenue Forecast</div>
+      <div class="section-sub">MULTIPLE LINEAR REGRESSION · TRAINED ON TMDB HISTORICAL DATA</div>
+    </div>
+
+    <!-- Explainer card -->
+    <div class="card mb-16" style="padding:20px 24px">
+      <div style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap">
+        <div style="flex:1;min-width:260px">
+          <div class="card-title mb-8"><span class="dot"></span> How This Works</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7">
+            This model uses <strong style="color:var(--text)">ridge regression</strong> (L2-regularized linear regression) — a supervised ML algorithm —
+            trained on historical films from TMDB. Ridge regression adds a regularization term λ to prevent
+            overfitting and guarantee a stable solution even when feature columns have low variance.
+            Predictions are made on a log scale to account for the lognormal distribution of box office earnings.
+          </p>
+          <p style="font-size:12px;color:var(--text3);margin-top:10px;font-family:var(--font-mono)">
+            Note: marketing budgets are not available via any public API and are not included. Predictions reflect production budget signals only.
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:200px">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;margin-bottom:2px">MODEL FEATURES</div>
+          <div class="forecast-feature-pill">log(Production Budget)</div>
+          <div class="forecast-feature-pill">log(Popularity Score)</div>
+          <div class="forecast-feature-pill">IMDb / TMDB Rating</div>
+          <div class="forecast-feature-pill">Genre Encoding (6 classes)</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;text-align:center">
+        <button class="forecast-train-btn" id="mlTrainBtn">
+          <span id="mlTrainBtnText">&#9654; Load Historical Data &amp; Train Model</span>
+        </button>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:8px" id="mlTrainHint">Fetches ~160 historical films from TMDB · trains in browser · no backend required</div>
+      </div>
+    </div>
+
+    <!-- Results (hidden until trained) -->
+    <div id="mlResults" style="display:none">
+
+      <!-- Metrics row -->
+      <div class="forecast-metrics-grid mb-16" id="mlMetricsGrid"></div>
+
+      <!-- Feature importance + Predicted vs Actual -->
+      <div class="trends-grid mb-16">
+        <div class="card">
+          <div class="card-title"><span class="dot teal"></span> Feature Importance (Coefficients)</div>
+          <div style="position:relative;height:220px"><canvas id="featureImportanceChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> Predicted vs. Actual Revenue</div>
+          <div style="position:relative;height:220px"><canvas id="predActualChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Model Accuracy Summary -->
+      <div class="card mb-16" style="padding:20px 24px" id="mlAccuracyCard">
+        <div class="card-title mb-16"><span class="dot"></span> Model Accuracy — Historical Validation</div>
+        <div id="mlAccuracyBody" style="color:var(--text3);font-family:var(--font-mono);font-size:11px;letter-spacing:1px">Computing…</div>
+      </div>
+
+      <!-- Hypothetical Predictor -->
+      <div class="card mb-16" style="padding:20px 24px">
+        <div class="card-title mb-16"><span class="dot teal"></span> Hypothetical Predictor — Estimate Any Film</div>
+        <div class="forecast-inputs">
+          <div class="forecast-input-group">
+            <label class="forecast-label">Production Budget <span class="forecast-label-note">($M)</span></label>
+            <input class="forecast-input" id="hyp-budget" type="number" placeholder="e.g. 150" min="1" max="1000">
+          </div>
+          <div class="forecast-input-group">
+            <label class="forecast-label">Expected Rating <span class="forecast-label-note">(1–10)</span></label>
+            <input class="forecast-input" id="hyp-rating" type="number" placeholder="e.g. 7.2" min="1" max="10" step="0.1">
+          </div>
+          <div class="forecast-input-group">
+            <label class="forecast-label">Primary Genre</label>
+            <select class="forecast-input" id="hyp-genre">
+              <option value="action">Action</option>
+              <option value="animation">Animation</option>
+              <option value="comedy">Comedy</option>
+              <option value="drama">Drama</option>
+              <option value="family">Family</option>
+              <option value="fantasy">Fantasy</option>
+              <option value="horror">Horror</option>
+              <option value="science fiction">Sci-Fi</option>
+              <option value="thriller">Thriller</option>
+            </select>
+          </div>
+          <div class="forecast-input-group">
+            <label class="forecast-label">Month of Release</label>
+            <select class="forecast-input" id="hyp-month">
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6" selected>June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+          <div class="forecast-input-group">
+            <label class="forecast-label">Franchise / Sequel</label>
+            <select class="forecast-input" id="hyp-franchise">
+              <option value="0">No — Original Film</option>
+              <option value="1">Yes — Part of a Franchise</option>
+            </select>
+          </div>
+          <div class="forecast-input-group">
+            <label class="forecast-label">Age Rating</label>
+            <select class="forecast-input" id="hyp-cert">
+              <option value="G">G</option>
+              <option value="PG">PG</option>
+              <option value="PG-13" selected>PG-13</option>
+              <option value="R">R</option>
+            </select>
+          </div>
+        </div>
+        <button class="forecast-train-btn" style="margin-top:20px;padding:10px 24px;font-size:13px" onclick="runHypothetical()">Predict Revenue</button>
+        <div id="hypResult" style="margin-top:16px;display:none">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;margin-bottom:6px">ESTIMATED WORLDWIDE REVENUE</div>
+          <div id="hypResultValue" style="font-family:var(--font-head);font-size:36px;letter-spacing:2px;color:var(--gold)"></div>
+          <div id="hypResultRange" style="font-size:12px;font-family:var(--font-mono);color:var(--text3);margin-top:4px"></div>
+          <div id="hypResultBreakdown" style="font-size:11px;font-family:var(--font-mono);color:var(--text3);margin-top:8px;line-height:1.8"></div>
+          <div id="hypResultCap" style="display:none;margin-top:12px;padding:8px 12px;border-radius:5px;border:1px solid rgba(212,175,55,.25);background:rgba(212,175,55,.06);font-size:11px;font-family:var(--font-mono);color:var(--text3);line-height:1.6"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ IMAX TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-imax">
+
+    <!-- Hero -->
+    <div class="imax-hero">
+      <div class="imax-hero-eyebrow">FOR THE LOVE OF THE GAME</div>
+      <div class="imax-hero-title">IMAX</div>
+      <div class="imax-hero-sub">What it really means when a film is "in IMAX" — and why it matters</div>
+    </div>
+
+    <div style="max-width:1100px;margin:0 auto;padding:0 8px">
+
+      <!-- Now Playing in IMAX -->
+      <div class="imax-section">
+        <div class="imax-section-title">NOW PLAYING IN IMAX</div>
+        <div class="imax-now-wrap">
+          <div id="imaxNowPlaying" class="imax-now-loading">FETCHING SHOWTIMES…</div>
+        </div>
+      </div>
+
+      <!-- LieMAX vs Real IMAX -->
+      <div class="imax-section">
+        <div class="imax-section-title">LIEMAX VS. TRUE IMAX</div>
+        <div class="imax-compare-grid">
+          <div class="imax-card lie">
+            <div class="imax-card-badge lie">⚠ "LIEMAX"</div>
+            <h3>IMAX Digital — Standard Multiplex</h3>
+            <p>The term "LieMAX" was coined by frustrated moviegoers who noticed that many IMAX-branded screens inside regular multiplexes are barely larger than a premium large-format screen. You pay a $5–8 surcharge and get a screen that may only be 40–60 feet wide — not much bigger than the auditorium next door.</p>
+            <ul>
+              <li>Screen width typically 40–65 ft</li>
+              <li>Standard IMAX Digital projection (2K or 4K)</li>
+              <li>Often the same projector found in non-IMAX premium formats</li>
+              <li>Aspect ratio: 1.90:1 — same as True IMAX Digital</li>
+              <li>The "IMAX Experience" branding without the engineering behind it</li>
+              <li>Common in suburban multiplex chains</li>
+            </ul>
+          </div>
+          <div class="imax-compare-vs">VS</div>
+          <div class="imax-card real">
+            <div class="imax-card-badge real">✓ TRUE IMAX</div>
+            <h3>IMAX with Laser / IMAX 70mm</h3>
+            <p>A genuine IMAX theater is purpose-built from the ground up. The screen can be up to 98 ft wide and 76 ft tall — the size of an 8-story building. The dual 4K laser projection system requires two precisely aligned projectors, and the sound system uses a proprietary 12-channel audio mix. There are fewer than 100 true IMAX screens worldwide.</p>
+            <ul>
+              <li>Screen width 70–98 ft — genuinely massive</li>
+              <li>Dual 4K laser projectors (IMAX with Laser) or 15/70mm film</li>
+              <li>12-channel IMAX Laser audio system</li>
+              <li>1.43:1 aspect ratio for 70mm film — nearly square</li>
+              <li>Engineered acoustics and raked seating optimized for IMAX sight lines</li>
+              <li>Fewer than 100 true IMAX screens worldwide</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aspect Ratio Diagram -->
+      <div class="imax-section">
+        <div class="imax-section-title">ASPECT RATIOS — WHAT YOU ACTUALLY SEE</div>
+        <div class="imax-ratio-wrap">
+          <svg class="imax-ratio-svg" viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    All three frames share the full width (x=0..560).
+    Heights are proportional to width/ratio, vertically centered at y=215.
+
+    IMAX 70mm  1.43:1  h=392  y_top=19   y_bot=411
+    IMAX Dig.  1.90:1  h=295  y_top=67   y_bot=362
+    Scope      2.39:1  h=235  y_top=97   y_bot=332
+
+    Labels live in TOP-LEFT of each format's UNIQUE TOP STRIP:
+      70mm  unique strip → y=19..67  (above digital) → label at y=38, y=52
+      Dig.  unique strip → y=67..97  (above scope)   → label at y=81, y=93
+      Scope is the innermost — label placed CENTER of scope frame → y=212, y=225
+  -->
+
+  <!-- Dark screen backdrop -->
+  <rect x="0" y="19" width="560" height="392" fill="rgba(0,0,0,.5)" rx="4"/>
+
+  <!-- IMAX 70mm frame — gold -->
+  <rect x="0" y="19"  width="560" height="392" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="2.5" rx="3"/>
+
+  <!-- IMAX Digital frame — teal -->
+  <rect x="0" y="67"  width="560" height="295" fill="rgba(26,155,170,.08)" stroke="#1A9BAA" stroke-width="2"   rx="2"/>
+
+  <!-- Standard Scope frame — grey dashed -->
+  <rect x="0" y="97"  width="560" height="235" fill="rgba(255,255,255,.03)" stroke="rgba(200,200,200,.45)" stroke-width="1.5" stroke-dasharray="8,4" rx="2"/>
+
+  <!-- ── IMAX 70mm label — in unique top strip y=19..67 ── -->
+  <text x="14" y="38"  font-family="monospace" font-size="13"   fill="#D4AF37"              letter-spacing="1.5" font-weight="bold">IMAX 70mm FILM</text>
+  <text x="14" y="53"  font-family="monospace" font-size="10.5" fill="rgba(212,175,55,.65)" letter-spacing="0.5">1.43 : 1  ·  true full-frame IMAX</text>
+
+  <!-- ── IMAX Digital label — in unique strip y=67..97 ── -->
+  <text x="14" y="81"  font-family="monospace" font-size="12"   fill="#1A9BAA"              letter-spacing="1.5" font-weight="bold">IMAX DIGITAL / LASER</text>
+  <text x="14" y="94"  font-family="monospace" font-size="10"   fill="rgba(26,155,170,.65)" letter-spacing="0.5">1.90 : 1  ·  most modern IMAX screens</text>
+
+  <!-- ── Scope label — at center of scope frame (y=97..332, center=214) ── -->
+  <text x="14" y="213" font-family="monospace" font-size="12"   fill="rgba(200,200,200,.75)" letter-spacing="1.5" font-weight="bold">STANDARD SCOPE</text>
+  <text x="14" y="227" font-family="monospace" font-size="10"   fill="rgba(200,200,200,.45)" letter-spacing="0.5">2.39 : 1  ·  standard cinema</text>
+</svg>
+          <div class="imax-ratio-legend">
+            <div class="imax-ratio-legend-item"><div class="imax-ratio-legend-swatch" style="background:#D4AF37"></div>IMAX 70mm Film — 1.43:1</div>
+            <div class="imax-ratio-legend-item"><div class="imax-ratio-legend-swatch" style="background:#1A9BAA"></div>IMAX Digital / Laser — 1.90:1</div>
+            <div class="imax-ratio-legend-item"><div class="imax-ratio-legend-swatch" style="background:rgba(255,255,255,.4)"></div>Standard Scope Cinema — 2.39:1</div>
+          </div>
+          <p style="font-size:12px;color:var(--text3);font-family:var(--font-mono);text-align:center;max-width:540px;line-height:1.7">
+            All three formats share the same screen width. The difference is how much vertical space you gain. A film shot with IMAX 70mm cameras fills <strong style="color:var(--gold)">~40% more of the screen vertically</strong> than a standard scope film — that's not an upgrade, that's a different medium.
+          </p>
+        </div>
+      </div>
+
+      <!-- Filmed in IMAX vs Released for IMAX -->
+      <div class="imax-section">
+        <div class="imax-section-title">FILMED IN IMAX VS. RELEASED IN IMAX</div>
+        <div class="imax-filmed-grid">
+          <div class="imax-filmed-card">
+            <h4>RELEASED IN IMAX</h4>
+            <p>The vast majority of "IMAX" films were shot on standard cameras in 2.39:1 or 1.85:1. To fill the taller IMAX screen, the image is simply cropped differently — revealing more of the existing frame rather than capturing additional information. The screen is bigger and louder, but you're not seeing anything that couldn't be captured on a standard camera. Studios pay a licensing fee to IMAX Corporation for the branding and audio processing.</p>
+          </div>
+          <div class="imax-filmed-card">
+            <h4>FILMED WITH IMAX CAMERAS</h4>
+            <p>A handful of filmmakers have used the actual IMAX camera system — either the enormous 65mm/15-perf film cameras or the newer IMAX-certified digital cameras. These cameras capture a native 1.43:1 or 1.90:1 image with significantly more resolution and light. Those sequences look fundamentally different in a true IMAX theater. Christopher Nolan, in particular, has pushed this format further than anyone, shooting Oppenheimer almost entirely in IMAX.</p>
+          </div>
+          <div class="imax-filmed-card">
+            <h4>THE IMAX 70MM FILM CAMERA</h4>
+            <p>The IMAX film camera is an engineering marvel and a logistical nightmare. It uses 65mm film running horizontally at 15 perforations per frame — 10× the frame size of standard 35mm. The camera weighs over 100 lbs, is extremely loud (actors can't wear mics near it), and burns through film at a cost of roughly $1,000 per minute. Nolan has said the image quality from this format is still unmatched by any digital sensor.</p>
+          </div>
+          <div class="imax-filmed-card">
+            <h4>IMAX CERTIFIED DIGITAL</h4>
+            <p>Starting around 2012, IMAX began certifying digital cameras — primarily the ARRI ALEXA with large-format sensors — to capture native 1.90:1 imagery. These are far more practical than the 70mm film cameras and have allowed a much wider range of productions to shoot in true IMAX. Marvel Studios has used these cameras on nearly every film since Avengers: Infinity War. The results still expand the image legitimately, unlike standard DMR upscaling.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filmed in IMAX Poster Grid -->
+      <div class="imax-section">
+        <div class="imax-section-title">EVERY FILM SHOT WITH IMAX CAMERAS</div>
+        <p style="font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-bottom:20px;line-height:1.7">Every confirmed film that used actual IMAX cameras — either the 15/70mm film system or IMAX-certified digital cameras — for at least a significant portion of their runtime. These are the films where a true IMAX theater with a full-height screen makes a real, measurable difference to what you see on screen.</p>
+        <div id="imaxPosterGrid" class="imax-poster-grid">
+          <div class="imax-poster-loading">CLICK A TAB TO LOAD · POSTERS FETCH ON FIRST VISIT</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1350,11 +1915,33 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
 
 </main>
 
+<!-- ═══════════════════ IMAX INFO MODAL ═══════════════════ -->
+<div class="imax-modal" id="imaxModal" onclick="if(event.target===this)closeImaxModal()">
+  <button class="imax-modal-close" onclick="closeImaxModal()">&#10005;</button>
+  <div class="imax-modal-card">
+    <img class="imax-modal-poster" id="imaxModalPoster" src="" alt="">
+    <div class="imax-modal-body">
+      <div class="imax-modal-format-badge" id="imaxModalBadge"></div>
+      <div class="imax-modal-title" id="imaxModalTitle"></div>
+      <div class="imax-modal-year" id="imaxModalYear"></div>
+      <div class="imax-modal-divider"></div>
+      <div class="imax-modal-note-label">HOW IMAX WAS USED</div>
+      <div class="imax-modal-note" id="imaxModalNote"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════════ POSTER LIGHTBOX ═══════════════════ -->
 <div class="poster-lightbox" id="posterLightbox">
   <button class="poster-lightbox-close" id="posterLightboxClose">&#10005;</button>
-  <img class="poster-lightbox-img" id="posterLightboxImg" src="" alt="">
-  <div class="poster-lightbox-title" id="posterLightboxTitle"></div>
+  <div class="poster-lightbox-inner">
+    <img class="poster-lightbox-img" id="posterLightboxImg" src="" alt="">
+    <div class="poster-lightbox-footer">
+      <div class="poster-lightbox-title" id="posterLightboxTitle"></div>
+      <div class="poster-lightbox-counter" id="posterCounter"></div>
+    </div>
+    <div class="poster-thumb-strip" id="posterThumbStrip"></div>
+  </div>
 </div>
 
 <!-- ═══════════════════ MOVIE DETAIL MODAL ═══════════════════ -->
@@ -1685,6 +2272,337 @@ function renderDigitalGrid(movies) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+// IMAX PAGE
+// ═══════════════════════════════════════════════════════════════════
+const IMAX_SHOT_FILMS = [
+  // ── IMAX 15/70mm Film ─────────────────────────────────────────────────────
+  { title:'Sinners',          year:2025, month:4, format:'IMAX 70mm Film',
+    note:'Ryan Coogler made history by simultaneously shooting on genuine 15-perf IMAX film and 5-perf Ultra Panavision 70 — the world\'s tallest and widest theatrical formats in a single film. DP Autumn Durald Arkapaw, the first woman to shoot a feature on 15-perf IMAX film, uses the format as emotional grammar: IMAX frames intimate and horror sequences, while Ultra Panavision governs the exterior world. Panavision built a custom Petzval lens specifically for the IMAX camera, used in a dreamlike sequence between Smoke and Annie.' },
+
+  { title:'Transformers: Revenge of the Fallen', year:2009, month:6, format:'IMAX 70mm Film',
+    note:'Michael Bay followed Christopher Nolan\'s lead from The Dark Knight and shot three action sequences on genuine IMAX MSM 9802 cameras — the forest battle with Optimus Prime, the rail gun destroyer attack, and the Devastator pyramid assault — totaling approximately 10 minutes of native 15/70mm footage. It was only the second narrative film after The Dark Knight to use IMAX film cameras for action sequences, and the first to do so for a summer blockbuster outside of Nolan\'s work. The Blu-ray preserves the variable aspect ratio, with the IMAX sequences expanding to 1.43:1 and the standard footage letterboxed at 2.39:1.' },
+
+  { title:'The Dark Knight',  year:2008, month:7, format:'IMAX 70mm Film',
+    note:'Christopher Nolan shot approximately 28 minutes on 15-perf IMAX cameras — the opening bank heist, the Hong Kong skyscraper extraction, and the Batpod freeway chase. Working with DP Wally Pfister, Nolan developed lenses that could handle the enormous, loud IMAX camera in fast-moving action environments. It was the first major narrative feature to use IMAX cameras for dramatic sequences rather than nature or documentary footage.' },
+
+  { title:'The Dark Knight Rises', year:2012, month:7, format:'IMAX 70mm Film',
+    note:'Nolan expanded dramatically — roughly 72 minutes were captured on 15-perf IMAX cameras, including the Bane aircraft heist prologue, the Gotham football stadium collapse, and most of the third-act climax. The six-minute prologue was screened exclusively in IMAX theaters before release and became a reference point for the format\'s potential in narrative cinema. The film shifts between IMAX\'s 1.43:1 ratio and 2.39:1 anamorphic, a technique Nolan has used across every subsequent production.' },
+
+  { title:'Interstellar',     year:2014, month:11, format:'IMAX 70mm Film',
+    note:'Nolan and DP Hoyte van Hoytema used IMAX cameras for all space sequences — the Gargantua black hole approach, the water planet wave, the ice planet, and the Endurance docking sequence. Van Hoytema developed specialized lens configurations to achieve the visual intimacy Nolan wanted within the mechanical constraints of a 100-lb camera. The original 15-perf 70mm print run was the largest in decades; the 2023 rerelease became one of the highest-grossing IMAX re-releases in history.' },
+
+  { title:'Dunkirk',          year:2017, month:7, format:'IMAX 70mm Film',
+    note:'Nolan and van Hoytema shot the majority of the film on IMAX cameras — including almost all aerial sequences and beach photography — a technically extreme challenge given the cameras weigh over 100 lbs and cannot be easily stabilized. To capture the Spitfire dogfights, the IMAX camera was rigged to the outside of an airworthy Spitfire using custom harnesses designed specifically for this production. No digital effects were used for the aerial sequences; every pass was a real aircraft with a real IMAX camera in formation.' },
+
+  { title:'First Man',        year:2018, month:10, format:'IMAX 70mm Film',
+    note:'Director Damien Chazelle and DP Linus Sandgren made a deliberate format decision: all Earth-bound material was shot on grainy, intimate 16mm film, while the lunar landing sequences were captured on IMAX MSM 9802 cameras in 15/70mm — the starkest possible contrast between the personal and the cosmic. The moment the film transitions to the Moon, the frame expands to the full 1.43:1 IMAX ratio, and every other visual quality changes simultaneously: grain disappears, color deepens, and the silence of space fills the expanded canvas. It was the first biographical drama to use 15/70mm IMAX cameras, applying a format previously reserved for action spectacle to a quiet moment of historical stillness.' },
+
+  { title:'Nope',             year:2022, month:7, format:'IMAX 70mm Film',
+    note:'Jordan Peele and DP Hoyte van Hoytema made Nope the first horror film — and first R-rated film — ever shot with IMAX film cameras, using the IMAX MSM 9802 for approximately 47 minutes of the final cut. Van Hoytema pushed well beyond the camera\'s normal static use: the massive 15-perf IMAX body was shoulder-mounted, helicopter-rigged, and deployed in configurations IMAX cameras had never been used in before. Night sequences were captured on a unique day-for-night rig pairing an infrared-modified ARRI ALEXA 65 with a Panavision System 65, with both images composited in post — the IMAX sequences expand to the native 1.43:1 ratio, revealing 40% more picture than any standard theatrical screening.' },
+
+  { title:'No Time to Die',   year:2021, month:9, format:'IMAX 70mm Film',
+    note:'The first James Bond film in the franchise\'s 59-year history to be shot with IMAX cameras, with DP Linus Sandgren using IMAX MKIV and MSM 9802 cameras alongside 35mm and 65mm Panavision for approximately 40 minutes of the final cut. The opening Matera chase, Norwegian river sequence, and several of the film\'s emotional climaxes expand to the full 1.43:1 IMAX ratio — a deliberate choice to give Bond\'s last chapter a larger-than-life canvas unavailable to any previous entry in the series. IMAX officially promoted it as the first Bond to carry the native aspect ratio, ending a franchise tradition of DMR-only presentations.' },
+
+  { title:'Tenet',            year:2020, month:9, format:'IMAX 70mm + Digital',
+    note:'Nolan and van Hoytema used both 15-perf IMAX film and IMAX-certified digital cameras, with the Oslo airport assault, Tallinn car chase, and portions of the inverted-time battle shot natively in 1.43:1. The film was notable for Nolan\'s insistence on a global theatrical release during COVID-19 as a statement of support for the IMAX and premium cinema ecosystem. It was the first of Nolan\'s productions to mix photochemical and digital IMAX capture within a single film.' },
+
+  { title:'Oppenheimer',      year:2023, month:7, format:'IMAX 70mm Film',
+    note:'For the first time in cinema history, Nolan and van Hoytema captured color images on 15-perf IMAX film — all previous 15-perf photography had been confined to action and black-and-white. The Trinity test explosion and key sequences in the "color" timeline were photographed directly on IMAX film, while the Strauss Senate hearing plays in black-and-white as a deliberate structural contrast. The film\'s 15-perf 70mm IMAX prints sold out weeks in advance and became the single most in-demand theatrical event of 2023.' },
+  // ── IMAX Digital — Mission: Impossible ──────────────────────────────────
+  { title:'Mission: Impossible Ghost Protocol', year:2011, month:12, format:'IMAX Digital',
+    note:'Brad Bird and DP Robert Elswit shot approximately 46 minutes with IMAX cameras — most memorably the Burj Khalifa glass-climbing sequence, the world\'s tallest building photographed at full scale in a format that could contain it. Tom Cruise performed the sequence himself, hanging from the 123rd floor, with IMAX cameras rigged to the building\'s exterior. The Burj sequence became a landmark demonstration of what IMAX could bring to practical location action.' },
+
+{ title:'Mission: Impossible Fallout', year:2018, month:7, format:'IMAX Digital',
+    note:'The most IMAX-intensive M:I entry, with the HALO jump (the highest free-fall ever filmed on IMAX cameras), the Paris motorcycle chase, and the Kashmir helicopter finale all shot natively for the expanded ratio. Cruise performed the 25,000-foot HALO jump himself after more than 100 practice skydives; DP Rob Hardy used natural sunrise light, giving the production zero margin for error per day. The helicopter-vs-helicopter finale in the Kashmir mountains used IMAX cameras rigged to both aircraft simultaneously.' },
+
+  { title:'Mission: Impossible Dead Reckoning Part One', year:2023, month:7, format:'IMAX Digital',
+    note:'McQuarrie and DP Fraser Taggart captured the motorcycle-off-a-cliff BASE jump — Cruise performed it after approximately 500 practice runs on a Norwegian mountainside — and the Orient Express train-roof fight with IMAX cameras. The motorbike sequence required a custom camera dolly system built into the cliff ramp to track Cruise\'s trajectory at IMAX scale. The train finale was shot on a working replica train set constructed on location in the UK with IMAX cameras rigged to moving carriages.' },
+
+  { title:'Mission: Impossible The Final Reckoning', year:2025, month:5, format:'IMAX Digital',
+    note:'The eighth and final installment carries the "Filmed for IMAX" designation for key action sequences, continuing the franchise\'s 14-year commitment to native IMAX photography. Major practical stunt sequences were captured with IMAX cameras consistent with the franchise\'s longstanding approach of using the format to give Cruise\'s physical performances their full visceral scale. Specific sequences expand to the exclusive 1.90:1 ratio in IMAX theaters.' },
+
+  // ── IMAX Digital — Transformers ──────────────────────────────────────────
+{ title:'Transformers: Age of Extinction', year:2014, month:6, format:'IMAX Digital',
+    note:'Bay continued his IMAX partnership for the Dinobots-led reboot, integrating IMAX cameras throughout the Hong Kong and Texas action sequences rather than reserving the format for individual set-pieces. The Hong Kong finale — featuring Optimus Prime riding Grimlock across the city — was designed from the ground up to exploit the IMAX frame\'s vertical dimension for maximum scale. The production marked a turning point in Bay\'s use of IMAX as a primary rather than supplemental shooting format.' },
+
+  { title:'Transformers: The Last Knight', year:2017, month:6, format:'IMAX Digital',
+    note:'Bay\'s fifth and final Transformers installment maintained IMAX capture for the Stonehenge sequence and the aerial battle finale, with DP Jonathan Sela integrating the cameras into the main photography for England-set action. The production design was scaled specifically for IMAX\'s taller ratio, with the medieval flashback sequences and the climactic Cybertron-Earth collision staged to fill the expanded frame.' },
+
+  // ── IMAX Digital — MCU ───────────────────────────────────────────────────
+  { title:'Captain America: Civil War', year:2016, month:5, format:'IMAX Digital',
+    note:'The Russo Brothers and DP Trent Opaloch introduced IMAX cameras to the MCU for the Leipzig airport battle — 12 characters fighting simultaneously, with the taller ratio capturing Spider-Man\'s vertical web-swinging and Giant-Man\'s transformation at full scale. Civil War was the first MCU film to include footage shot natively for IMAX\'s expanded aspect ratio, beginning a practice that has continued through every subsequent MCU production. In IMAX, the airport sequence shows 26% more of the frame vertically than in standard theaters.' },
+
+  { title:'Sully', year:2016, month:9, format:'IMAX Digital',
+    note:'Clint Eastwood and DP Tom Stern shot virtually the entire film on the ARRI ALEXA 65 — the IMAX-proprietary large-format digital camera co-developed by ARRI and IMAX — making Sully the first feature film shot almost entirely on IMAX\'s own camera system. IMAX CEO Richard Gelfond called it "the first film where virtually the entire movie was made with IMAX technology," a milestone in the transition from IMAX film cameras to certified digital. The Hudson River water landing sequences were photographed in full 1.90:1 to give the crash and rescue the expansive visual scale the real-world event commanded.' },
+
+  { title:'Doctor Strange', year:2016, month:11, format:'IMAX Digital',
+    note:'Scott Derrickson and DP Ben Davis used IMAX cameras for the Mirror Dimension sequences and the Hong Kong time-reversal battle, where a collapsing and reversing cityscape fills the entire IMAX frame. The Dormammu sequences in the Dark Dimension were captured in IMAX to emphasize Strange\'s smallness against the cosmic backdrop, using the taller frame to make the scale of the threat physically overwhelming. It was the first MCU film to use IMAX cameras for otherworldly visual sequences rather than purely physical action.' },
+
+  { title:'Guardians of the Galaxy Vol. 2', year:2017, month:5, format:'IMAX Digital',
+    note:'James Gunn and DP Henry Braham shot select sequences in IMAX including the opening baby Groot battle and Ego\'s planetary core sequences, continuing the MCU\'s post-Civil War practice of deploying IMAX cameras for standout set-pieces. The Ego sequences used the full vertical IMAX frame to convey the character\'s literal planetary scale — his face emerging from the surface of his own world. Gunn\'s later productions (Suicide Squad, Guardians Vol. 3, Superman) would expand his IMAX usage dramatically.' },
+
+  { title:'Thor: Ragnarok', year:2017, month:11, format:'IMAX Digital',
+    note:'Taika Waititi and DP Javier Aguirresarobe shot the gladiatorial arena and key Asgard sequences with IMAX cameras, using the format\'s vertical height to capture the arena crowd surrounding Thor and Hulk from floor to ceiling. The production, filmed primarily in Australia, integrated IMAX cameras into the main photography for the film\'s most theatrical sequences. The vibrant Kirby-inspired color palette and theatrical staging were specifically designed to fill the expanded IMAX canvas.' },
+
+  { title:'Avengers: Infinity War', year:2018, month:4, format:'IMAX Digital',
+    note:'The Russo Brothers made Infinity War the first MCU film shot entirely with IMAX-certified cameras — DP Trent Opaloch framed every scene in the 1.90:1 ratio with 76 principal cast members across six countries and three years of production. The decision was driven by the unprecedented scope: with this many characters and this much visual information, the directors wanted audiences to see as much as possible in every frame. In IMAX, viewers see 26% more image than standard theaters at all times throughout the film.' },
+
+  { title:'Ant-Man and the Wasp', year:2018, month:7, format:'IMAX Digital',
+    note:'Peyton Reed and DP Dante Spinotti deployed IMAX cameras for the San Francisco car chase — where size-shifting vehicles cause chaos in dense traffic — and the quantum realm diving sequences. The vertical IMAX frame was particularly effective for the scale-shift comedy, capturing both giant-sized cars and the surrounding environment simultaneously without cutaways. The quantum realm sequences used IMAX\'s full height to create a visually overwhelming field of crystalline structures around the Wasp and Janet van Dyne.' },
+
+  { title:'Avengers: Endgame', year:2019, month:4, format:'IMAX Digital',
+    note:'The Russo Brothers and Trent Opaloch shot the entire film in IMAX, with the time heist sequences across multiple eras and the final battle — staged with over 3,000 costumed extras — composed natively for 1.90:1 throughout. The "Avengers Assemble" portal sequence and the final charge were choreographed specifically to maximize the IMAX frame\'s vertical dimension, with characters appearing from every level of the frame simultaneously. As the highest-grossing film of all time upon release, Endgame represented the largest IMAX theatrical event in cinema history.' },
+
+  { title:'Captain Marvel', year:2019, month:3, format:'IMAX Digital',
+    note:'Directors Boden and Fleck and DP Ben Davis used IMAX cameras for the space sequences and the binary power-unleashed third act, using the format\'s vertical expanse to fill the frame with Carol\'s energy constructs and Kree warship destruction. The binary sequence — Carol flying through an entire Kree fleet — was shot natively for IMAX to give the viewer an unobstructed sense of her scale and speed. The film was Brie Larson\'s introduction to the format she would return to in The Marvels.' },
+
+  { title:'Spider-Man: Far From Home', year:2019, month:6, format:'IMAX Digital',
+    note:'Jon Watts and DP Matthew Libatique used IMAX cameras for the illusion-battle sequences and Venice canal attack, with Mysterio\'s constructs — giant Elemental creatures and the mirror dimension fight — designed to overwhelm the IMAX frame from every direction. The Prague sequence and Tower Bridge fight were captured for IMAX\'s taller ratio, making Mysterio\'s illusions appear to surround the viewer rather than just fill a screen. The film\'s IMAX sequences mark the last Phase 3 Marvel production before the fully IMAX-committed Phase 4 era.' },
+
+  { title:'Black Widow', year:2021, month:7, format:'IMAX Digital',
+    note:'Cate Shortland and DP Gabriel Beristain used IMAX cameras for the opening titles sequence and the Red Room assault — a sky-platform action sequence that uses IMAX\'s vertical height to emphasize the characters\' exposure above the clouds. The Red Room finale was staged as a vertical descent through the facility with IMAX cameras tracking action across multiple levels simultaneously. It was the first solo MCU film released after the COVID-19 pandemic gap to incorporate native IMAX photography.' },
+
+  { title:'Shang-Chi and the Legend of the Ten Rings', year:2021, month:9, format:'IMAX Digital',
+    note:'Destin Daniel Cretton and DP Bill Pope used IMAX cameras for the Macao bus fight and the Ta Lo final battle, with the taller frame capturing the full choreographic scope of Simu Liu\'s wushu-influenced sequences across multiple vertical planes of action. The Dweller-in-Darkness and the Great Protector dragon were specifically designed to fill IMAX\'s expanded ratio, emphasizing mythological scale in a way standard widescreen cannot. The film was among the first MCU productions shot natively in IMAX to be designed for an Asian-led cast and setting.' },
+
+  { title:'Eternals', year:2021, month:11, format:'IMAX Digital',
+    note:'Chloé Zhao and DP Ben Davis shot the entire film in open matte with IMAX-certified cameras — meaning no portion of the image is ever masked, and IMAX theaters show the literal full frame as photographed on set. Zhao\'s documentary-influenced approach treated IMAX as a canvas for natural light and natural landscapes: the Babylonian, Mesopotamian, and South Dakota sequences were all captured in available light at maximum resolution. It is one of the few MCU films where the image in IMAX is exactly what Zhao saw through the viewfinder.' },
+
+  { title:'Spider-Man: No Way Home', year:2021, month:12, format:'IMAX Digital',
+    note:'Jon Watts and DP Mauro Fiore used IMAX cameras for the Statue of Liberty finale — the film\'s emotional and visual climax — with the scaffolding collapse and three Spider-Men fighting across vertical architecture choreographed specifically for the IMAX frame\'s height. The sequence was designed so that at any given moment, action is happening at the top, middle, and bottom of the IMAX frame simultaneously, requiring standard theaters to letterbox and miss content. The IMAX version shows 26% more of the final battle than any non-IMAX screening.' },
+
+  { title:'Doctor Strange in the Multiverse of Madness', year:2022, month:5, format:'IMAX Digital',
+    note:'Sam Raimi and DP John Mathieson shot the entire film on IMAX-certified Panavision DXL2 cameras — the first time this large-format camera was used for a complete IMAX production. Every frame is native 1.90:1, and Raimi used the taller format to accentuate his characteristic Dutch angles, vertical horror imagery, and the physical dominance of Scarlet Witch. The Kamar-Taj siege, the Illuminati council chamber, and every multiverse incursion were staged to exploit the full IMAX height.' },
+
+  { title:'Thor: Love and Thunder', year:2022, month:7, format:'IMAX Digital',
+    note:'Taika Waititi and DP Barry Idoine shot approximately 35 minutes in IMAX\'s exclusive 1.90:1 ratio — specifically the Omnipotent City and the third-act shadow realm — with the remainder of the film in 2.39:1 anamorphic. The black-and-white shadow realm sequence is an unusual use of IMAX in that the format was chosen for its monochromatic impact rather than scale alone. In standard theaters, the frame letterboxes during the 2.39:1 sections and visibly expands during the IMAX sequences.' },
+
+  { title:'Black Panther: Wakanda Forever', year:2022, month:11, format:'IMAX Digital',
+    note:'Ryan Coogler and DP Autumn Durald Arkapaw — the same pair who would later shoot Sinners on 70mm IMAX film — used IMAX-certified cameras for the Wakanda vs. Talokan battles, with the expanded frame capturing the full scale of underwater armies emerging from the ocean. Coogler also deployed IMAX for emotionally heightened moments like Queen Ramonda\'s funeral, using the format\'s vertical intimacy rather than just its scale. Arkapaw was the first Black woman to serve as director of photography on an MCU film.' },
+
+  { title:'Ant-Man and the Wasp: Quantumania', year:2023, month:2, format:'IMAX Digital',
+    note:'Peyton Reed and DP Bill Pope used IMAX cameras throughout, exploiting the taller frame to depict the physically disorienting and architecturally surreal scale of the Quantum Realm — environments with no horizon line and structures that dwarf the human characters in every direction. Kang the Conqueror was costumed and staged to fill the IMAX frame top-to-bottom in his scenes with Scott Lang, using the format to establish immediate visual dominance. The film\'s visual departure from previous Ant-Man productions was driven largely by this embrace of IMAX as the primary compositional frame.' },
+
+  { title:'Guardians of the Galaxy Vol. 3', year:2023, month:5, format:'IMAX Digital',
+    note:'James Gunn and DP Henry Braham shot the entire film with IMAX-certified cameras, composing every frame in 1.90:1 — the most IMAX-comprehensive Guardians production and one of the most immersive MCU IMAX experiences. The High Evolutionary\'s Counter-Earth and the orgosphere sequences were designed for the vertical IMAX frame to convey biological scale and surrealist excess simultaneously. The one-take corridor battle in the third act was choreographed as a continuous theatrical performance within IMAX\'s full canvas.' },
+
+  { title:'The Marvels', year:2023, month:11, format:'IMAX Digital',
+    note:'Director Nia DaCosta and DP Sean Bobbitt shot the entire film with IMAX-certified cameras, with each protagonist\'s power-swapping sequences and the space sequences designed for the taller ratio. The Aladna musical sequence — a planet where all communication is sung — used IMAX\'s vertical height to capture elaborate choreography from floor to ceiling. It was one of the first MCU productions directed entirely by a woman and shot wholly in IMAX.' },
+
+  { title:'Captain America: Brave New World', year:2025, month:2, format:'IMAX Digital',
+    note:'DP Kramer Morgenthau shot with Arri Alexa LF and Mini LF IMAX cameras, switching to Ultra Panatar II lenses specifically for IMAX sequences — over 30 minutes of the film expand to the exclusive 1.90:1 EAR. The action sequences were choreographed to maximize the expanded vertical frame, with Sam Wilson\'s aerial combat designed to use the full height of the IMAX image. The production continued the MCU\'s practice of integrating IMAX capture into main photography rather than treating it as a post-production addition.' },
+
+  { title:'Thunderbolts', year:2025, month:5, format:'IMAX Digital',
+    note:'DP Andrew Droz Palermo used Arri Alexa 35, Mini LF, and Red Komodo-X cameras with IMAX certification, with over 60 minutes of the film\'s runtime — more than half — presented in the exclusive 1.90:1 EAR. Unusually for an MCU production, the IMAX format was deployed for intimate character scenes as well as action, reflecting the film\'s psychologically driven tone. The opening stunt sequence was specifically designed and shot to exploit the full IMAX vertical height.' },
+
+  { title:'The Fantastic Four: First Steps', year:2025, month:7, format:'IMAX Digital',
+    note:'Director Matt Shakman shot 100% of the film with Arri Alexa 65, LF, and Mini LF cameras, composing every frame for the IMAX ratio — the MCU\'s sixth production to be fully framed for IMAX from the first shot to the last. Select GT-IMAX venues present sequences in the full 1.43:1 ratio, matching the visual scope of a 70mm IMAX print. The retro-futurist 1960s production design was scaled specifically to fill the taller IMAX canvas throughout.' },
+
+  // ── IMAX Digital — DCU ───────────────────────────────────────────────────
+  { title:'Batman v Superman: Dawn of Justice', year:2016, month:3, format:'IMAX Digital',
+    note:'Zack Snyder and DP Larry Fong used IMAX cameras for the Doomsday battle and the desert "Knightmare" vision sequence, with the expanded ratio amplifying the mythological scale of two iconic figures in combat. The production was among the earliest DC films to incorporate IMAX cameras alongside standard anamorphic photography, establishing a visual hybrid approach. In IMAX, the natively shot sequences open to the full 1.90:1 ratio while the anamorphic portions letterbox.' },
+
+  { title:'Wonder Woman', year:2017, month:6, format:'IMAX Digital',
+    note:'Patty Jenkins and DP Matthew Jensen shot the No Man\'s Land sequence and the Ares battle with IMAX cameras; the trench-crossing charge was specifically staged to fill the IMAX frame with Diana\'s shield deflections and her advance across open ground simultaneously from boots to sky. The No Man\'s Land scene is frequently cited as one of the most effective uses of the IMAX frame in superhero cinema — the 1.90:1 ratio capturing Diana\'s full-body heroism in a single unbroken composition. It was the first major DC film with a female director to integrate native IMAX capture.' },
+
+  { title:'Justice League', year:2017, month:11, format:'IMAX Digital',
+    note:'The theatrical version used IMAX cameras for the Themyscira motherbox theft and the Steppenwolf confrontations, with the IMAX footage predominantly sourced from Zack Snyder\'s pre-reshoots photography. The production\'s divided authorship contributed to the visual inconsistency noted at the time — the Snyder-originated IMAX sequences have a different photographic character than the Whedon-overseen reshoots. The 2021 "Snyder Cut" was released in a 4:3 format but was not shot with IMAX cameras.' },
+
+  { title:'Aquaman', year:2018, month:12, format:'IMAX Digital',
+    note:'James Wan and DP Don Burgess shot the underwater kingdom sequences and the Brine King battle with IMAX cameras, using the format\'s vertical height to convey the full depth and scale of Atlantis — environments where action happens across a vertical axis rather than a horizontal one. The trench sequence — an overwhelming creature attack from every direction — was captured in IMAX to make the surrounding sensation as claustrophobic and vertically disorienting as possible. The film generated $72M in global IMAX box office, validating the format for underwater-set blockbusters.' },
+
+  { title:'Wonder Woman 1984', year:2020, month:12, format:'IMAX 70mm + Digital',
+    note:'Patty Jenkins and DP Matthew Jensen used IMAX MSM 9802 film cameras for the Themyscira Amazon Olympics opening sequence and the closing winter coda — both shot on location in the Canary Islands and expanding to the full 1.43:1 IMAX frame — while IMAX-certified digital cameras covered the mall chase and White House action sequences. The film was the first major IMAX theatrical release during the COVID-19 pandemic to also premiere simultaneously on HBO Max. The mixed-format approach gave the mythological bookends a photochemical quality that visually separates them from the film\'s contemporary Washington D.C. material.' },
+
+  { title:'The Suicide Squad', year:2021, month:8, format:'IMAX Digital',
+    note:'James Gunn shot the entire film with IMAX-certified cameras — the first DC film he directed fully at the expanded ratio. The Starro the Conqueror finale, with the giant starfish looming over the city, was specifically designed for IMAX\'s vertical scale, with tentacles and body parts reaching the full height of the frame. Gunn\'s confidence with the format here directly informed his approach to Guardians Vol. 3 and his full DCU reboot.' },
+
+  { title:'Aquaman and the Lost Kingdom', year:2023, month:12, format:'IMAX Digital',
+    note:'James Wan deployed IMAX cameras for the Black Manta pursuit sequences and the Black Trident battle, using the expanded ratio to capture the full vertical scale of the underwater environments and Black Manta\'s aerial combat suit. The film continued the first Aquaman\'s visual approach, with the taller frame used to emphasize the gap in scale between the human-scale heroes and the enormous marine creatures they fight alongside. It was one of the final DCEU-era films before James Gunn\'s reboot.' },
+
+  { title:'Superman', year:2025, month:7, format:'IMAX Digital',
+    note:'James Gunn shot his DCU reboot entirely on IMAX-certified Red Komodo and V-Raptor cameras by DP Henry Braham — the first DCU film shot wholly for IMAX, framing every scene in 1.90:1. The production is notable for its use of Red cameras rather than Arri, demonstrating the expanding range of IMAX-certified hardware now available to filmmakers. Gunn used the full IMAX canvas to give Superman\'s flight sequences uncompressed vertical sky — the character\'s defining visual quality.' },
+
+  // ── IMAX Digital — Star Wars ──────────────────────────────────────────────
+  { title:'Star Wars: The Force Awakens', year:2015, month:12, format:'IMAX Digital',
+    note:'J.J. Abrams and DP Dan Mindel shot primarily on 35mm but used IMAX MKIII Reflex cameras for the Millennium Falcon chase on Jakku — the film\'s first major action sequence. Abrams told Variety the opportunity to give audiences an action sequence "done in IMAX\'s natural format was too delicious an idea to pass up," using lenses originally developed by Wally Pfister for The Dark Knight. It was the first Star Wars film in the franchise\'s 38-year history to include genuine IMAX photography.' },
+
+  { title:'Star Wars: The Last Jedi', year:2017, month:12, format:'IMAX 70mm + Digital',
+    note:'Rian Johnson and DP Steve Yedlin used genuine IMAX 15/70mm film cameras for the Ahch-To island sequences with Luke Skywalker — shot on location in Ireland — alongside ARRI ALEXA 65 for other expanded-ratio material including the Crait salt flat battle and the Holdo hyperspace ramming. The hyperspace ramming is widely considered one of the most visually striking single shots in the franchise\'s history, delivered in total silence. Johnson\'s IMAX usage was deliberate and restrained, reserved for moments of maximum emotional and visual weight rather than deployed as a general-action format.' },
+
+  { title:'Star Wars: The Rise of Skywalker', year:2019, month:12, format:'IMAX Digital',
+    note:'Abrams and Mindel used IMAX cameras for the Pasaana speeder chase — shot on a real desert with practical vehicles — and the final Exegol fleet battle, with the Emperor\'s throne room staged to fill the IMAX frame\'s full vertical height. The Death Star ruins sequences, shot on location in the Maldives, were captured partly in IMAX with ocean waves crashing against corroded superstructure at the expanded scale. It was the final chapter of the Skywalker Saga to incorporate native IMAX photography.' },
+
+  // ── IMAX Digital — MonsterVerse ───────────────────────────────────────────
+  { title:'Godzilla vs. Kong', year:2021, month:3, format:'IMAX Digital',
+    note:'Director Adam Wingard and DP Ben Seresin shot the entire film on ARRI ALEXA 65 with IMAX-certified Prime DNA lenses, specifically choosing this camera system to meet IMAX\'s technical requirements for the largest-scale monster conflict in the franchise. The Hong Kong neon-lit battle was designed to maximize the vertical drama of two titan-scale creatures fighting in an urban canyon, with the ALEXA 65\'s extraordinary low-light sensitivity capturing the neon environment without artificial augmentation. The film generated $48.5M in global IMAX box office.' },
+
+  { title:'Godzilla x Kong: The New Empire', year:2024, month:4, format:'IMAX Digital',
+    note:'The first MonsterVerse film to carry the formal "Filmed for IMAX" certification, shot with IMAX MSM cameras and specialized Panavised Canon rigs for the titan sequences — a first for the franchise. Over 45 minutes expand to the exclusive 1.90:1 EAR in IMAX, the most IMAX-expanded content in the MonsterVerse\'s history. The production designed creature battle sequences specifically around the taller frame to emphasize the monsters\' height against Hollow Earth environments and skylines.' },
+
+  // ── IMAX Digital — Other ─────────────────────────────────────────────────
+  { title:'Star Trek Into Darkness', year:2013, month:5, format:'IMAX Digital',
+    note:'J.J. Abrams and DP Dan Mindel shot select sequences with IMAX cameras — the Klingon homeworld and the Enterprise-in-freefall — applying the same IMAX philosophy Abrams had used for The Force Awakens. It was the first Star Trek film to incorporate native IMAX photography, and a nine-minute IMAX preview screened before The Dark Knight Rises helped build enormous anticipation for the theatrical release. Abrams used lenses originally developed by Wally Pfister, establishing a consistent optical vocabulary across his IMAX productions.' },
+
+  { title:'Pacific Rim', year:2013, month:7, format:'IMAX Digital',
+    note:'Guillermo del Toro and DP Guillermo Navarro used IMAX cameras to capture the Kaiju and Jaeger battle sequences, with the format\'s vertical height specifically chosen to convey the full scale of creatures and mechs that stand hundreds of feet tall — a scale that standard scope framing inherently miniaturizes. The Hong Kong battle was shot to fill IMAX\'s taller ratio, emphasizing the weight and mechanical mass of the Jaegers through sheer compositional scale. Del Toro cited the IMAX format as essential to making audiences feel physically overwhelmed by the conflict.' },
+
+  { title:'The Hunger Games: Catching Fire', year:2013, month:11, format:'IMAX Digital',
+    note:'Francis Lawrence and DP Jo Willems shot approximately 50 minutes with IMAX cameras — the opening reaping, the arena entry, and much of the Quarter Quell battle — among the most extensive IMAX photography in the franchise. The clock-arena, with its rotating sections of death challenges, was designed to be visually overwhelming at IMAX scale, with the rotating ring of environments using the full vertical frame. Lawrence\'s IMAX coverage for this film was significantly greater than the first film, reflecting the expanded production budget for the sequel.' },
+
+  { title:'Jurassic World', year:2015, month:6, format:'IMAX Digital',
+    note:'Colin Trevorrow and DP John Schwartzman used IMAX cameras for key sequences including the Indominus Rex breakout and the Pteranodon aviary attack, applying the format to convey the hybrid dinosaur\'s scale relative to Jurassic World\'s tourist infrastructure. The Mosasaurus feeding show — a 40,000-seat stadium with a creature the size of a submarine — was specifically staged to fill the vertical IMAX frame as the creature launches from the water. It was the first Jurassic franchise film to incorporate native IMAX photography.' },
+
+  { title:'Dune', year:2021, month:10, format:'IMAX Digital',
+    note:'Denis Villeneuve and DP Greig Fraser shot approximately 40% of the film with IMAX-certified Alexa LF and Mini LF cameras, natively composing those sequences for the 1.90:1 ratio — the sandworm approach, the ornithopter arrival, and the spice harvester attack. Villeneuve declared it "a film designed to be seen in IMAX," and Fraser employed a distinctive analog/digital hybrid: digital capture transferred to 35mm print film then rescanned, giving the IMAX photography an unusual photochemical texture never used in a certified IMAX production before. IMAX officially designated it "Filmed for IMAX."' },
+
+  { title:'Dune: Part Two', year:2024, month:3, format:'IMAX Digital',
+    note:'Villeneuve and Fraser composed the entire sequel for IMAX on ALEXA 65 and Mini LF with fully spherical lenses — a significant expansion from Part One\'s 40% IMAX coverage to 100%. The Giedi Prime arena sequence was shot in extreme high-contrast black-and-white for the Harkonnen aesthetic, and the Arrakeen attack climax was staged to use the full vertical IMAX canvas at maximum scale. Part Two also received a genuine 15-perf 70mm IMAX print release, placing it alongside Nolan\'s films in a very small group of digital productions to receive this treatment.' },
+
+  { title:'Top Gun: Maverick', year:2022, month:5, format:'IMAX Digital',
+    note:'Director Joseph Kosinski and DP Claudio Miranda worked with IMAX to develop custom camera rigs that fit inside operational F/A-18 cockpits — the first time genuine IMAX cameras had been mounted inside military aircraft in flight. The jet sequences were shot with Cruise and the cast physically flying the aircraft, with IMAX cameras a few inches from their faces capturing reactions and the sky beyond at full resolution. The film generated $170M in global IMAX box office, one of the highest-grossing IMAX releases of all time.' },
+
+  { title:'Avatar: The Way of Water', year:2022, month:12, format:'IMAX Digital',
+    note:'James Cameron shot with IMAX-certified Sony CineAlta Venice cameras in a custom beam-splitter stereoscopic 3D rig — the first IMAX-certified deployment of the Sony Venice in a major 3D production. The underwater sequences required a new submersible lens system co-developed with Sony and Panavision, enabling IMAX 3D capture at operational depths without the distortions of conventional housing systems. Cameron authored the entire film natively in 3D IMAX rather than converting in post, making every frame a genuine stereoscopic IMAX photograph.' },
+
+  { title:'Joker: Folie à Deux', year:2024, month:10, format:'IMAX Digital',
+    note:'Todd Phillips and DP Lawrence Sher returned to the ARRI ALEXA 65 used on the original Joker for approximately 54 minutes of exclusive 1.90:1 EAR, with the musical sequences specifically choreographed and lit to fill the taller frame with theatrical excess. The film was also released on genuine 15-perf 70mm IMAX prints at 11 venues worldwide — a rare non-Nolan film to receive this treatment, sharing a tier normally occupied only by his productions. The IMAX sequences center on the shared fantasy sequences between Arthur and Harley, using the format\'s scale as a metaphor for the inflation of Arthur\'s self-mythology.' },
+
+  { title:'Alien: Romulus', year:2024, month:8, format:'IMAX Digital',
+    note:'DP Galo Olivares shot on ARRI ALEXA 35 with IMAX certification, using deep-focus photography and claustrophobic framing that deliberately contrasted with the shallow-focus large-format aesthetic dominant in recent blockbusters. The vertical station corridors and ceiling-crawling Alien attack sequences use IMAX\'s taller frame to make height itself the source of dread — the Alien is always above you, always dropping. It became the highest-grossing horror film in IMAX history at $40M globally.' },
+
+  { title:'How to Train Your Dragon', year:2025, month:6, format:'IMAX Digital',
+    note:'The live-action adaptation was shot with Arri Alexa LF and Mini LF IMAX cameras under the "Filmed for IMAX" designation, with the dragon flight and Bewilderbeast sequences designed to use the vertical IMAX frame for the sense of physical height and aerial freedom that the animated films built their identity around. The production used IMAX cameras throughout to integrate creature effects with live-action photography at a consistent, native scale. Key flight and battle sequences expand to the exclusive 1.90:1 ratio in IMAX theaters.' },
+
+  // ── IMAX Digital — Standalone ────────────────────────────────────────────
+  { title:'Project Hail Mary', year:2026, month:3, format:'IMAX Digital',
+    note:'DP Greig Fraser and director Phil Lord shot the film on the ARRI ALEXA 65 under IMAX\'s official "Filmed for IMAX" designation, with ARRI Rental engineering a completely custom set of vertical-squeeze anamorphic lenses built specifically for this production — mounted sideways on the ALEXA 65 to natively fill the taller IMAX sensor. The space sequences expand to the full 1.43:1 IMAX ratio, while Earth and memory sequences play in 2.39:1, using the aspect ratio shift as a structural storytelling device in the same vein as Oppenheimer. The custom vertical lens configuration produces distinctive vertical lens flares — an optical signature unique to this film.' },
+];
+
+let imaxLoaded = false;
+let _imaxFilms = [];
+
+function openImaxInfo(idx) {
+  const f = _imaxFilms[idx];
+  if (!f) return;
+  const is70mm = f.format.includes('70mm');
+  const badge  = document.getElementById('imaxModalBadge');
+  badge.textContent = f.format;
+  badge.className   = 'imax-modal-format-badge ' + (is70mm ? 'fmt-70mm' : 'fmt-digital');
+  document.getElementById('imaxModalPoster').src = `${TMDB_IMG}w500${f.poster_path}`;
+  document.getElementById('imaxModalPoster').alt = f.title;
+  document.getElementById('imaxModalTitle').textContent = f.title;
+  document.getElementById('imaxModalYear').textContent  = f.year;
+  document.getElementById('imaxModalNote').textContent  = f.note;
+  document.getElementById('imaxModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImaxModal() {
+  document.getElementById('imaxModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function renderNowInIMAX() {
+  const el = document.getElementById('imaxNowPlaying');
+  if (!el || !CFG.tmdb) return;
+
+  // Use now_playing endpoint — purpose-built for currently-in-theaters films
+  const data = await tmdbGet('/movie/now_playing', {
+    language: 'en-US',
+    region: 'US',
+    page: 1,
+  });
+
+  const movies = (data?.results || [])
+    .filter(m => m.poster_path)
+    .sort((a, b) => b.popularity - a.popularity);
+
+  if (!movies.length) {
+    el.textContent = 'No current releases found.';
+    return;
+  }
+
+  // Show the single most popular currently-in-theaters film
+  const m       = movies[0];
+  const year    = m.release_date ? m.release_date.slice(0, 4) : '';
+  const rating  = m.vote_average ? m.vote_average.toFixed(1) : '';
+  const img     = `${TMDB_IMG}w500${m.poster_path}`;
+  const imgOrig = `${TMDB_IMG}original${m.poster_path}`;
+  const safe    = m.title.replace(/'/g, "\\'");
+  const overview = (m.overview || '').length > 220 ? m.overview.slice(0, 217) + '…' : m.overview;
+  const fandango = `https://www.fandango.com/search?q=${encodeURIComponent(m.title)}`;
+
+  el.className = 'imax-now-wrap';
+  el.innerHTML = `
+    <div class="imax-now-card">
+      <img class="imax-now-poster" src="${img}" alt="${m.title}"
+           onclick="openPoster('${imgOrig}','${safe}',${m.id})" style="cursor:pointer">
+      <div class="imax-now-info">
+        <div class="imax-now-badge">NOW IN THEATERS</div>
+        <div class="imax-now-title">${m.title}</div>
+        <div class="imax-now-meta">
+          ${year ? `<span>${year}</span>` : ''}
+          ${rating ? `<span>★ ${rating}</span>` : ''}
+          <span>Popularity #1 This Week</span>
+        </div>
+        <div class="imax-now-overview">${overview}</div>
+        <a class="imax-now-fandango" href="${fandango}" target="_blank" rel="noopener">BUY IMAX TICKETS ON FANDANGO</a>
+      </div>
+    </div>`;
+}
+
+async function renderIMAX() {
+  if (imaxLoaded) return;
+  imaxLoaded = true;
+  if (!CFG.tmdb) return;
+
+  // Kick off both fetches in parallel
+  renderNowInIMAX();
+
+  const grid = document.getElementById('imaxPosterGrid');
+  grid.innerHTML = '<div class="imax-poster-loading">FETCHING POSTERS…</div>';
+
+  // Search TMDB for each film to get the correct ID + poster
+  const results = await Promise.all(IMAX_SHOT_FILMS.map(async f => {
+    const data = await tmdbGet('/search/movie', { query: f.title, year: f.year, language: 'en-US', page: 1 });
+    const hit  = (data?.results || []).find(r => r.poster_path) || data?.results?.[0];
+    if (!hit || !hit.poster_path) return null;
+    return { ...f, poster_path: hit.poster_path, tmdb_id: hit.id };
+  }));
+
+  const valid = results.filter(Boolean);
+  if (!valid.length) {
+    grid.innerHTML = '<div class="imax-poster-loading">No results — check your TMDB API key.</div>';
+    return;
+  }
+
+  // Sort: 70mm group newest→oldest, then digital group newest→oldest
+  const dateKey = f => f.year * 100 + (f.month || 0);
+  const sorted = [...valid].sort((a, b) => {
+    const a70 = a.format.includes('70mm');
+    const b70 = b.format.includes('70mm');
+    if (a70 !== b70) return a70 ? -1 : 1;
+    return dateKey(b) - dateKey(a);
+  });
+
+  // Store globally so click handlers can reference by index
+  _imaxFilms = sorted;
+
+  grid.innerHTML = sorted.map((f, i) => {
+    const img500 = `${TMDB_IMG}w500${f.poster_path}`;
+    return `
+      <div class="imax-poster-card" onclick="openImaxInfo(${i})">
+        <img src="${img500}" alt="${f.title}" loading="lazy">
+        <div class="imax-poster-overlay">
+          <div class="imax-poster-format">${f.format}</div>
+          <div class="imax-poster-title">${f.title}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════════
 function switchTab(id) {
@@ -1693,6 +2611,8 @@ function switchTab(id) {
   state.activeTab = id;
   if (id === 'home')      { document.getElementById('homeSearchInput').focus(); }
   if (id === 'overview')  renderOverview();
+  if (id === 'forecast')  {}
+  if (id === 'imax')      renderIMAX();
   if (id === 'streaming') renderStreaming();
   if (id === 'trends'   && state.movies.length) renderTrends();
   if (id === 'ops') renderOPS();
@@ -1862,8 +2782,8 @@ function buildRankingsTable() {
   const rows = movies.map((m, i) => {
     const worldwide = m.revenue || 0;
     const budget    = m.budget || 0;
-    const roi       = budget > 0 && worldwide > 0 ? ((worldwide - budget) / budget * 100) : null;
-    const roiStr    = roi != null ? `<span class="${roi>=0?'text-green':'text-red'}">${roi>=0?'+':''}${roi.toFixed(0)}%</span>` : '<span class="text-muted">—</span>';
+    const roi       = budget > 0 && worldwide > 0 ? (worldwide / budget) : null;
+    const roiStr    = roi != null ? `<span class="${roi>=1?'text-green':'text-red'}" title="Revenue ÷ Production Budget only">${roi.toFixed(2)}x</span>` : '<span class="text-muted">—</span>';
     const poster    = m.poster_path ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" onclick="openModal(${m.id})" loading="lazy">` : '';
     const genreStr  = (m.genres||[]).slice(0,2).map(g => `<span class="badge grey">${g.name}</span>`).join(' ');
     return `<tr>
@@ -1891,6 +2811,9 @@ function renderTrends() {
   renderGenrePie();
   renderTrendArea();
   renderPerformanceMatrix();
+  renderPareto();
+  renderRatingRevenue();
+  renderGenreRiskReturn();
 }
 
 function renderDecayChart() {
@@ -1961,8 +2884,17 @@ function renderGenrePie() {
 function renderTrendArea() {
   const ctx = document.getElementById('trendAreaChart').getContext('2d');
   if (state.charts.trendArea) state.charts.trendArea.destroy();
-  const sorted = [...state.movies].sort((a, b) => b._weeks - a._weeks);
+
+  // Exclude re-releases (>52 weeks since original release date)
+  const filtered = [...state.movies].filter(m => m._weeks <= 52);
+  if (!filtered.length) {
+    document.getElementById('trendAreaChart').closest('.card').innerHTML +=
+      `<div style="padding:16px;font-size:12px;font-family:var(--font-mono);color:var(--text3)">No current theatrical releases to display.</div>`;
+    return;
+  }
+  const sorted = filtered.sort((a, b) => b._weeks - a._weeks);
   const colors = sorted.map(m => m._weeks >= 8 ? '#e8a020' : m._weeks >= 4 ? '#1a9baa' : '#3ab870');
+
   state.charts.trendArea = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -1982,7 +2914,12 @@ function renderTrendArea() {
         tooltip: {
           backgroundColor: 'rgba(20,20,36,0.95)', borderColor: '#252540', borderWidth: 1,
           titleColor: '#e2e2f0', bodyColor: '#9090b0', padding: 10,
-          callbacks: { label: c => ` ${c.raw} week${c.raw !== 1 ? 's' : ''} in theaters` }
+          callbacks: { label: c => ` ${c.raw} week${c.raw !== 1 ? 's' : ''} in current run` }
+        },
+        subtitle: {
+          display: true,
+          text: 'Re-releases excluded · current theatrical runs only',
+          color: '#5a5a80', font: { size: 10, family: "'DM Mono'" }, padding: { bottom: 8 }
         }
       },
       scales: {
@@ -1993,16 +2930,182 @@ function renderTrendArea() {
   });
 }
 
+// ── Linear regression helper ──
+function linearRegression(points) {
+  const n = points.length;
+  if (n < 2) return { m: 0, b: 0, r2: 0 };
+  const sumX  = points.reduce((s,p) => s + p.x, 0);
+  const sumY  = points.reduce((s,p) => s + p.y, 0);
+  const sumXY = points.reduce((s,p) => s + p.x * p.y, 0);
+  const sumX2 = points.reduce((s,p) => s + p.x * p.x, 0);
+  const m  = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+  const b  = (sumY - m * sumX) / n;
+  const yM = sumY / n;
+  const ssTot = points.reduce((s,p) => s + Math.pow(p.y - yM, 2), 0);
+  const ssRes = points.reduce((s,p) => s + Math.pow(p.y - (m * p.x + b), 2), 0);
+  const r2 = ssTot > 0 ? Math.max(0, 1 - ssRes / ssTot) : 0;
+  return { m, b, r2 };
+}
+
+// ── Pareto Revenue Chart ──
+function renderPareto() {
+  const ctx = document.getElementById('paretoChart').getContext('2d');
+  if (state.charts.pareto) state.charts.pareto.destroy();
+  const films = [...state.movies].filter(m => m.revenue > 0).sort((a,b) => b.revenue - a.revenue);
+  if (films.length < 2) return;
+  const total = films.reduce((s,m) => s + m.revenue, 0);
+  let cum = 0;
+  const cumPct = films.map(m => { cum += m.revenue; return Math.round(cum / total * 100); });
+  state.charts.pareto = new Chart(ctx, {
+    data: {
+      labels: films.map(m => m.title.length > 14 ? m.title.slice(0,12)+'…' : m.title),
+      datasets: [
+        { type:'bar',  label:'Revenue', data: films.map(m => m.revenue),
+          backgroundColor:'rgba(232,160,32,0.7)', yAxisID:'y', borderRadius:3 },
+        { type:'line', label:'Cumulative %', data: cumPct,
+          borderColor:'#22b8c8', borderWidth:2, pointRadius:3, pointBackgroundColor:'#22b8c8',
+          yAxisID:'y2', tension:0.3, fill:false },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ labels:{ color:'#9090b0', font:{size:11} } },
+        tooltip:{
+          backgroundColor:'rgba(20,20,36,0.95)', borderColor:'#252540', borderWidth:1,
+          titleColor:'#e2e2f0', bodyColor:'#9090b0', padding:10,
+          callbacks:{ label: c => c.datasetIndex===0 ? ` ${fmt.M(c.raw)}` : ` ${c.raw}% cumulative` }
+        }
+      },
+      scales: {
+        x:  { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9090b0',font:{size:10},maxRotation:30} },
+        y:  { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#5a5a80',font:{size:10},callback:v=>fmt.M(v)}, position:'left' },
+        y2: { grid:{display:false}, ticks:{color:'#1a9baa',font:{size:10},callback:v=>`${v}%`},
+              position:'right', min:0, max:100,
+              afterDataLimits: axis => { axis.max = 100; } }
+      }
+    }
+  });
+}
+
+// ── Rating vs. Revenue Scatter with Regression ──
+function renderRatingRevenue() {
+  const ctx = document.getElementById('ratingRevenueChart').getContext('2d');
+  if (state.charts.ratingRev) state.charts.ratingRev.destroy();
+  const pts = state.movies
+    .filter(m => (m.imdb_rating || m.vote_average) > 0 && m.revenue > 0)
+    .map(m => ({ x: m.imdb_rating || m.vote_average, y: m.revenue, title: m.title }));
+  if (pts.length < 2) return;
+  const reg = linearRegression(pts);
+  const xMin = Math.min(...pts.map(p=>p.x));
+  const xMax = Math.max(...pts.map(p=>p.x));
+  const trendLine = [{ x: xMin, y: reg.m*xMin+reg.b }, { x: xMax, y: reg.m*xMax+reg.b }];
+  document.getElementById('r2Badge').textContent = `R² = ${reg.r2.toFixed(2)}`;
+  state.charts.ratingRev = new Chart(ctx, {
+    data: {
+      datasets: [
+        { type:'scatter', label:'Films', data: pts,
+          backgroundColor:'rgba(232,160,32,0.7)', pointRadius:6, pointHoverRadius:8 },
+        { type:'line', label:'Trend', data: trendLine,
+          borderColor:'rgba(26,155,170,0.6)', borderWidth:2, pointRadius:0,
+          fill:false, tension:0 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(20,20,36,0.95)', borderColor:'#252540', borderWidth:1,
+          titleColor:'#e2e2f0', bodyColor:'#9090b0', padding:10,
+          filter: item => item.datasetIndex === 0,
+          callbacks:{
+            title: items => items[0]?.raw?.title || '',
+            label: c => [`Rating: ${c.raw.x}`, `Revenue: ${fmt.M(c.raw.y)}`]
+          }
+        }
+      },
+      scales: {
+        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9090b0',font:{size:10}},
+             title:{display:true,text:'IMDb Rating',color:'#5a5a80',font:{size:10}} },
+        y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9090b0',font:{size:10},callback:v=>fmt.M(v)},
+             title:{display:true,text:'Revenue',color:'#5a5a80',font:{size:10}} }
+      }
+    }
+  });
+}
+
+// ── Genre Risk / Return ──
+function renderGenreRiskReturn() {
+  const ctx = document.getElementById('genreRiskChart').getContext('2d');
+  if (state.charts.genreRisk) state.charts.genreRisk.destroy();
+  const palette = ['#e8a020','#1a9baa','#3ab870','#e05050','#9070d0','#50a8e0','#f0b840','#22b8c8','#c060e0','#60c060'];
+  const genreMap = {};
+  state.movies.forEach(m => {
+    if (!m.budget || !m.revenue) return;
+    const ratio = m.revenue / m.budget;
+    (m.genres||[]).forEach(g => {
+      if (!genreMap[g.name]) genreMap[g.name] = [];
+      genreMap[g.name].push(ratio);
+    });
+  });
+  const genres = Object.entries(genreMap).filter(([,v]) => v.length >= 2);
+  if (!genres.length) return;
+  const pts = genres.map(([name, vals], i) => {
+    const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+    const variance = vals.reduce((s,v)=>s+Math.pow(v-avg,2),0)/vals.length;
+    const color = palette[i % palette.length];
+    return { x: Math.sqrt(variance), y: avg, r: Math.min(vals.length*3+4,18), label: name, n: vals.length, color };
+  });
+  state.charts.genreRisk = new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: pts.map(p => ({
+        label: p.label,
+        data: [{ x: p.x, y: p.y, r: p.r }],
+        backgroundColor: p.color + 'a6',
+        borderColor: p.color,
+        borderWidth: 1.5
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          mode: 'nearest', intersect: true,
+          backgroundColor: 'rgba(20,20,36,0.95)', borderColor: '#252540', borderWidth: 1,
+          titleColor: '#e2e2f0', bodyColor: '#9090b0', padding: 10,
+          callbacks: {
+            title: items => items[0]?.dataset?.label || '',
+            label: c => [
+              ` Avg Return:  ${c.raw.y.toFixed(2)}x`,
+              ` Risk (σ):      ${c.raw.x.toFixed(2)}`,
+              ` Sample:        ${pts.find(p=>p.label===c.dataset.label)?.n} films`
+            ]
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#9090b0', font: { size: 10 } },
+             title: { display: true, text: 'Risk  (σ of rev/budget)', color: '#5a5a80', font: { size: 10 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#9090b0', font: { size: 10 }, callback: v => `${v.toFixed(1)}x` },
+             title: { display: true, text: 'Avg Return (rev/budget)', color: '#5a5a80', font: { size: 10 } } }
+      }
+    }
+  });
+}
+
 function renderPerformanceMatrix() {
   const html = state.movies.slice(0,12).map(m => {
     const budget = m.budget||0;
     const rev = m.revenue||0;
-    const roi = budget > 0 ? ((rev-budget)/budget*100) : null;
-    const isHot = roi != null && roi > 50;
-    const isCool = roi != null && roi < 0;
+    const roi = budget > 0 && rev > 0 ? (rev/budget) : null;
+    const isHot = roi != null && roi > 2;
+    const isCool = roi != null && roi < 1;
     return `<div class="matrix-cell ${isHot?'hot':isCool?'cool':''}">
       <div class="mc-title">${m.title}</div>
-      <div class="mc-roi ${roi==null?'text-muted':roi>=0?'text-green':'text-red'}">${roi!=null?`${roi>=0?'+':''}${roi.toFixed(0)}% ROI`:'No budget data'}</div>
+      <div class="mc-roi ${roi==null?'text-muted':roi>=1?'text-green':'text-red'}">${roi!=null?`${roi.toFixed(2)}x rev/budget`:'No budget data'}</div>
       <div class="text-xs text-muted mt-8">${fmt.M(rev)}</div>
     </div>`;
   }).join('');
@@ -2359,6 +3462,435 @@ function renderDQScores() {
 // ═══════════════════════════════════════════════════════════════════
 // SETTINGS
 // ═══════════════════════════════════════════════════════════════════
+// FORECAST / ML
+// ═══════════════════════════════════════════════════════════════════
+const mlState = { trained: false, beta: null, featureNames: [], rmse: 0, r2: 0, trainData: [] };
+
+// ── Matrix helpers ──
+function matMul(A, B) {
+  return A.map(row => B[0].map((_, j) => row.reduce((s, _, k) => s + row[k] * B[k][j], 0)));
+}
+function matT(A) { return A[0].map((_, j) => A.map(r => r[j])); }
+function matInv(M) {
+  const n = M.length;
+  const aug = M.map((r, i) => [...r, ...Array.from({length:n}, (_, j) => i===j ? 1 : 0)]);
+  for (let c = 0; c < n; c++) {
+    let max = c;
+    for (let r = c+1; r < n; r++) if (Math.abs(aug[r][c]) > Math.abs(aug[max][c])) max = r;
+    [aug[c], aug[max]] = [aug[max], aug[c]];
+    const piv = aug[c][c];
+    if (Math.abs(piv) < 1e-12) return null;
+    for (let j = 0; j < 2*n; j++) aug[c][j] /= piv;
+    for (let r = 0; r < n; r++) {
+      if (r === c) continue;
+      const f = aug[r][c];
+      for (let j = 0; j < 2*n; j++) aug[r][j] -= f * aug[c][j];
+    }
+  }
+  return aug.map(r => r.slice(n));
+}
+
+// Extract US MPAA certification from TMDB release_dates response
+function getMPAA(m) {
+  const results = m.release_dates?.results || [];
+  const us = results.find(r => r.iso_3166_1 === 'US');
+  if (!us) return '';
+  // Type 3 = theatrical; fall back to any entry with a cert
+  const theatrical = us.release_dates?.find(d => d.type === 3 && d.certification);
+  const any        = us.release_dates?.find(d => d.certification);
+  return (theatrical || any)?.certification || '';
+}
+
+// ── Feature builder ──
+function buildFeatures(m) {
+  const budget    = m.budget > 0 ? m.budget : null;
+  const pop       = m.popularity > 0 ? m.popularity : null;
+  const rating    = (m.imdb_rating || m.vote_average || 0);
+  if (!budget || !pop) return null;
+
+  const genres    = (m.genres||[]).map(g => g.name?.toLowerCase());
+  const runtime   = (m.runtime > 0) ? m.runtime : 100;
+  const franchise = (m.belongs_to_collection != null) ? 1 : 0;
+  const logBudget = Math.log(budget);
+  const cert      = (m._cert !== undefined) ? m._cert : getMPAA(m);
+
+  // Cyclical month encoding — captures box office seasonality
+  const month = m.release_date ? new Date(m.release_date).getMonth() + 1 : 6;
+  const sinM  = Math.sin(2 * Math.PI * month / 12);
+  const cosM  = Math.cos(2 * Math.PI * month / 12);
+
+  return [
+    1,                                                                          // intercept
+    logBudget,                                                                  // log budget
+    Math.log(pop + 1),                                                          // log popularity
+    rating,                                                                     // audience/critic rating
+    Math.log(runtime),                                                          // log runtime
+    franchise,                                                                  // franchise / sequel flag
+    genres.some(g=>g.includes('action'))?1:0,                                   // genre: action
+    genres.some(g=>g.includes('animation'))?1:0,                                // genre: animation
+    genres.some(g=>g.includes('comedy'))?1:0,                                   // genre: comedy
+    genres.some(g=>g.includes('horror'))?1:0,                                   // genre: horror
+    genres.some(g=>g.includes('thriller'))?1:0,                                 // genre: thriller
+    genres.some(g=>g.includes('science fiction')||g.includes('sci-fi'))?1:0,    // genre: sci-fi
+    genres.some(g=>g.includes('fantasy'))?1:0,                                  // genre: fantasy
+    genres.some(g=>g.includes('family'))?1:0,                                   // genre: family
+    cert==='PG'   ?1:0,                                                         // rating: PG   (G = baseline)
+    cert==='PG-13'?1:0,                                                         // rating: PG-13
+    cert==='R'    ?1:0,                                                         // rating: R
+    sinM,                                                                       // seasonal sin(month)
+    cosM,                                                                       // seasonal cos(month)
+  ];
+}
+
+// ── Fetch training data ──
+async function fetchTrainingData() {
+  const all = [];
+  // Four complementary queries to build a representative, unbiased training set.
+  // TMDB has no daily call limit on free keys (only ~40 req/s rate limit),
+  // so fetching ~400 raw candidates is safe. We enrich up to 300 with /movie/{id}
+  // detail calls (budget+revenue live there). Expected usable set after filtering: ~200-250 films.
+  const queries = [
+    // Broad popular films — avoids blockbuster-only bias
+    { sort_by:'popularity.desc',   'vote_count.gte':500, 'revenue.gte':5000000,  pages:6 },
+    // Critically acclaimed — captures prestige films with lower box office
+    { sort_by:'vote_average.desc', 'vote_count.gte':500, 'revenue.gte':5000000,  pages:3 },
+    // High-revenue — ensures blockbusters are included
+    { sort_by:'revenue.desc',      'vote_count.gte':200, 'revenue.gte':1000000,  pages:3 },
+  ];
+  const hint = document.getElementById('mlTrainHint');
+  let pagesDone = 0;
+  const totalPages = queries.reduce((s,q)=>s+q.pages,0);
+  for (const q of queries) {
+    const { pages, ...params } = q;
+    for (let p = 1; p <= pages; p++) {
+      const data = await tmdbGet('/discover/movie', { ...params, with_original_language:'en', page:p });
+      if (data?.results) all.push(...data.results);
+      pagesDone++;
+      if (hint) hint.textContent = `Collecting films… ${pagesDone}/${totalPages} pages (${all.length} raw candidates)`;
+    }
+  }
+  // Deduplicate
+  const seen = new Set();
+  const unique = all.filter(m => { if (seen.has(m.id)) return false; seen.add(m.id); return true; });
+  if (hint) hint.textContent = `${unique.length} unique films found. Enriching with budget/revenue data…`;
+  // Enrich with full details in batches of 8
+  const enriched = [];
+  const CAP = Math.min(unique.length, 240);
+  for (let i = 0; i < CAP; i += 8) {
+    const batch = await Promise.all(unique.slice(i, i+8).map(async m => {
+      const det = await tmdbGet(`/movie/${m.id}`, { append_to_response: 'release_dates' });
+      return { ...m, ...(det||{}) };
+    }));
+    enriched.push(...batch);
+    if (hint) hint.textContent = `Enriching… ${Math.min(i+8,CAP)}/${CAP} films processed`;
+  }
+  return enriched.filter(m => m.budget > 1_000_000 && m.revenue > 1_000_000);
+}
+
+// ── Train model (Ridge Regression + Feature Standardization) ──
+// Standardizing features to zero-mean / unit-variance before regression
+// ensures ridge's λ penalty is applied equally across all features —
+// otherwise log(budget) (~18) overwhelms genre dummies (0/1) and the
+// coefficients for small-scale features get over-penalized into zero.
+function trainModel(data) {
+  const rows = data.map(m => ({ feats: buildFeatures(m), y: Math.log(m.revenue) }))
+                   .filter(r => r.feats !== null);
+  if (rows.length < 10) return null;
+
+  const X    = rows.map(r => r.feats);
+  const yArr = rows.map(r => r.y);
+  const n = X.length, k = X[0].length;
+
+  // ── Standardize: μ and σ per feature (skip intercept at j=0) ──
+  const fMeans = Array(k).fill(0);
+  const fStds  = Array(k).fill(1);
+  for (let j = 1; j < k; j++) {
+    fMeans[j] = X.reduce((s, r) => s + r[j], 0) / n;
+    const variance = X.reduce((s, r) => s + Math.pow(r[j] - fMeans[j], 2), 0) / n;
+    fStds[j]  = Math.sqrt(variance) || 1; // guard zero-variance columns
+  }
+  const Xs = X.map(row => row.map((v, j) => j === 0 ? 1 : (v - fMeans[j]) / fStds[j]));
+
+  const y   = yArr.map(v => [v]);
+  const Xt  = matT(Xs);
+  const XtX = matMul(Xt, Xs);
+
+  // Ridge: β = (XᵀX + λI)⁻¹Xᵀy
+  const lambda = 1.0; // higher λ works better on standardized features
+  const XtXr   = XtX.map((row, i) => row.map((v, j) => v + (i === j ? lambda : 0)));
+  const XtXi   = matInv(XtXr);
+  if (!XtXi) return null;
+
+  const beta = matMul(matMul(XtXi, Xt), y).map(r => r[0]);
+
+  // Metrics on training set
+  const preds = Xs.map(row => row.reduce((s, v, i) => s + v * beta[i], 0));
+  const yMean = yArr.reduce((s, v) => s + v, 0) / n;
+  const ssTot = yArr.reduce((s, v)    => s + Math.pow(v - yMean, 2),    0);
+  const ssRes = yArr.reduce((s, v, i) => s + Math.pow(v - preds[i], 2), 0);
+  const r2    = Math.max(0, 1 - ssRes / ssTot);
+  const rmse  = Math.sqrt(ssRes / n);
+  return { beta, fMeans, fStds, r2, rmse, rmseUSD: Math.exp(rmse) - 1, n: rows.length, trainData: data };
+}
+
+function mlPredict(m, beta, fMeans, fStds) {
+  const feats = buildFeatures(m);
+  if (!feats) return null;
+  const Xs = feats.map((v, j) => j === 0 ? 1 : (v - fMeans[j]) / fStds[j]);
+  return Math.exp(Xs.reduce((s, v, i) => s + v * beta[i], 0));
+}
+
+// ── Render forecast page ──
+async function renderForecast() {
+  if (mlState.trained) return; // don't retrain on revisit
+  const btn  = document.getElementById('mlTrainBtn');
+  const hint = document.getElementById('mlTrainHint');
+  btn.disabled = true;
+  document.getElementById('mlTrainBtnText').textContent = '⏳ Fetching historical data…';
+  hint.textContent = 'Collecting films across 3 query strategies (takes ~20–30s)…';
+  try {
+    const trainingMovies = await fetchTrainingData();
+    hint.textContent = `${trainingMovies.length} films with verified budget+revenue data found. Training…`;
+    const result = trainModel(trainingMovies);
+    if (!result) {
+      hint.textContent = `Only ${trainingMovies.length} films with budget+revenue found — not enough to train. Try again.`;
+      document.getElementById('mlTrainBtnText').textContent = '↺ Retry';
+      btn.disabled = false; return;
+    }
+    mlState.trained   = true;
+    mlState.beta      = result.beta;
+    mlState.fMeans    = result.fMeans;
+    mlState.fStds     = result.fStds;
+    mlState.r2        = result.r2;
+    mlState.rmse      = result.rmse;
+    mlState.rmseUSD   = result.rmseUSD;
+    mlState.trainData      = result.trainData;
+    mlState.n              = result.n;
+    mlState.trainingMovies = trainingMovies;
+    mlState.featureNames = ['Intercept','log(Budget)','log(Popularity)','Rating','log(Runtime)','Franchise','Action','Animation','Comedy','Horror','Thriller','Sci-Fi','Fantasy','Family','PG','PG-13','R','sin(Month)','cos(Month)'];
+    document.getElementById('mlResults').style.display = 'block';
+    renderMLMetrics();
+    renderFeatureImportance();
+    renderPredActual(trainingMovies);
+    renderNowPlayingPredictions();
+    btn.textContent = '✓ Model Trained';
+    hint.textContent = `Trained on ${result.n} films · R² = ${result.r2.toFixed(3)}`;
+  } catch(e) {
+    hint.textContent = 'Error during training. Check API keys and try again.';
+    btn.disabled = false;
+    document.getElementById('mlTrainBtnText').textContent = '↺ Retry';
+  }
+}
+
+function renderMLMetrics() {
+  const metrics = [
+    { val: mlState.n,                      label: 'Training Films',  sub: 'with verified revenue' },
+    { val: mlState.r2.toFixed(3),          label: 'R² Score',        sub: '1.0 = perfect fit' },
+    { val: `${(mlState.rmseUSD*100).toFixed(0)}%`, label: 'Approx. RMSE',  sub: 'revenue error factor' },
+    { val: mlState.featureNames.length - 1,label: 'Features',        sub: 'budget · genre · franchise · runtime' },
+  ];
+  document.getElementById('mlMetricsGrid').innerHTML = metrics.map(m =>
+    `<div class="forecast-metric-card">
+      <div class="forecast-metric-val">${m.val}</div>
+      <div class="forecast-metric-label">${m.label}</div>
+      <div class="forecast-metric-sub">${m.sub}</div>
+    </div>`
+  ).join('');
+}
+
+function renderFeatureImportance() {
+  const ctx = document.getElementById('featureImportanceChart').getContext('2d');
+  // Skip intercept, show coefficients for remaining features
+  const names  = mlState.featureNames.slice(1);
+  const coeffs = mlState.beta.slice(1);
+  const colors = coeffs.map(c => c >= 0 ? 'rgba(58,184,112,0.75)' : 'rgba(224,80,80,0.75)');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{ label: 'Coefficient', data: coeffs, backgroundColor: colors, borderRadius: 3 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(20,20,36,0.95)', borderColor: '#252540', borderWidth: 1,
+          titleColor: '#e2e2f0', bodyColor: '#9090b0', padding: 10,
+          callbacks: { label: c => ` coefficient: ${c.raw.toFixed(3)}` }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a80', font: { size: 10 } } },
+        y: { grid: { display: false }, ticks: { color: '#9090b0', font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderPredActual(trainingMovies) {
+  const ctx = document.getElementById('predActualChart').getContext('2d');
+  const pts = trainingMovies.slice(0, 60).map(m => {
+    const pred = mlPredict(m, mlState.beta, mlState.fMeans, mlState.fStds);
+    return pred ? { x: m.revenue / 1e6, y: pred / 1e6, title: m.title } : null;
+  }).filter(Boolean);
+  const maxVal = Math.max(...pts.map(p => Math.max(p.x, p.y)));
+  new Chart(ctx, {
+    data: {
+      datasets: [
+        { type: 'scatter', label: 'Films', data: pts,
+          backgroundColor: 'rgba(232,160,32,0.6)', pointRadius: 5 },
+        { type: 'line', label: 'Perfect fit', data: [{x:0,y:0},{x:maxVal,y:maxVal}],
+          borderColor: 'rgba(26,155,170,0.5)', borderWidth: 1, pointRadius: 0,
+          borderDash: [4,4], fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          filter: i => i.datasetIndex === 0,
+          backgroundColor: 'rgba(20,20,36,0.95)', borderColor: '#252540', borderWidth: 1,
+          titleColor: '#e2e2f0', bodyColor: '#9090b0', padding: 10,
+          callbacks: {
+            title: i => i[0]?.raw?.title || '',
+            label: c => [`Actual: ${fmt.M(c.raw.x * 1e6)}`, `Predicted: ${fmt.M(c.raw.y * 1e6)}`]
+          }
+        }
+      },
+      scales: {
+        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9090b0',font:{size:10},callback:v=>`$${v}M`},
+             title:{display:true,text:'Actual ($M)',color:'#5a5a80',font:{size:10}} },
+        y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#9090b0',font:{size:10},callback:v=>`$${v}M`},
+             title:{display:true,text:'Predicted ($M)',color:'#5a5a80',font:{size:10}} }
+      }
+    }
+  });
+}
+
+function renderNowPlayingPredictions() {
+  const el = document.getElementById('mlAccuracyBody');
+  if (!el) return;
+  const movies = mlState.trainingMovies;
+  if (!movies || !movies.length) { el.textContent = 'Train the model to see accuracy stats.'; return; }
+
+  // Compute accuracy on the full training set (films with verified budget + revenue)
+  const results = movies.map(m => {
+    const pred   = mlPredict(m, mlState.beta, mlState.fMeans, mlState.fStds);
+    const actual = m.revenue > 0 ? m.revenue : null;
+    if (!pred || !actual) return null;
+    const absErr = Math.abs((actual - pred) / pred * 100);
+    return absErr;
+  }).filter(v => v !== null);
+
+  if (!results.length) { el.textContent = 'No films with reported revenue found.'; return; }
+
+  const n        = results.length;
+  const within20 = results.filter(e => e <= 20).length;
+  const within40 = results.filter(e => e <= 40).length;
+  const avgErr   = results.reduce((s, e) => s + e, 0) / n;
+  const pct20    = Math.round(within20 / n * 100);
+  const pct40    = Math.round(within40 / n * 100);
+
+  el.innerHTML = `
+    <div class="ml-acc-stats">
+      <div class="ml-acc-stat">
+        <div class="ml-acc-stat-val">${within20}<span style="font-size:.55em;color:var(--text3)"> / ${n}</span></div>
+        <div class="ml-acc-stat-label">Within 20%</div>
+      </div>
+      <div class="ml-acc-stat">
+        <div class="ml-acc-stat-val">${within40}<span style="font-size:.55em;color:var(--text3)"> / ${n}</span></div>
+        <div class="ml-acc-stat-label">Within 40%</div>
+      </div>
+      <div class="ml-acc-stat">
+        <div class="ml-acc-stat-val">±${avgErr.toFixed(0)}<span style="font-size:.55em;color:var(--text3)">%</span></div>
+        <div class="ml-acc-stat-label">Avg. Error</div>
+      </div>
+    </div>
+    <div class="ml-acc-bar-wrap">
+      <div class="ml-acc-bar-label"><span>Within 20%</span><span>${pct20}%</span></div>
+      <div class="ml-acc-bar-track"><div class="ml-acc-bar-fill acc-20" style="width:${pct20}%"></div></div>
+    </div>
+    <div class="ml-acc-bar-wrap">
+      <div class="ml-acc-bar-label"><span>Within 40%</span><span>${pct40}%</span></div>
+      <div class="ml-acc-bar-track"><div class="ml-acc-bar-fill acc-40" style="width:${pct40}%"></div></div>
+    </div>
+    <div class="ml-acc-footer">${n} historical films with verified box office · Model R² = ${mlState.r2?.toFixed(2)||'—'} · n = ${mlState.n||'—'}</div>
+  `;
+}
+
+function runHypothetical() {
+  if (!mlState.beta) return;
+  const budget    = parseFloat(document.getElementById('hyp-budget').value) * 1e6;
+  const rating    = parseFloat(document.getElementById('hyp-rating').value);
+  const runtime   = 110; // fixed at training-set median — not user-facing (see buildFeatures note)
+  const genre     = document.getElementById('hyp-genre').value;
+  const month     = parseInt(document.getElementById('hyp-month').value);
+  const franchise = parseInt(document.getElementById('hyp-franchise').value);
+  const cert      = document.getElementById('hyp-cert').value;
+  const monLabel  = document.getElementById('hyp-month').selectedOptions[0].text;
+  const genLabel  = document.getElementById('hyp-genre').selectedOptions[0].text;
+  if (!budget || !rating || isNaN(month)) return;
+
+  // Popularity is internal — fixed at training-set median, not user-facing
+  const medPop = 60;
+  const sinM   = Math.sin(2 * Math.PI * month / 12);
+  const cosM   = Math.cos(2 * Math.PI * month / 12);
+
+  // Must match buildFeatures() order exactly
+  const feats = [
+    1,
+    Math.log(budget),
+    Math.log(medPop + 1),
+    rating,
+    Math.log(runtime),
+    franchise,
+    genre==='action'?1:0,
+    genre==='animation'?1:0,
+    genre==='comedy'?1:0,
+    genre==='horror'?1:0,
+    genre==='thriller'?1:0,
+    genre==='science fiction'?1:0,
+    genre==='fantasy'?1:0,
+    genre==='family'?1:0,
+    cert==='PG'   ?1:0,
+    cert==='PG-13'?1:0,
+    cert==='R'    ?1:0,
+    sinM,
+    cosM,
+  ];
+
+  // Standardize using training-set means and stds before prediction
+  const featsS  = feats.map((v, j) => j === 0 ? 1 : (v - mlState.fMeans[j]) / mlState.fStds[j]);
+  const logPred = featsS.reduce((s, v, i) => s + v * mlState.beta[i], 0);
+  const pred    = Math.exp(logPred);
+  const lo      = pred / Math.exp(mlState.rmse);
+  const hi      = pred * Math.exp(mlState.rmse);
+
+  // Contextual tier
+  let tier = '';
+  if (pred >= 700e6)      tier = 'All-time blockbuster range — fewer than 25 films in history.';
+  else if (pred >= 400e6) tier = 'Major blockbuster — top ~5% of all wide releases.';
+  else if (pred >= 150e6) tier = 'Strong wide release — solid commercial performer.';
+  else if (pred >= 50e6)  tier = 'Mid-range release — profitable at the right budget.';
+  else                     tier = 'Niche / prestige territory.';
+
+  document.getElementById('hypResult').style.display = 'block';
+  document.getElementById('hypResultCap').style.display = 'none';
+  document.getElementById('hypResultValue').textContent = fmt.M(pred);
+  document.getElementById('hypResultRange').textContent =
+    `Confidence range: ${fmt.M(lo)} – ${fmt.M(hi)}  ·  ${tier}`;
+  document.getElementById('hypResultBreakdown').innerHTML =
+    `${genLabel}&nbsp;&nbsp;·&nbsp;&nbsp;` +
+    `${monLabel}&nbsp;&nbsp;·&nbsp;&nbsp;` +
+    `${cert}&nbsp;&nbsp;·&nbsp;&nbsp;` +
+    `${franchise ? 'Franchise' : 'Original'}&nbsp;&nbsp;·&nbsp;&nbsp;` +
+    `Model R² = ${mlState.r2.toFixed(2)}&nbsp;&nbsp;·&nbsp;&nbsp;n = ${mlState.n}`;
+}
+
+// ── Expose for tab switch ──
+// ═══════════════════════════════════════════════════════════════════
 function openSettings() {
   document.getElementById('s-tmdb').value     = CFG.tmdb;
   document.getElementById('s-omdb').value     = CFG.omdb;
@@ -2480,7 +4012,7 @@ async function doHomeSearch(query) {
     const rating = ratingVal ? `<div class="home-poster-rating">★ ${ratingVal.toFixed(1)}</div>` : '';
     const fullImg = `${TMDB_IMG}original${m.poster_path}`;
     const title = m.title.replace(/'/g, "\\'");
-    return `<div class="home-poster-card" onclick="openPoster('${fullImg}','${title}')">
+    return `<div class="home-poster-card" onclick="openPoster('${fullImg}','${title}',${m.id})">
       <img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">
       ${rating}
       <div class="home-poster-overlay">
@@ -2551,18 +4083,78 @@ document.getElementById('modalClose').addEventListener('click', () => document.g
 document.getElementById('movieModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
 
 document.getElementById('opsRefreshBtn').addEventListener('click', renderOPS);
+document.getElementById('mlTrainBtn').addEventListener('click', renderForecast);
+window.runHypothetical = runHypothetical;
 
-function openPoster(src, title) {
-  document.getElementById('posterLightboxImg').src = src;
+// Poster lightbox state
+const _lb = { posters: [], idx: 0 };
+
+function _lbRender() {
+  const img     = document.getElementById('posterLightboxImg');
+  const counter = document.getElementById('posterCounter');
+  const strip   = document.getElementById('posterThumbStrip');
+  img.src = `${TMDB_IMG}original${_lb.posters[_lb.idx]}`;
+  counter.textContent = _lb.posters.length > 1 ? `${_lb.idx + 1} / ${_lb.posters.length}` : '';
+  // Rebuild thumbnail strip
+  strip.innerHTML = _lb.posters.map((p, i) =>
+    `<img class="poster-thumb${i === _lb.idx ? ' active' : ''}"
+      src="${TMDB_IMG}w92${p}" alt="Poster ${i+1}"
+      onclick="event.stopPropagation();_lbGoto(${i})">`
+  ).join('');
+}
+
+function _lbGoto(i) {
+  _lb.idx = i;
+  _lbRender();
+}
+
+async function openPoster(firstSrc, title, movieId) {
+  _lb.idx = 0;
+  const firstPath = firstSrc.replace(`${TMDB_IMG}original`, '');
+  _lb.posters = [firstPath];
   document.getElementById('posterLightboxTitle').textContent = title;
   document.getElementById('posterLightbox').classList.add('open');
+  _lbRender();
+
+  // Fetch official posters: English or language-neutral, deduplicated, aspect-ratio filtered
+  if (movieId && CFG.tmdb) {
+    const data = await tmdbGet(`/movie/${movieId}/images`, { include_image_language: 'en,null' });
+    const seen = new Set();
+    const official = (data?.posters || [])
+      .filter(p => {
+        // Language: English or neutral only
+        if (p.iso_639_1 !== 'en' && p.iso_639_1 !== null) return false;
+        // Aspect ratio: standard portrait poster is ~0.667 (2:3) — reject anything outside that range
+        if (Math.abs(p.aspect_ratio - 0.667) > 0.05) return false;
+        // Vote count: require at least 1 vote to filter out unreviewed fan uploads
+        if ((p.vote_count || 0) < 1) return false;
+        // Deduplicate by file_path
+        if (seen.has(p.file_path)) return false;
+        seen.add(p.file_path);
+        return true;
+      })
+      .sort((a, b) => b.vote_average - a.vote_average || b.vote_count - a.vote_count)
+      .slice(0, 5)
+      .map(p => p.file_path);
+
+    if (official.length > 0) {
+      const hasFirst = official.includes(firstPath);
+      _lb.posters = hasFirst ? official : [firstPath, ...official.slice(0, 4)];
+      _lbRender();
+    }
+  }
 }
+
 function closePoster() {
   document.getElementById('posterLightbox').classList.remove('open');
   document.getElementById('posterLightboxImg').src = '';
+  document.getElementById('posterThumbStrip').innerHTML = '';
 }
+
 document.getElementById('posterLightboxClose').addEventListener('click', closePoster);
-document.getElementById('posterLightbox').addEventListener('click', e => { if (e.target === e.currentTarget || e.target === document.getElementById('posterLightboxImg')) closePoster(); });
+document.getElementById('posterLightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closePoster();
+});
 
 const homeSearchInput = document.getElementById('homeSearchInput');
 homeSearchInput.addEventListener('input', () => {
@@ -2577,6 +4169,11 @@ document.addEventListener('keydown', e => {
     document.getElementById('movieModal').classList.remove('open');
     document.getElementById('settingsModal').classList.remove('open');
     closePoster();
+    closeImaxModal();
+  }
+  if (document.getElementById('posterLightbox').classList.contains('open')) {
+    if (e.key === 'ArrowLeft'  && _lb.idx > 0)                      { _lb.idx--; _lbRender(); }
+    if (e.key === 'ArrowRight' && _lb.idx < _lb.posters.length - 1) { _lb.idx++; _lbRender(); }
   }
 });
 
@@ -2586,8 +4183,9 @@ document.addEventListener('keydown', e => {
 window.openModal = openModal; // expose for inline handlers
 
 (async function init() {
-  // Start on home tab — Box Office loads lazily when that tab is clicked
   switchTab('home');
+  // Eagerly kick off data fetch in the background so all tabs have data ready immediately
+  if (CFG.tmdb) loadMovies();
 })();
 </script>
 </body>
