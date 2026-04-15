@@ -15,7 +15,12 @@
       "WebFetch(domain:ymcinema.com)",
       "WebFetch(domain:www.kodak.com)",
       "WebFetch(domain:www.indiewire.com)",
-      "WebFetch(domain:en.wikipedia.org)"
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.flatpanelshd.com)",
+      "WebFetch(domain:movieweb.com)",
+      "WebFetch(domain:britishcinematographer.co.uk)",
+      "WebFetch(domain:definitionmagazine.com)",
+      "WebFetch(domain:sony-cinematography.com)"
     ]
   }
 }
