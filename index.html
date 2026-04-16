@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -837,7 +839,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .imax-hero-title{font-family:var(--font-head);font-size:clamp(36px,6vw,72px);letter-spacing:6px;color:var(--text);line-height:1}
 .imax-hero-sub{font-size:13px;color:var(--text3);margin-top:14px;font-family:var(--font-mono);letter-spacing:.5px}
 .imax-section{padding:0 0 48px}
-.imax-section-title{font-family:var(--font-head);font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.imax-section-title{font-family:var(--font-head);font-size:18px;letter-spacing:3.5px;color:var(--gold);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .imax-compare-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch}
 @media(max-width:700px){.imax-compare-grid{grid-template-columns:1fr;gap:16px}}
 .imax-compare-vs{display:flex;align-items:center;justify-content:center;padding:0 24px;font-family:var(--font-head);font-size:18px;letter-spacing:3px;color:var(--text3)}
@@ -1053,6 +1055,70 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 }
 .poster-thumb:hover{opacity:.85;transform:translateY(-2px)}
 .poster-thumb.active{opacity:1;border-color:var(--gold)}
+
+/* ── Premium IMAX Finder ─────────────────────────────────── */
+.theater-finder-intro{font-size:12px;color:var(--text3);font-family:var(--font-mono);line-height:1.85;margin-bottom:22px;max-width:700px}
+.theater-controls{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+.theater-search-row{display:flex;gap:8px;flex-wrap:wrap}
+.theater-search-wrap{flex:1;min-width:200px;position:relative}
+.theater-search-wrap::before{content:'⌕';position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px;pointer-events:none;line-height:1}
+.theater-search-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 14px 10px 36px;color:var(--text1);font-family:var(--font-mono);font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box}
+.theater-search-input:focus{border-color:rgba(212,175,55,.55);box-shadow:0 0 0 3px rgba(212,175,55,.07)}
+.theater-search-input::placeholder{color:var(--text3)}
+.theater-search-btn{padding:10px 22px;background:var(--gold);color:#111;border:none;border-radius:6px;font-family:var(--font-mono);font-size:11px;letter-spacing:1.5px;cursor:pointer;font-weight:700;transition:background .15s,transform .1s;white-space:nowrap}
+.theater-search-btn:hover{background:#c9a227;transform:translateY(-1px)}
+.theater-search-btn:active{transform:translateY(0)}
+.theater-locate-btn{padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.theater-locate-btn:hover{border-color:rgba(212,175,55,.5);color:var(--gold)}
+.theater-filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.theater-filter-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;color:var(--text3);margin-right:4px}
+.theater-filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.theater-filter-btn .fmt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.theater-filter-btn.active-all{border-color:rgba(255,255,255,.3);color:var(--text1);background:rgba(255,255,255,.05)}
+.theater-filter-btn.active-70mm{border-color:rgba(212,175,55,.6);color:#D4AF37;background:rgba(212,175,55,.08)}
+.theater-filter-btn.active-laser{border-color:rgba(26,155,170,.6);color:var(--teal2);background:rgba(26,155,170,.08)}
+.theater-filter-btn:hover:not(.active-all):not(.active-70mm):not(.active-laser){border-color:rgba(255,255,255,.25);color:var(--text1)}
+.theater-count-pill{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,.08);color:var(--text3)}
+#theaterMap{height:440px;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin-bottom:18px;position:relative}
+.theater-map-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:18px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;width:fit-content}
+.theater-legend-item{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;color:var(--text2);letter-spacing:.5px}
+.theater-legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.theater-legend-dot.gold{background:#D4AF37;box-shadow:0 0 6px rgba(212,175,55,.5)}
+.theater-legend-dot.teal{background:#1A9BAA;box-shadow:0 0 6px rgba(26,155,170,.4)}
+.theater-results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.theater-results-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;color:var(--text3)}
+.theater-results-list{display:flex;flex-direction:column;gap:8px}
+.theater-result-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s,transform .15s;cursor:pointer}
+.theater-result-card:hover{transform:translateX(3px)}
+.theater-result-card.fmt-70mm{border-left:3px solid rgba(212,175,55,.6)}
+.theater-result-card.fmt-70mm:hover{border-color:rgba(212,175,55,.6)}
+.theater-result-card.fmt-laser:hover{border-color:rgba(26,155,170,.4)}
+.theater-result-num{font-family:var(--font-mono);font-size:10px;color:var(--text3);min-width:24px;padding-top:2px;letter-spacing:.5px}
+.theater-result-info{flex:1;min-width:0}
+.theater-result-name{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:3px;line-height:1.3}
+.theater-result-location{font-size:11px;color:var(--text2);font-family:var(--font-mono)}
+.theater-result-address{font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-top:3px}
+.theater-result-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.theater-result-dir{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:3px 10px;border-radius:3px;border:1px solid var(--border);color:var(--text3);text-decoration:none;transition:border-color .2s,color .2s}
+.theater-result-dir:hover{border-color:rgba(212,175,55,.5);color:var(--gold)}
+.theater-result-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.theater-result-dist{font-family:var(--font-mono);font-size:13px;font-weight:600;white-space:nowrap}
+.theater-result-dist.gold{color:#D4AF37}
+.theater-result-dist.teal{color:#1A9BAA}
+.theater-fmt-badge{display:inline-block;font-family:var(--font-mono);font-size:9px;letter-spacing:1.2px;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.theater-fmt-badge.fmt-70mm{background:rgba(212,175,55,.09);border:1px solid rgba(212,175,55,.3);color:#D4AF37}
+.theater-fmt-badge.fmt-laser{background:rgba(26,155,170,.08);border:1px solid rgba(26,155,170,.3);color:#1A9BAA}
+.theater-empty-state{text-align:center;padding:40px 20px;font-family:var(--font-mono);font-size:12px;color:var(--text3);line-height:2}
+/* Leaflet dark theme overrides */
+.leaflet-popup-content-wrapper{background:#181818;border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 32px rgba(0,0,0,.7);border-radius:8px;padding:0}
+.leaflet-popup-content{margin:12px 16px;color:var(--text1);font-family:var(--font-mono);font-size:11px;line-height:1.7;min-width:180px}
+.leaflet-popup-tip-container{display:none}
+.leaflet-popup-close-button{color:var(--text3)!important;font-size:16px!important;padding:6px 8px!important}
+.leaflet-popup-close-button:hover{color:var(--text1)!important}
+.leaflet-container{background:#0e0e0e;font-family:var(--font-mono)}
+.leaflet-control-zoom a{background:var(--bg3)!important;color:var(--text1)!important;border-color:var(--border)!important;font-family:var(--font-mono)}
+.leaflet-control-zoom a:hover{background:var(--bg2)!important}
+.leaflet-bar{border:1px solid var(--border)!important;box-shadow:none!important;border-radius:6px!important;overflow:hidden}
 </style>
 </head>
 <body>
@@ -1531,6 +1597,43 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
             All three formats share the same screen width. The difference is how much vertical space you gain. A film shot with IMAX 70mm cameras fills <strong style="color:var(--gold)">~40% more of the screen vertically</strong> than a standard scope film — that's not an upgrade, that's a different medium.
           </p>
         </div>
+      </div>
+
+      <!-- Premium IMAX Theater Finder -->
+      <div class="imax-section" id="theaterFinderSection">
+        <div class="imax-section-title">FIND PREMIUM IMAX NEAR YOU</div>
+        <p class="theater-finder-intro">Only a handful of theaters worldwide are equipped with a 15/70mm IMAX film projector — the format used to shoot and present Dunkirk, Oppenheimer, and Interstellar at their true resolution. Laser Digital locations offer the full 1.43:1 expanded picture with 4K dual laser projection. Enter your location to find what's closest.</p>
+        <div class="theater-controls">
+          <div class="theater-search-row">
+            <div class="theater-search-wrap">
+              <input type="text" id="theaterSearchInput" class="theater-search-input" placeholder="City, zip code, or address…" onkeydown="if(event.key==='Enter')searchTheaterLocation()">
+            </div>
+            <button class="theater-search-btn" id="theaterSearchBtn" onclick="searchTheaterLocation()">SEARCH</button>
+            <button class="theater-locate-btn" id="theaterLocateBtn" onclick="useMyLocation()"><span>📍</span> USE MY LOCATION</button>
+            <button class="theater-locate-btn" id="theaterResetBtn" onclick="resetTheaterMap()" style="display:none;border-color:rgba(255,255,255,.15);color:var(--text3)">↺ RESET</button>
+          </div>
+          <div class="theater-filter-row">
+            <span class="theater-filter-label">FORMAT</span>
+            <button class="theater-filter-btn active-all" data-filter="all" onclick="setTheaterFilter('all',this)">
+              <span class="fmt-dot" style="background:rgba(255,255,255,.4)"></span> ALL <span class="theater-count-pill" id="countAll">28</span>
+            </button>
+            <button class="theater-filter-btn" data-filter="70mm_film" onclick="setTheaterFilter('70mm_film',this)">
+              <span class="fmt-dot" style="background:#D4AF37"></span> 70MM FILM <span class="theater-count-pill" id="count70mm">9</span>
+            </button>
+            <button class="theater-filter-btn" data-filter="laser_digital" onclick="setTheaterFilter('laser_digital',this)">
+              <span class="fmt-dot" style="background:#1A9BAA"></span> LASER DIGITAL <span class="theater-count-pill" id="countLaser">19</span>
+            </button>
+          </div>
+        </div>
+        <div class="theater-map-legend">
+          <div class="theater-legend-item"><div class="theater-legend-dot gold"></div> 15/70mm Film — highest resolution, 1.43:1</div>
+          <div class="theater-legend-item"><div class="theater-legend-dot teal"></div> IMAX with Laser Digital — 4K dual laser, 1.43:1</div>
+        </div>
+        <div id="theaterMap"></div>
+        <div id="theaterResultsHeader" style="display:none" class="theater-results-header">
+          <span class="theater-results-label" id="theaterResultsLabel">SORTED BY DISTANCE</span>
+        </div>
+        <div id="theaterResultsList" class="theater-results-list"></div>
       </div>
 
       <!-- Filmed in IMAX vs Released for IMAX -->
@@ -2659,6 +2762,276 @@ async function renderIMAX() {
   }).join('');
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// PREMIUM IMAX THEATER FINDER
+// ═══════════════════════════════════════════════════════════════════
+const IMAX_THEATERS = [
+  // ── 70mm Film ─────────────────────────────────────────────────
+  { id:1,  name:'Harkins Arizona Mills 18 & IMAX',                      format:'70mm_film',     city:'Tempe',          state:'AZ', country:'US', address:'5000 S Arizona Mills Cir, Tempe, AZ 85282',                          lat:33.3853645,  lng:-111.9658986 },
+  { id:2,  name:'Regal Irvine Spectrum & IMAX',                         format:'70mm_film',     city:'Irvine',         state:'CA', country:'US', address:'500 Spectrum Center Dr, Irvine, CA 92618',                           lat:33.6516874,  lng:-117.7450797 },
+  { id:3,  name:'Universal Cinema AMC at CityWalk Hollywood & IMAX',    format:'70mm_film',     city:'Universal City', state:'CA', country:'US', address:'100 Universal City Plaza, Universal City, CA 91608',                 lat:34.1371163,  lng:-118.352547  },
+  { id:4,  name:'AMC Metreon 16 & IMAX',                                format:'70mm_film',     city:'San Francisco',  state:'CA', country:'US', address:'135 4th St #3000, San Francisco, CA 94103',                         lat:37.7843726,  lng:-122.4034442 },
+  { id:5,  name:'AutoNation IMAX 3D Theater',                           format:'70mm_film',     city:'Fort Lauderdale',state:'FL', country:'US', address:'401 SW 2nd St, Fort Lauderdale, FL 33312',                           lat:26.120826,   lng:-80.1481023  },
+  { id:6,  name:'Indiana State Museum IMAX Theatre',                    format:'70mm_film',     city:'Indianapolis',   state:'IN', country:'US', address:'650 W Washington St, Indianapolis, IN 46204',                        lat:39.7686431,  lng:-86.1696711  },
+  { id:7,  name:'AMC Lincoln Square 13 & IMAX',                         format:'70mm_film',     city:'New York',       state:'NY', country:'US', address:'1998 Broadway, New York, NY 10023',                                  lat:40.7751676,  lng:-73.9819053  },
+  { id:8,  name:'Cinemark Dallas & IMAX',                               format:'70mm_film',     city:'Dallas',         state:'TX', country:'US', address:'11819 Webb Chapel Rd, Dallas, TX 75234',                             lat:32.9103298,  lng:-96.8744776  },
+  { id:9,  name:'Cineplex Cinemas Vaughan',                             format:'70mm_film',     city:'Woodbridge',     state:'ON', country:'CA', address:'3555 Hwy 7 W, Woodbridge, ON L4L 6B1, Canada',                      lat:43.7886294,  lng:-79.5428643  },
+  // ── Laser Digital ─────────────────────────────────────────────
+  { id:10, name:'Bullock Museum IMAX Theatre',                          format:'laser_digital', city:'Austin',         state:'TX', country:'US', address:'1800 N Congress Ave, Austin, TX 78701',                              lat:30.2805906,  lng:-97.7389955  },
+  { id:11, name:"Branson's IMAX Entertainment Complex",                 format:'laser_digital', city:'Branson',        state:'MO', country:'US', address:'3562 Shepherd of the Hills Expy, Branson, MO 65616',                 lat:36.6535105,  lng:-93.287355   },
+  { id:12, name:'Airbus IMAX Theater (Steven F. Udvar-Hazy Center)',    format:'laser_digital', city:'Chantilly',      state:'VA', country:'US', address:'14390 Air and Space Museum Pkwy, Chantilly, VA 20151',               lat:38.9119701,  lng:-77.4432801  },
+  { id:13, name:'Tennessee Aquarium IMAX 3D Theater',                   format:'laser_digital', city:'Chattanooga',    state:'TN', country:'US', address:'201 Chestnut St, Chattanooga, TN 37402',                             lat:35.0544542,  lng:-85.3122596  },
+  { id:14, name:'Royal Cinemas 14 & IMAX',                              format:'laser_digital', city:'Pooler',         state:'GA', country:'US', address:'5 Towne Center Ct, Pooler, GA 31322',                                lat:32.1468719,  lng:-81.2524856  },
+  { id:15, name:'Sunbrella IMAX 3D Theater',                            format:'laser_digital', city:'Reading',        state:'MA', country:'US', address:'50 Walkers Brook Dr, Reading, MA 01867',                             lat:42.5202021,  lng:-71.0897637  },
+  { id:16, name:'PACCAR IMAX Theater at Pacific Science Center',        format:'laser_digital', city:'Seattle',        state:'WA', country:'US', address:'200 Sue Bird Ct N, Seattle, WA 98109',                               lat:47.6198204,  lng:-122.3507218 },
+  { id:17, name:'Kramer IMAX Theatre',                                  format:'laser_digital', city:'Regina',         state:'SK', country:'CA', address:'2903 Powerhouse Dr, Regina, SK S4N 0A1, Canada',                     lat:50.4325544,  lng:-104.5936036 },
+  { id:18, name:'Scotiabank Theatre Toronto & IMAX',                    format:'laser_digital', city:'Toronto',        state:'ON', country:'CA', address:'259 Richmond St W, Toronto, ON M5V 3M6, Canada',                     lat:43.6487721,  lng:-79.3912304  },
+  { id:19, name:'Vue Manchester IMAX & The Printworks',                 format:'laser_digital', city:'Manchester',     state:null, country:'GB', address:'The Printworks, Manchester M4 2BS, UK',                              lat:53.485185,   lng:-2.2407754   },
+  { id:20, name:'IMAX Melbourne (Melbourne Museum)',                    format:'laser_digital', city:'Melbourne',      state:'VIC',country:'AU', address:'Rathdowne St, Carlton VIC 3053, Australia',                          lat:-37.8036025, lng:144.9706544  },
+  { id:21, name:'IMAX Sydney',                                          format:'laser_digital', city:'Sydney',         state:'NSW',country:'AU', address:'31 Wheat Rd, Sydney NSW 2000, Australia',                            lat:-33.8735476, lng:151.20117    },
+  { id:22, name:'Fusion Superplex & IMAX',                             format:'laser_digital', city:'Nassau',         state:null, country:'BS', address:'John F Kennedy Dr, Nassau, Bahamas',                                 lat:25.0526137,  lng:-77.3979051  },
+  { id:23, name:'Kinepolis Brussels & IMAX',                            format:'laser_digital', city:'Brussels',       state:null, country:'BE', address:'Av. des Athlètes, 1020 Brussels, Belgium',                           lat:50.8959675,  lng:4.3369381    },
+  { id:24, name:'Pathé Odysseum (Montpellier IMAX)',                   format:'laser_digital', city:'Montpellier',    state:null, country:'FR', address:'235 Rue Georges Méliès, 34000 Montpellier, France',                  lat:43.604476,   lng:3.9155203    },
+  { id:25, name:'Filmpalast am ZKM & IMAX',                             format:'laser_digital', city:'Karlsruhe',      state:null, country:'DE', address:'Brauerstr. 40, 76135 Karlsruhe, Germany',                            lat:49.0004959,  lng:8.3851595    },
+  { id:26, name:'IMAX 3D, Sinsheim Auto & Technik Museum',             format:'laser_digital', city:'Sinsheim',       state:null, country:'DE', address:'Museumsplatz, 74889 Sinsheim, Germany',                              lat:49.238451,   lng:8.89687      },
+  { id:27, name:'Event Cinemas Queen Street & IMAX',                    format:'laser_digital', city:'Auckland',       state:null, country:'NZ', address:"Level 3, 291/297 Queen St, Auckland CBD 1010, New Zealand",          lat:-36.85195,   lng:174.7638387  },
+  { id:28, name:'Miramar IMAX',                                         format:'laser_digital', city:'Taipei',         state:null, country:'TW', address:'22 Jingye 3rd Rd, Zhongshan District, Taipei, Taiwan',               lat:25.0832173,  lng:121.5575147  },
+];
+
+// ── State ──────────────────────────────────────────────────────────
+let _tMap        = null;   // Leaflet map instance
+let _tMarkers    = {};     // id → Leaflet marker
+let _tUserPin    = null;   // user location marker
+let _tRouteLine  = null;   // active route polyline
+let _tFilter     = 'all';  // 'all' | '70mm_film' | 'laser_digital'
+let _tUserLatLng = null;   // last searched coords
+
+// ── Haversine (miles) ──────────────────────────────────────────────
+function _tHav(lat1, lon1, lat2, lon2) {
+  const R = 3958.8, r = Math.PI / 180;
+  const a = Math.sin((lat2-lat1)*r/2)**2 + Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin((lon2-lon1)*r/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ── Marker icons ───────────────────────────────────────────────────
+function _tIcon(fmt) {
+  const is70 = fmt === '70mm_film';
+  const color = is70 ? '#D4AF37' : '#1A9BAA';
+  const glow  = is70 ? 'rgba(212,175,55,.65)' : 'rgba(26,155,170,.5)';
+  const size  = is70 ? 14 : 11;
+  const ring  = is70 ? `<div style="position:absolute;inset:-4px;border-radius:50%;border:2px solid ${color}44;animation:tPulse 2.5s ease-in-out infinite"></div>` : '';
+  return L.divIcon({
+    className: '',
+    html: `<div style="position:relative;width:${size}px;height:${size}px">${ring}<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};box-shadow:0 0 8px ${glow},0 0 2px ${color}"></div></div>`,
+    iconSize: [size, size], iconAnchor: [size/2, size/2], popupAnchor: [0, -(size/2+4)],
+  });
+}
+function _tUserIcon() {
+  return L.divIcon({
+    className: '',
+    html: `<svg width="24" height="32" viewBox="0 0 24 32" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 3px 6px rgba(0,0,0,.7))"><path d="M12 0C5.373 0 0 5.373 0 12c0 9 12 20 12 20S24 21 24 12C24 5.373 18.627 0 12 0z" fill="#ffffff"/><circle cx="12" cy="12" r="5" fill="#111"/></svg>`,
+    iconSize: [24, 32], iconAnchor: [12, 32], popupAnchor: [0, -34],
+  });
+}
+
+// ── Init map ───────────────────────────────────────────────────────
+function initTheaterMap() {
+  if (_tMap) { _tMap.invalidateSize(); return; }
+  _tMap = L.map('theaterMap', { zoomControl: true, attributionControl: true }).setView([30, 10], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://openstreetmap.org/copyright" style="color:#666">OpenStreetMap</a> © <a href="https://carto.com" style="color:#666">CARTO</a>',
+    subdomains: 'abcd', maxZoom: 19,
+  }).addTo(_tMap);
+  // Add pulse keyframe once
+  if (!document.getElementById('tPulseStyle')) {
+    const s = document.createElement('style');
+    s.id = 'tPulseStyle';
+    s.textContent = '@keyframes tPulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}';
+    document.head.appendChild(s);
+  }
+  _plotMarkers();
+}
+
+// ── Plot / update markers ──────────────────────────────────────────
+function _plotMarkers() {
+  // Remove all existing
+  Object.values(_tMarkers).forEach(m => m.remove());
+  _tMarkers = {};
+  const visible = IMAX_THEATERS.filter(t => _tFilter === 'all' || t.format === _tFilter);
+  visible.forEach(t => {
+    const loc    = [t.city, t.state, t.country].filter(Boolean).join(' · ');
+    const fmtLbl = t.format === '70mm_film' ? '15 / 70MM FILM' : 'IMAX WITH LASER';
+    const fmtClr = t.format === '70mm_film' ? '#D4AF37' : '#1A9BAA';
+    const popup  = `<div>
+      <div style="font-size:11px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.4">${t.name}</div>
+      <div style="font-size:10px;color:#aaa;margin-bottom:6px">${loc}</div>
+      <div style="font-size:9px;letter-spacing:1.5px;padding:2px 8px;border-radius:3px;background:${fmtClr}18;border:1px solid ${fmtClr}44;color:${fmtClr};display:inline-block">${fmtLbl}</div>
+      <div style="font-size:9px;color:#666;margin-top:6px;line-height:1.5">${t.address}</div>
+    </div>`;
+    _tMarkers[t.id] = L.marker([t.lat, t.lng], { icon: _tIcon(t.format) })
+      .addTo(_tMap)
+      .bindPopup(popup, { maxWidth: 240, minWidth: 200 });
+  });
+}
+
+// ── Format filter ──────────────────────────────────────────────────
+function setTheaterFilter(filter, btn) {
+  _tFilter = filter;
+  document.querySelectorAll('.theater-filter-btn').forEach(b => {
+    b.classList.remove('active-all','active-70mm','active-laser');
+  });
+  if (filter === 'all')            btn.classList.add('active-all');
+  else if (filter === '70mm_film') btn.classList.add('active-70mm');
+  else                             btn.classList.add('active-laser');
+  if (_tMap) _plotMarkers();
+  if (_tUserLatLng) {
+    _renderTheaterList(_tUserLatLng[0], _tUserLatLng[1]);
+    // Reroute to nearest theater still visible under the new filter
+    const visible = IMAX_THEATERS.filter(t => filter === 'all' || t.format === filter);
+    if (visible.length) {
+      const nearest = visible.map(t => ({ ...t, dist: _tHav(_tUserLatLng[0], _tUserLatLng[1], t.lat, t.lng) }))
+                             .sort((a, b) => a.dist - b.dist)[0];
+      _drawRoute(_tUserLatLng[0], _tUserLatLng[1], nearest.lat, nearest.lng, nearest.id);
+    }
+  }
+}
+
+// ── Results list (nearest 10) ──────────────────────────────────────
+function _renderTheaterList(lat, lng) {
+  const header = document.getElementById('theaterResultsHeader');
+  const list   = document.getElementById('theaterResultsList');
+  const label  = document.getElementById('theaterResultsLabel');
+
+  const visible  = IMAX_THEATERS.filter(t => _tFilter === 'all' || t.format === _tFilter);
+  const withDist = visible.map(t => ({ ...t, dist: _tHav(lat, lng, t.lat, t.lng) }))
+                          .sort((a, b) => a.dist - b.dist)
+                          .slice(0, 10);
+
+  header.style.display = 'flex';
+  label.textContent = `NEAREST ${withDist.length} · SORTED BY DISTANCE`;
+
+  list.innerHTML = withDist.map((t, i) => {
+    const is70  = t.format === '70mm_film';
+    const loc   = [t.city, t.state, t.country !== 'US' ? t.country : ''].filter(Boolean).join(', ');
+    const dist  = t.dist < 10 ? `${t.dist.toFixed(1)} mi` : `${Math.round(t.dist).toLocaleString()} mi`;
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(t.address)}`;
+    return `<div class="theater-result-card ${is70 ? 'fmt-70mm' : 'fmt-laser'}" onclick="_flyToTheater(${t.id})">
+      <div class="theater-result-num">#${i+1}</div>
+      <div class="theater-result-info">
+        <div class="theater-result-name">${t.name}</div>
+        <div class="theater-result-location">${loc}</div>
+        <div class="theater-result-address">${t.address}</div>
+        <div class="theater-result-actions">
+          <a class="theater-result-dir" href="${mapsUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗ DIRECTIONS</a>
+        </div>
+      </div>
+      <div class="theater-result-meta">
+        <div class="theater-result-dist ${is70 ? 'gold' : 'teal'}">${dist}</div>
+        <div class="theater-fmt-badge ${is70 ? 'fmt-70mm' : 'fmt-laser'}">${is70 ? '70MM FILM' : 'LASER'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Routing via OSRM (free, no key) ───────────────────────────────
+async function _drawRoute(fromLat, fromLng, toLat, toLng, theaterId) {
+  if (_tRouteLine) { _tRouteLine.remove(); _tRouteLine = null; }
+  const bounds = L.latLngBounds([[fromLat, fromLng], [toLat, toLng]]).pad(0.25);
+  try {
+    const url  = `https://router.project-osrm.org/route/v1/driving/${fromLng},${fromLat};${toLng},${toLat}?overview=full&geometries=geojson`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.code === 'Ok' && data.routes[0]) {
+      const coords = data.routes[0].geometry.coordinates.map(([ln, lt]) => [lt, ln]);
+      _tRouteLine  = L.polyline(coords, { color:'#ffffff', weight:3, opacity:.75, dashArray:'8 5' }).addTo(_tMap);
+      _tMap.fitBounds(_tRouteLine.getBounds().pad(0.15));
+    } else { throw new Error('no route'); }
+  } catch {
+    // fallback: straight dashed line
+    _tRouteLine = L.polyline([[fromLat, fromLng], [toLat, toLng]], { color:'#ffffff', weight:2, opacity:.55, dashArray:'8 5' }).addTo(_tMap);
+    _tMap.fitBounds(bounds);
+  }
+  if (theaterId && _tMarkers[theaterId]) {
+    setTimeout(() => _tMarkers[theaterId].openPopup(), 600);
+  }
+}
+
+function _flyToTheater(id) {
+  const t = IMAX_THEATERS.find(x => x.id === id);
+  if (!t || !_tMap) return;
+  if (_tUserLatLng) {
+    _drawRoute(_tUserLatLng[0], _tUserLatLng[1], t.lat, t.lng, id);
+  } else {
+    _tMap.flyTo([t.lat, t.lng], 13, { duration: 1.2 });
+    setTimeout(() => { if (_tMarkers[id]) _tMarkers[id].openPopup(); }, 1300);
+  }
+}
+
+function resetTheaterMap() {
+  if (_tUserPin)   { _tUserPin.remove();   _tUserPin   = null; }
+  if (_tRouteLine) { _tRouteLine.remove(); _tRouteLine = null; }
+  _tUserLatLng = null;
+  document.getElementById('theaterSearchInput').value = '';
+  document.getElementById('theaterResetBtn').style.display = 'none';
+  document.getElementById('theaterResultsHeader').style.display = 'none';
+  document.getElementById('theaterResultsList').innerHTML = '';
+  if (_tMap) _tMap.flyTo([30, 10], 2, { duration: 1.2 });
+}
+
+// ── Locate / search ────────────────────────────────────────────────
+function _setUserLocation(lat, lng) {
+  _tUserLatLng = [lat, lng];
+  document.getElementById('theaterResetBtn').style.display = '';
+  if (_tUserPin) _tUserPin.remove();
+  _tUserPin = L.marker([lat, lng], { icon: _tUserIcon() }).addTo(_tMap);
+  _plotMarkers();
+  _renderTheaterList(lat, lng);
+  // Auto-route to nearest visible theater
+  const visible = IMAX_THEATERS.filter(t => _tFilter === 'all' || t.format === _tFilter);
+  if (visible.length) {
+    const nearest = visible.map(t => ({ ...t, dist: _tHav(lat, lng, t.lat, t.lng) }))
+                           .sort((a, b) => a.dist - b.dist)[0];
+    _drawRoute(lat, lng, nearest.lat, nearest.lng, nearest.id);
+  }
+}
+
+async function searchTheaterLocation() {
+  const q   = document.getElementById('theaterSearchInput').value.trim();
+  if (!q) return;
+  const btn = document.getElementById('theaterSearchBtn');
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    // Bias US zip codes to the US so they don't resolve overseas
+    const isZip = /^\d{5}(-\d{4})?$/.test(q);
+    const bias  = isZip ? '&countrycodes=us' : '';
+    const res   = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1${bias}`,
+      { headers: { 'Accept-Language': 'en' } }
+    );
+    const data = await res.json();
+    if (!data.length) { alert('Location not found — try a city name or zip code.'); }
+    else { initTheaterMap(); _setUserLocation(parseFloat(data[0].lat), parseFloat(data[0].lon)); }
+  } catch { alert('Could not reach geocoding service. Check your connection.'); }
+  btn.textContent = 'SEARCH'; btn.disabled = false;
+}
+
+function useMyLocation() {
+  if (!navigator.geolocation) { alert('Geolocation is not supported by your browser.'); return; }
+  const btn = document.getElementById('theaterLocateBtn');
+  btn.innerHTML = '<span>…</span>'; btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      initTheaterMap();
+      _setUserLocation(pos.coords.latitude, pos.coords.longitude);
+      btn.innerHTML = '<span>📍</span> USE MY LOCATION'; btn.disabled = false;
+    },
+    () => {
+      alert('Could not get your location — try searching by city or zip instead.');
+      btn.innerHTML = '<span>📍</span> USE MY LOCATION'; btn.disabled = false;
+    }
+  );
+}
+
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════════
 function switchTab(id) {
@@ -2668,7 +3041,7 @@ function switchTab(id) {
   if (id === 'home')      { document.getElementById('homeSearchInput').focus(); }
   if (id === 'overview')  renderOverview();
   if (id === 'forecast')  {}
-  if (id === 'imax')      renderIMAX();
+  if (id === 'imax')      { renderIMAX(); setTimeout(initTheaterMap, 80); }
   if (id === 'streaming') renderStreaming();
   if (id === 'trends'   && state.movies.length) renderTrends();
   if (id === 'ops') renderOPS();
