@@ -2923,7 +2923,10 @@ function _tUserIcon() {
 // ── Init map ───────────────────────────────────────────────────────
 function initTheaterMap() {
   if (_tMap) { _tMap.invalidateSize(); return; }
-  _tMap = L.map('theaterMap', { zoomControl: true, attributionControl: true }).setView([30, 10], 2);
+  // On mobile/small screens center on the US; on desktop show the full world
+  const isMobile = window.innerWidth < 768;
+  const initView = isMobile ? { center: [38, -96], zoom: 3 } : { center: [30, -20], zoom: 2 };
+  _tMap = L.map('theaterMap', { zoomControl: true, attributionControl: true }).setView(initView.center, initView.zoom);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '© <a href="https://openstreetmap.org/copyright" style="color:#666">OpenStreetMap</a> © <a href="https://carto.com" style="color:#666">CARTO</a>',
     subdomains: 'abcd', maxZoom: 19,
@@ -3061,7 +3064,10 @@ function resetTheaterMap() {
   document.getElementById('theaterResetBtn').style.display = 'none';
   document.getElementById('theaterResultsHeader').style.display = 'none';
   document.getElementById('theaterResultsList').innerHTML = '';
-  if (_tMap) _tMap.flyTo([30, 10], 2, { duration: 1.2 });
+  if (_tMap) {
+    const isMobile = window.innerWidth < 768;
+    isMobile ? _tMap.flyTo([38, -96], 3, { duration: 1.2 }) : _tMap.flyTo([30, -20], 2, { duration: 1.2 });
+  }
 }
 
 // ── Locate / search ────────────────────────────────────────────────
