@@ -20,7 +20,9 @@
       "WebFetch(domain:movieweb.com)",
       "WebFetch(domain:britishcinematographer.co.uk)",
       "WebFetch(domain:definitionmagazine.com)",
-      "WebFetch(domain:sony-cinematography.com)"
+      "WebFetch(domain:sony-cinematography.com)",
+      "Bash(node -e ':*)",
+      "Bash(git -C /Users/andrewvick/Downloads/movie-posters worktree list)"
     ]
   }
 }

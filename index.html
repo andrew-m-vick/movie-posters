@@ -1056,6 +1056,56 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .poster-thumb:hover{opacity:.85;transform:translateY(-2px)}
 .poster-thumb.active{opacity:1;border-color:var(--gold)}
 
+/* ── Upcoming Tab ───────────────────────────────────────── */
+.upcoming-hero{background:linear-gradient(180deg,rgba(212,175,55,.06) 0%,transparent 100%);border-bottom:1px solid var(--border);padding:48px 24px 36px;text-align:center;margin:-24px -24px 32px}
+.upcoming-hero-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--text3);margin-bottom:10px}
+.upcoming-hero-title{font-family:var(--font-head);font-size:clamp(36px,6vw,64px);letter-spacing:6px;color:var(--text1);line-height:1;margin-bottom:10px}
+.upcoming-hero-sub{font-family:var(--font-mono);font-size:11px;color:var(--text3);letter-spacing:1px}
+.upcoming-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.upcoming-ctrl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.upcoming-ctrl-label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;color:var(--text3);min-width:48px}
+.upcoming-toggle{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.upcoming-toggle:hover{border-color:rgba(212,175,55,.4);color:var(--text1)}
+.upcoming-toggle.active{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,.08)}
+.upcoming-genre-pill{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:var(--font-mono);font-size:10px;cursor:pointer;transition:all .2s}
+.upcoming-genre-pill:hover{border-color:rgba(255,255,255,.3);color:var(--text1)}
+.upcoming-genre-pill.active{border-color:rgba(255,255,255,.4);color:var(--text1);background:rgba(255,255,255,.07)}
+/* Spotlight */
+.upcoming-spotlight{position:relative;border-radius:12px;overflow:hidden;margin-bottom:32px;height:420px;display:flex;align-items:flex-end;border:1px solid var(--border);transition:border-color .2s}
+.upcoming-spotlight:hover{border-color:rgba(255,255,255,.25)}
+.upcoming-spotlight-bg{position:absolute;inset:0;background-size:cover;background-position:center 20%;filter:brightness(.45)}
+.upcoming-spotlight-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,10,.98) 0%,rgba(10,10,10,.6) 45%,rgba(10,10,10,.05) 100%);z-index:1}
+.upcoming-spotlight-content{position:relative;z-index:2;padding:24px 28px 28px;display:flex;gap:24px;align-items:flex-end;width:100%;box-sizing:border-box}
+.upcoming-spotlight-poster{width:110px;flex-shrink:0;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.upcoming-spotlight-poster img{width:100%;display:block}
+.upcoming-spotlight-info{flex:1;min-width:0}
+.upcoming-spotlight-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:8px}
+.upcoming-spotlight-title{font-family:var(--font-head);font-size:clamp(24px,4vw,42px);letter-spacing:3px;color:#fff;line-height:1.1;margin-bottom:10px}
+.upcoming-spotlight-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.upcoming-spotlight-date{font-family:var(--font-mono);font-size:11px;color:var(--text2)}
+.upcoming-spotlight-rating{font-family:var(--font-mono);font-size:11px;color:var(--gold)}
+.upcoming-spotlight-genres{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.upcoming-genre-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:3px;border:1px solid var(--border);color:var(--text3)}
+.upcoming-spotlight-overview{font-size:12.5px;color:var(--text2);line-height:1.7;max-width:600px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* Grid */
+.upcoming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:18px;margin-bottom:40px}
+.upcoming-card{display:flex;flex-direction:column;gap:7px;cursor:pointer;transition:transform .2s}
+.upcoming-card:hover{transform:translateY(-3px)}
+.upcoming-card:hover .upcoming-card-img-wrap{border-color:rgba(212,175,55,.4)}
+.upcoming-card-img-wrap{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:.667;background:var(--bg3);border:1px solid var(--border);transition:border-color .2s}
+.upcoming-card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.upcoming-card-badge{position:absolute;top:7px;right:7px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:3px 7px;border-radius:3px;font-weight:700}
+.upcoming-card-badge.red{background:rgba(220,50,50,.85);color:#fff}
+.upcoming-card-badge.gold{background:rgba(212,175,55,.9);color:#111}
+.upcoming-card-badge.teal{background:rgba(26,155,170,.85);color:#fff}
+.upcoming-card-badge.muted{background:rgba(0,0,0,.7);color:var(--text3);border:1px solid var(--border)}
+.upcoming-card-title{font-size:11px;font-weight:700;color:var(--text2);line-height:1.3;padding:0 2px}
+.upcoming-card-date{font-family:var(--font-mono);font-size:10px;color:var(--text3);padding:0 2px}
+.upcoming-placeholder{display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg3)}
+@media(max-width:520px){
+  .upcoming-spotlight-content{flex-direction:column;align-items:flex-start}
+  .upcoming-spotlight-poster{width:80px}
+}
 /* ── Premium IMAX Finder ─────────────────────────────────── */
 .theater-finder-intro{font-size:12px;color:var(--text3);font-family:var(--font-mono);line-height:1.85;margin-bottom:22px;max-width:700px}
 .theater-controls{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
@@ -1129,6 +1179,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <nav class="nav-tabs" role="tablist">
     <button class="nav-tab" data-tab="overview" role="tab">Box Office</button>
     <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
+    <button class="nav-tab" data-tab="upcoming" role="tab">Upcoming</button>
     <button class="nav-tab" data-tab="imax" role="tab">IMAX</button>
     <button class="nav-tab" data-tab="trends" role="tab">Trends</button>
     <button class="nav-tab" data-tab="forecast" role="tab">Forecast</button>
@@ -1238,6 +1289,41 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
       <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div><div class="loading-text">FETCHING DIGITAL DATA</div></div>
     </div>
 
+  </section>
+
+  <!-- ═══════════════════════════════ UPCOMING TAB ═══════════════════════════════ -->
+  <section class="tab-panel" id="tab-upcoming">
+    <div class="upcoming-hero">
+      <div class="upcoming-hero-eyebrow">WHAT'S COMING</div>
+      <div class="upcoming-hero-title">MOST ANTICIPATED</div>
+      <div class="upcoming-hero-sub">Ranked by current popularity · Updated live from TMDB</div>
+    </div>
+    <div style="max-width:1100px;margin:0 auto;padding:0 8px">
+      <div class="upcoming-controls">
+        <div class="upcoming-ctrl-row">
+          <span class="upcoming-ctrl-label">SORT</span>
+          <button class="upcoming-toggle active" onclick="upcomingSetSort('popularity',this)">MOST POPULAR</button>
+          <button class="upcoming-toggle" onclick="upcomingSetSort('date',this)">RELEASE DATE</button>
+          <button class="upcoming-toggle" onclick="upcomingSetSort('vote',this)">HIGHEST RATED</button>
+        </div>
+        <div class="upcoming-ctrl-row">
+          <span class="upcoming-ctrl-label">WINDOW</span>
+          <button class="upcoming-toggle active" onclick="upcomingSetDays(90,this)">90 DAYS</button>
+          <button class="upcoming-toggle" onclick="upcomingSetDays(180,this)">6 MONTHS</button>
+          <button class="upcoming-toggle" onclick="upcomingSetDays(365,this)">1 YEAR</button>
+          <button class="upcoming-toggle" onclick="upcomingSetDays(730,this)">ALL ANNOUNCED</button>
+        </div>
+        <div class="upcoming-ctrl-row" id="upcomingGenreRow" style="display:none">
+          <span class="upcoming-ctrl-label">GENRE</span>
+          <div id="upcomingGenrePills" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+      <div id="upcomingSpotlight"></div>
+
+      <div id="upcomingGrid" class="upcoming-grid">
+        <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div><div class="loading-text">FETCHING UPCOMING RELEASES</div></div>
+      </div>
+    </div>
   </section>
 
   <!-- ═══════════════════════════════ RANKINGS TAB ═══════════════════════════════ -->
@@ -3032,6 +3118,172 @@ function useMyLocation() {
   );
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// UPCOMING TAB
+// ═══════════════════════════════════════════════════════════════════
+const upcomingState = { loaded:false, films:[], sort:'popularity', days:90, genre:null };
+
+function upcomingCountdown(dateStr) {
+  const days = Math.ceil((new Date(dateStr) - new Date()) / 86400000);
+  if (days <= 0)  return { label:'TODAY',        cls:'gold' };
+  if (days <= 7)  return { label:`${days}D`,     cls:'red'  };
+  if (days <= 30) return { label:`${days}D`,     cls:'gold' };
+  if (days <= 90) return { label:`${Math.ceil(days/7)}W`, cls:'teal'  };
+  return { label:`${Math.ceil(days/30)}MO`,      cls:'muted' };
+}
+
+function upcomingFmtDate(dateStr) {
+  if (!dateStr) return '';
+  return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function upcomingFilterSort() {
+  const today = new Date();
+  const cutoff = new Date(today); cutoff.setDate(cutoff.getDate() + upcomingState.days);
+  let films = upcomingState.films.filter(m => {
+    if (!m.release_date) return upcomingState.days >= 730; // no-date films only in "All Announced"
+    const d = new Date(m.release_date + 'T12:00:00');
+    return d > today && (upcomingState.days >= 730 || d <= cutoff);
+  });
+  if (upcomingState.genre) films = films.filter(m => (m.genre_ids || []).includes(upcomingState.genre));
+  if (upcomingState.sort === 'popularity') films.sort((a,b) => b.popularity - a.popularity);
+  else if (upcomingState.sort === 'date')  films.sort((a,b) => a.release_date.localeCompare(b.release_date));
+  else films.sort((a,b) => b.vote_average - a.vote_average);
+  return films;
+}
+
+function upcomingBuildGenres(films) {
+  const GENRE_NAMES = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV Movie',53:'Thriller',10752:'War',37:'Western'};
+  const seen = new Set();
+  films.forEach(m => (m.genre_ids||[]).forEach(g => seen.add(g)));
+  const row   = document.getElementById('upcomingGenreRow');
+  const pills = document.getElementById('upcomingGenrePills');
+  if (!seen.size) { row.style.display='none'; return; }
+  row.style.display = '';
+  const all = `<button class="upcoming-genre-pill active" onclick="upcomingSetGenre(null,this)">ALL</button>`;
+  const rest = [...seen].filter(g => GENRE_NAMES[g]).sort((a,b) => GENRE_NAMES[a].localeCompare(GENRE_NAMES[b])).map(g =>
+    `<button class="upcoming-genre-pill" onclick="upcomingSetGenre(${g},this)">${GENRE_NAMES[g]}</button>`
+  ).join('');
+  pills.innerHTML = all + rest;
+}
+
+let _upcomingTopId = null;  // track spotlight film to avoid redundant re-renders
+
+function upcomingRender() {
+  const films = upcomingFilterSort();
+  const spotlight = document.getElementById('upcomingSpotlight');
+  const grid = document.getElementById('upcomingGrid');
+
+  if (!films.length) {
+    spotlight.innerHTML = '';
+    grid.innerHTML = `<div class="loading-state" style="grid-column:1/-1"><div class="loading-text">NO FILMS FOUND FOR THIS FILTER</div></div>`;
+    return;
+  }
+
+  // Spotlight — top film
+  const top = films[0];
+  const tcd = upcomingCountdown(top.release_date);
+  const genres = (top.genre_ids||[]).slice(0,3).map(g => {
+    const names = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',18:'Drama',10751:'Family',14:'Fantasy',27:'Horror',9648:'Mystery',10749:'Romance',878:'Sci-Fi',53:'Thriller',10752:'War',37:'Western'};
+    return names[g] ? `<span class="upcoming-genre-tag">${names[g]}</span>` : '';
+  }).join('');
+  const rating = top.vote_average > 0 ? `★ ${top.vote_average.toFixed(1)}` : '';
+  const bg = top.backdrop_path ? `${TMDB_IMG}w1280${top.backdrop_path}` : '';
+
+  spotlight.innerHTML = `
+    <div class="upcoming-spotlight" onclick="openModal(${top.id})" style="cursor:pointer">
+      ${bg ? `<div class="upcoming-spotlight-bg" style="background-image:url('${bg}')"></div>` : ''}
+      <div class="upcoming-spotlight-grad"></div>
+      <div class="upcoming-spotlight-content">
+        <div class="upcoming-spotlight-poster">
+          ${top.poster_path ? `<img src="${TMDB_IMG}w342${top.poster_path}" alt="${top.title}" loading="lazy">` : '<div style="aspect-ratio:.667;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:24px">🎬</div>'}
+        </div>
+        <div class="upcoming-spotlight-info">
+          <div class="upcoming-spotlight-eyebrow">#1 MOST ANTICIPATED · <span style="color:var(--text3)">${upcomingFmtDate(top.release_date)}</span></div>
+          <div class="upcoming-spotlight-title">${top.title}</div>
+          <div class="upcoming-spotlight-meta">
+            ${rating ? `<span class="upcoming-spotlight-rating">${rating}</span>` : ''}
+            <span class="upcoming-card-badge ${tcd.cls}" style="position:static">${tcd.label}</span>
+          </div>
+          <div class="upcoming-spotlight-genres">${genres}</div>
+          ${top.overview ? `<div class="upcoming-spotlight-overview">${top.overview}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+
+  // Grid — remaining films
+  grid.innerHTML = films.slice(1).map(m => {
+    const cd  = upcomingCountdown(m.release_date);
+    const img = m.poster_path ? `<img src="${TMDB_IMG}w342${m.poster_path}" alt="${m.title}" loading="lazy">` : `<div class="upcoming-placeholder">🎬</div>`;
+    return `<div class="upcoming-card" onclick="openModal(${m.id})">
+      <div class="upcoming-card-img-wrap">
+        ${img}
+        <div class="upcoming-card-badge ${cd.cls}">${cd.label}</div>
+      </div>
+      <div class="upcoming-card-title">${m.title}</div>
+      <div class="upcoming-card-date">${upcomingFmtDate(m.release_date)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function renderUpcoming() {
+  if (upcomingState.loaded) { upcomingRender(); return; }
+  if (!CFG.tmdb) {
+    document.getElementById('upcomingGrid').innerHTML = `<div class="loading-state" style="grid-column:1/-1"><div class="loading-text">API KEY REQUIRED</div></div>`;
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  // Fetch 2 years out so blockbusters announced for 2026-2027 appear
+  const future = new Date(); future.setFullYear(future.getFullYear() + 2);
+  const end = future.toISOString().slice(0,10);
+
+  // 4 discover pages sorted by popularity covers the major anticipated titles
+  const [np1, np2, d1, d2, d3, d4] = await Promise.all([
+    tmdbGet('/movie/upcoming',  { region:'US', language:'en-US', page:1 }),
+    tmdbGet('/movie/upcoming',  { region:'US', language:'en-US', page:2 }),
+    tmdbGet('/discover/movie',  { sort_by:'popularity.desc', 'primary_release_date.gte':today, 'primary_release_date.lte':end, page:1 }),
+    tmdbGet('/discover/movie',  { sort_by:'popularity.desc', 'primary_release_date.gte':today, 'primary_release_date.lte':end, page:2 }),
+    tmdbGet('/discover/movie',  { sort_by:'popularity.desc', 'primary_release_date.gte':today, 'primary_release_date.lte':end, page:3 }),
+    tmdbGet('/discover/movie',  { sort_by:'popularity.desc', 'primary_release_date.gte':today, 'primary_release_date.lte':end, page:4 }),
+  ]);
+
+  const seen = new Set();
+  const all  = [...(np1?.results||[]), ...(np2?.results||[]),
+                ...(d1?.results||[]),  ...(d2?.results||[]),
+                ...(d3?.results||[]),  ...(d4?.results||[])]
+    .filter(m => {
+      if (!m.release_date || new Date(m.release_date+'T12:00:00') <= new Date()) return false;
+      if (seen.has(m.id)) return false;
+      seen.add(m.id); return true;
+    })
+    .sort((a,b) => b.popularity - a.popularity)
+    .slice(0, 80);
+
+  upcomingState.films  = all;
+  upcomingState.loaded = true;
+  upcomingBuildGenres(all);
+  upcomingRender();
+}
+
+function upcomingSetSort(sort, btn) {
+  upcomingState.sort = sort;
+  document.querySelectorAll('.upcoming-ctrl-row:first-child .upcoming-toggle').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  upcomingRender();
+}
+function upcomingSetDays(days, btn) {
+  upcomingState.days = days;
+  document.querySelectorAll('.upcoming-ctrl-row:nth-child(2) .upcoming-toggle').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  upcomingRender();
+}
+function upcomingSetGenre(genre, btn) {
+  upcomingState.genre = genre;
+  document.querySelectorAll('.upcoming-genre-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  upcomingRender();
+}
+
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════════
 function switchTab(id) {
@@ -3043,6 +3295,7 @@ function switchTab(id) {
   if (id === 'forecast')  {}
   if (id === 'imax')      { renderIMAX(); setTimeout(initTheaterMap, 80); }
   if (id === 'streaming') renderStreaming();
+  if (id === 'upcoming')  renderUpcoming();
   if (id === 'trends'   && state.movies.length) renderTrends();
   if (id === 'ops') renderOPS();
 }
