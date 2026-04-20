@@ -1179,6 +1179,14 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .leaflet-control-zoom a{background:var(--bg3)!important;color:var(--text1)!important;border-color:var(--border)!important;font-family:var(--font-mono)}
 .leaflet-control-zoom a:hover{background:var(--bg2)!important}
 .leaflet-bar{border:1px solid var(--border)!important;box-shadow:none!important;border-radius:6px!important;overflow:hidden}
+
+/* ── PWA standalone: extra notch clearance (no effect in any browser) ── */
+@media (display-mode: standalone) {
+  #header {
+    padding-top: calc(env(safe-area-inset-top) + 10px);
+    height: calc(56px + env(safe-area-inset-top) + 10px);
+  }
+}
 </style>
 </head>
 <body>
