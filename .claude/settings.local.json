@@ -22,7 +22,12 @@
       "WebFetch(domain:definitionmagazine.com)",
       "WebFetch(domain:sony-cinematography.com)",
       "Bash(node -e ':*)",
-      "Bash(git -C /Users/andrewvick/Downloads/movie-posters worktree list)"
+      "Bash(git -C /Users/andrewvick/Downloads/movie-posters worktree list)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(python3 -c \"from PIL import Image; print\\('pillow ok'\\)\")",
+      "Bash(python3)"
     ]
   }
 }
