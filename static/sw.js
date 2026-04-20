@@ -1,7 +1,7 @@
 // CINEDATA Service Worker
 // Caches the app shell so it loads instantly and works offline.
 
-const CACHE = 'cinedata-v1';
+const CACHE = 'cinedata-v2';
 const SHELL = [
   '/',
   'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap',
