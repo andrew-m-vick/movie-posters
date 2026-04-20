@@ -771,12 +771,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 }
 .logo-btn{
   background:none;border:none;cursor:pointer;padding:0;
-  margin-right:16px;flex-shrink:0;
+  margin-right:20px;flex-shrink:0;
   display:flex;align-items:center;
   transition:opacity .15s;
 }
 .logo-btn:hover{opacity:.8}
-.logo-btn img{height:38px;width:auto;display:block;border-radius:6px}
+.logo-btn img{height:32px;width:auto;display:block}
 
 /* FORECAST TAB */
 .forecast-hard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
@@ -1198,7 +1198,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 
 <!-- HEADER -->
 <header id="header">
-  <button class="logo-btn" onclick="switchTab('home')" aria-label="CINEDATA home"><img src="/static/icon-192.png" alt="CINEDATA"></button>
+  <button class="logo-btn" onclick="switchTab('home')" aria-label="CINEDATA home"><img src="/static/logo-horizontal.png" alt="CINEDATA"></button>
   <nav class="nav-tabs" role="tablist">
     <button class="nav-tab" data-tab="overview" role="tab">Box Office</button>
     <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
