@@ -7,6 +7,11 @@ app = Flask(__name__)
 def index():
     return send_file('index.html')
 
+# Browsers look for /favicon.ico at the root by default
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
+
 # iOS looks for apple-touch-icon at the root level
 @app.route('/apple-touch-icon.png')
 @app.route('/apple-touch-icon-precomposed.png')
