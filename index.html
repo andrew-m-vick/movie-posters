@@ -42,7 +42,7 @@
   --font-mono:'DM Mono',monospace;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
 
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:6px;height:6px}
@@ -56,9 +56,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
   background:rgba(8,8,15,0.92);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  padding:0 24px;
+  padding:env(safe-area-inset-top) 24px 0;
   display:flex;align-items:center;gap:0;
-  height:56px;
+  height:calc(56px + env(safe-area-inset-top));
 }
 .logo{
   font-family:var(--font-head);
