@@ -1,11 +1,21 @@
 import os
-from flask import Flask, send_file
+from flask import Flask, send_file, send_from_directory
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
     return send_file('index.html')
+
+# iOS looks for apple-touch-icon at the root level
+@app.route('/apple-touch-icon.png')
+@app.route('/apple-touch-icon-precomposed.png')
+def apple_touch_icon():
+    return send_from_directory('static', 'apple-touch-icon.png')
+
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory('static', filename)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
