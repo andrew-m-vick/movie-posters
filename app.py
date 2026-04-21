@@ -11,70 +11,52 @@ def index():
     return send_file('index.html')
 
 
-# Browsers look for /favicon.ico at the root by default
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory('static', 'favicon.ico')
 
 
-# iOS looks for apple-touch-icon at the root level
 @app.route('/apple-touch-icon.png')
 @app.route('/apple-touch-icon-precomposed.png')
 def apple_touch_icon():
     return send_from_directory('static', 'apple-touch-icon.png')
 
 
-# ─── Recommender endpoint (Groq) ──────────────────────────────────────────
-# Default to Llama 3.3 70B — strong general reasoning, great for nuanced film
-# recommendations. Free tier on Groq: 30 req/min, 14,400 req/day.
+# ─── Recommender endpoint (Groq · Llama 3.3 70B) ──────────────────────────
 GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
 
-RECOMMENDER_SYSTEM = """You are the head programmer at a cinephile repertory theatre — someone who has seen everything from Tarkovsky to Tsai Ming-liang, who knows the second wave of 70s horror, the French extremity movement, and can confidently recommend a Chantal Akerman film without irony.
+RECOMMENDER_SYSTEM = """You are the head programmer at a cinephile repertory theatre. You've seen everything from Tarkovsky to Tsai Ming-liang, know the French extremity movement and second-wave 70s horror, and can recommend a Chantal Akerman film without irony.
 
-Given the user's stated preferences, recommend EXACTLY 3 films.
+The user will describe what they want to watch in their OWN words — free-form, one sentence or a paragraph. Your job has THREE parts:
 
-Rules:
-- Avoid obvious picks. If they describe "patient dread," don't suggest The Shining — suggest Under the Skin, or Sauvage, or Memories of Murder. Go global, go era-diverse.
-- Write each "why" in 2–4 sentences that reference the user's OWN language back to them. If they named an anchor film, specifically connect to what they loved ABOUT it — don't just say "similar tone."
-- No adjective padding. Write like a friend who actually watched it.
-- Strictly respect the runtime ceiling.
+1. PARSE. Extract every signal from their input: mood, pacing, visual style, anchor films they reference, runtime caps, era restrictions, anti-patterns ("no horror"), emotional needs ("need something gentle"). Read between the lines — "want something for a rainy Sunday" implies contemplative and indoor. Don't ask clarifying questions.
+
+2. REFLECT. Write a one-sentence "interpretation" in their own register — proof you understood. Use their specific language. Example: if they wrote "I felt gutted by Past Lives and want that quiet ache under 2 hours", you might write: "Contemplative-heartbreak mode, Past Lives flavor specifically, sub-120 minutes." Be concrete, not generic.
+
+3. RECOMMEND exactly 3 films.
+
+Recommendation rules:
+- Avoid obvious picks. If they say "patient dread," don't pick The Shining — pick Under the Skin, Sauvage, or Memories of Murder. Go global, era-diverse, sometimes international, sometimes documentary, sometimes forgotten.
+- Each "why" must reference their OWN language in 2–4 sentences. Don't just say "similar tone" — quote their phrase or paraphrase it tightly.
+- Write like a friend who actually watched it. No adjective padding.
+- Respect runtime ceilings strictly.
 - Respect anti-patterns (things they said to avoid).
-- Tags should be concrete and descriptive (e.g. "slow-burn", "body horror", "New Hollywood", "neorealism"). 3–5 tags each.
+- Tags: 3–5 concrete descriptors each ("slow-burn", "body horror", "New Hollywood", "neorealism"). Not genres alone — texture words.
 
-Return ONLY valid JSON in this exact shape — no markdown, no preamble, no trailing commentary:
+Return ONLY valid JSON, no markdown, no preamble:
 {
+  "interpretation": "one-sentence reflection of their request in their register",
   "recommendations": [
     {
       "title": "film title",
       "year": 2013,
       "director": "director name",
-      "why": "2-4 specific sentences grounded in their stated preferences",
+      "why": "2-4 sentences; reference their language specifically",
       "tags": ["tag1", "tag2", "tag3"]
     }
   ]
 }
 """
-
-
-def _build_user_prompt(prefs):
-    lines = []
-    if prefs.get('anchor'):
-        lines.append(f"ANCHOR FILM & WHAT THEY LOVED: {prefs['anchor']}")
-    if prefs.get('mood'):
-        m = prefs['mood']
-        lines.append(f"DESIRED MOOD: {', '.join(m) if isinstance(m, list) else m}")
-    if prefs.get('pacing'):
-        lines.append(f"PACING TOLERANCE: {prefs['pacing']}")
-    if prefs.get('visual'):
-        v = prefs['visual']
-        lines.append(f"VISUAL STYLE PREFERENCES: {', '.join(v) if isinstance(v, list) else v}")
-    if prefs.get('ambiguity'):
-        lines.append(f"AMBIGUITY TOLERANCE: {prefs['ambiguity']}")
-    if prefs.get('runtime'):
-        lines.append(f"RUNTIME CEILING: {prefs['runtime']}")
-    if prefs.get('avoid'):
-        lines.append(f"AVOID: {prefs['avoid']}")
-    return '\n\n'.join(lines) if lines else 'No preferences — surprise me with three genuinely surprising deep cuts.'
 
 
 @app.route('/api/recommend', methods=['POST'])
@@ -83,8 +65,14 @@ def recommend():
     if not api_key:
         return jsonify({'error': 'GROQ_API_KEY environment variable not set on the server'}), 500
 
-    prefs = request.get_json(silent=True) or {}
-    user_prompt = _build_user_prompt(prefs)
+    body = request.get_json(silent=True) or {}
+    query = (body.get('query') or '').strip()
+    if not query:
+        return jsonify({'error': 'No query provided'}), 400
+
+    # Soft cap so the free-tier context stays happy
+    if len(query) > 1500:
+        query = query[:1500]
 
     raw_text = None
     try:
@@ -94,7 +82,7 @@ def recommend():
             model=GROQ_MODEL,
             messages=[
                 {'role': 'system', 'content': RECOMMENDER_SYSTEM},
-                {'role': 'user',   'content': user_prompt},
+                {'role': 'user',   'content': query},
             ],
             response_format={'type': 'json_object'},
             temperature=0.85,

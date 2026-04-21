@@ -1189,37 +1189,32 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .picks-wrap{max-width:820px;margin:0 auto;padding:16px 24px 64px}
 .picks-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--gold);margin-bottom:10px;text-transform:uppercase}
 .picks-title{font-family:var(--font-head);font-size:40px;letter-spacing:2px;color:var(--text);line-height:1.05;margin-bottom:12px}
-.picks-lede{color:var(--text2);font-size:15px;line-height:1.55;margin-bottom:40px;max-width:580px}
+.picks-lede{color:var(--text2);font-size:15px;line-height:1.55;margin-bottom:32px;max-width:620px}
 
-/* step indicator */
-.picks-dots{display:flex;gap:6px;margin-bottom:28px}
-.picks-dot{flex:1;height:3px;background:var(--border);border-radius:2px;transition:background .25s}
-.picks-dot.done{background:var(--gold);opacity:.55}
-.picks-dot.active{background:var(--gold)}
+/* single free-text input */
+.picks-prompt-wrap{position:relative}
+.picks-prompt{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 22px;color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.55;min-height:140px;resize:vertical;transition:border-color .15s}
+.picks-prompt:focus{outline:none;border-color:var(--gold)}
+.picks-prompt::placeholder{color:var(--text3)}
+.picks-hint{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--text3);margin-top:8px;text-transform:uppercase}
 
-.picks-step-label{font-family:var(--font-mono);font-size:11px;letter-spacing:2.5px;color:var(--text3);margin-bottom:18px;text-transform:uppercase}
-.picks-question{font-family:var(--font-head);font-size:30px;letter-spacing:1px;color:var(--text);line-height:1.15;margin-bottom:8px}
-.picks-sub{color:var(--text3);font-size:13px;margin-bottom:28px}
+.picks-examples-label{font-family:var(--font-mono);font-size:10px;letter-spacing:2.5px;color:var(--text3);margin:28px 0 12px;text-transform:uppercase}
+.picks-examples{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
+.picks-example{padding:10px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--font-body);text-align:left;transition:all .15s;font-style:italic}
+.picks-example:hover{background:var(--bg3);color:var(--text);border-color:var(--gold)}
 
-.picks-text{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.5;min-height:96px;resize:vertical;transition:border-color .15s}
-.picks-text:focus{outline:none;border-color:var(--gold)}
+.picks-submit{display:block;width:100%;padding:16px;border-radius:8px;background:var(--gold);color:#0a0a0a;border:none;font-family:var(--font-mono);font-size:12px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.picks-submit:hover:not(:disabled){background:var(--gold2)}
+.picks-submit:disabled{opacity:.3;cursor:not-allowed}
 
-.picks-chips{display:flex;flex-wrap:wrap;gap:10px}
-.picks-chip{padding:11px 18px;border-radius:22px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:13px;font-family:var(--font-body);transition:all .15s;white-space:nowrap}
-.picks-chip:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
-.picks-chip.selected{background:var(--gold);color:#0a0a0a;border-color:var(--gold);font-weight:600}
+/* "I read you as" interpretation banner */
+.picks-interp{padding:16px 20px;background:linear-gradient(135deg, rgba(232,160,32,.08), rgba(26,155,170,.06));border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;margin-bottom:28px;color:var(--text);font-size:14px;line-height:1.5}
+.picks-interp-label{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:2.5px;color:var(--gold);margin-bottom:6px;text-transform:uppercase}
+.picks-interp-body{color:var(--text2);font-style:italic}
 
-.picks-radios{display:flex;flex-direction:column;gap:10px}
-.picks-radio{text-align:left;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text2);font-size:15px;font-family:var(--font-body);transition:all .15s}
-.picks-radio:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
-.picks-radio.selected{background:var(--bg3);border-color:var(--gold);color:var(--text);box-shadow:inset 3px 0 0 var(--gold)}
-
-.picks-nav{display:flex;justify-content:space-between;gap:14px;margin-top:40px}
+/* Used only in the error-state TRY AGAIN button */
 .picks-btn{padding:13px 22px;border-radius:6px;border:1px solid var(--border);font-family:var(--font-mono);font-size:11px;letter-spacing:2px;background:var(--bg2);color:var(--text);cursor:pointer;transition:all .15s;text-transform:uppercase}
 .picks-btn:hover:not(:disabled){background:var(--bg3);border-color:var(--border2)}
-.picks-btn:disabled{opacity:.35;cursor:not-allowed}
-.picks-btn-primary{background:var(--gold);color:#0a0a0a;border-color:var(--gold);font-weight:700}
-.picks-btn-primary:hover:not(:disabled){background:var(--gold2);border-color:var(--gold2)}
 
 /* loading */
 .picks-loading{text-align:center;padding:96px 20px}
@@ -1249,7 +1244,6 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 
 @media(max-width:640px){
   .picks-title{font-size:30px}
-  .picks-question{font-size:24px}
   .picks-card{flex-direction:column}
   .picks-card-poster{width:100%;max-width:180px;margin:0 auto}
 }
@@ -1422,9 +1416,9 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <!-- ═══════════════════════════════ FOR YOU — AI RECOMMENDER ═══════════════════════════════ -->
   <section class="tab-panel" id="tab-picks">
     <div class="picks-wrap">
-      <div class="picks-eyebrow">FOR YOU · POWERED BY GROQ</div>
-      <div class="picks-title">A film, tailored to this exact mood.</div>
-      <div class="picks-lede">Not "rate 10 movies." A handful of smart questions — the kind a good repertory-theatre programmer would ask — and three films picked to fit. Each with a reason.</div>
+      <div class="picks-eyebrow">FOR YOU · POWERED BY LLAMA 3.3 70B ON GROQ</div>
+      <div class="picks-title">Describe your mood.</div>
+      <div class="picks-lede">Tell me anything — a film you loved, an anchor you're chasing, a runtime, a vibe. One sentence or a paragraph. The AI parses every signal and picks three films to match, with a specific reason for each.</div>
       <div id="picksContent"></div>
     </div>
   </section>
@@ -3394,87 +3388,23 @@ function upcomingSetGenre(genre, btn) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// "FOR YOU" — AI RECOMMENDER (Gemini-backed)
+// "FOR YOU" — AI RECOMMENDER (Groq · Llama 3.3 70B)
 // ═══════════════════════════════════════════════════════════════════
+// One free-text box, one API call. The model does the parsing, not the user.
 const picksState = {
-  step: 0,
-  answers: {
-    anchor: '', mood: [], pacing: '', visual: [], ambiguity: '', runtime: '', avoid: ''
-  },
+  query: '',
   loading: false,
   results: null,
+  interpretation: null,
   error: null,
-  started: false,
 };
 
-const PICKS_STEPS = [
-  {
-    key: 'anchor', label: 'ANCHOR FILM', type: 'text',
-    prompt: "What's a film you loved recently — and what did you love about it?",
-    sub: "The strongest signal you can give. Be specific. Optional but highly recommended.",
-    placeholder: "e.g. Arrival — the quiet dread and the patience of it",
-    required: false,
-  },
-  {
-    key: 'mood', label: 'MOOD', type: 'multi-chip',
-    prompt: "What do you want the film to leave you with?",
-    sub: "Pick 1–3.",
-    options: ['Unsettled','Transported','Gutted','Electrified','Contemplative','Delighted','Spellbound','Unmoored'],
-    max: 3, required: true,
-  },
-  {
-    key: 'pacing', label: 'PACING', type: 'radio',
-    prompt: "How patient are you tonight?",
-    options: [
-      { v: 'Slow is a feature — let it breathe', l: 'Slow is a feature — let it breathe' },
-      { v: 'Steady, deliberate pace',            l: 'Steady, deliberate pace' },
-      { v: 'Keep it moving, no dead air',        l: 'Keep it moving, no dead air' },
-    ],
-    required: true,
-  },
-  {
-    key: 'visual', label: 'VISUAL STYLE', type: 'multi-chip',
-    prompt: "What should the camera do?",
-    sub: "Pick any that fit.",
-    options: ['Painterly & composed','Gritty & handheld','Stylized, bold color','Classical & invisible','Experimental, restless',"Doesn't matter"],
-    max: 4, required: true,
-  },
-  {
-    key: 'ambiguity', label: 'AMBIGUITY', type: 'radio',
-    prompt: "How much should the film explain?",
-    options: [
-      { v: 'Tell me clearly what happened',           l: 'Tell me clearly what happened' },
-      { v: 'Leave room for interpretation',           l: 'Leave room for interpretation' },
-      { v: "I love puzzles I can't fully solve",      l: "I love puzzles I can't fully solve" },
-    ],
-    required: true,
-  },
-  {
-    key: 'runtime', label: 'RUNTIME', type: 'radio',
-    prompt: "Runtime ceiling?",
-    options: [
-      { v: 'Under 100 min',  l: 'Under 100 min' },
-      { v: '100–130 min',    l: '100–130 min' },
-      { v: '130+ is fine',   l: '130+ is fine' },
-      { v: 'No limit',       l: 'No limit' },
-    ],
-    required: true,
-  },
-  {
-    key: 'avoid', label: 'AVOID', type: 'text',
-    prompt: "Anything you don't want?",
-    sub: "Optional. Free text — be specific.",
-    placeholder: "e.g. nothing pre-1980, no biopics, no horror",
-    required: false,
-  },
+const PICKS_EXAMPLES = [
+  'I just watched Past Lives and felt gutted — want something with that quiet ache, under 2 hours.',
+  'A tight 90-minute heist film I probably haven\'t seen.',
+  'Something patient and dreadful, Arrival energy, no pre-1980.',
+  'Pick me a foreign slow-burn for a rainy Sunday afternoon.',
 ];
-
-function picksIsAnswered(stepIdx) {
-  const s = PICKS_STEPS[stepIdx];
-  if (!s.required) return true;
-  const v = picksState.answers[s.key];
-  return Array.isArray(v) ? v.length > 0 : !!v;
-}
 
 function renderPicks() {
   const el = document.getElementById('picksContent');
@@ -3482,51 +3412,36 @@ function renderPicks() {
   if (picksState.loading) { el.innerHTML = picksLoadingHTML(); return; }
   if (picksState.error)   { el.innerHTML = picksErrorHTML();   return; }
   if (picksState.results) { el.innerHTML = picksResultsHTML(); return; }
-  el.innerHTML = picksWizardHTML();
+  el.innerHTML = picksInputHTML();
+  // Focus the textarea after render
+  const box = document.getElementById('picksQueryBox');
+  if (box && !picksState.query) box.focus();
 }
 
-function picksWizardHTML() {
-  const step = PICKS_STEPS[picksState.step];
-  const total = PICKS_STEPS.length;
-  const dots = PICKS_STEPS.map((_, i) => {
-    const cls = i < picksState.step ? 'done' : i === picksState.step ? 'active' : '';
-    return `<div class="picks-dot ${cls}"></div>`;
-  }).join('');
-
-  const v = picksState.answers[step.key];
-  let input = '';
-  if (step.type === 'text') {
-    const escaped = (v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    input = `<textarea class="picks-text" placeholder="${step.placeholder}" oninput="picksText('${step.key}', this.value)">${escaped}</textarea>`;
-  } else if (step.type === 'multi-chip') {
-    const sel = v || [];
-    input = '<div class="picks-chips">' + step.options.map(opt => {
-      const isSel = sel.includes(opt);
-      const safe = opt.replace(/'/g, "\\'");
-      return `<button class="picks-chip ${isSel ? 'selected' : ''}" onclick="picksChip('${step.key}', '${safe}', ${step.max})">${opt}</button>`;
-    }).join('') + '</div>';
-  } else if (step.type === 'radio') {
-    input = '<div class="picks-radios">' + step.options.map(opt => {
-      const isSel = v === opt.v;
-      const safe = opt.v.replace(/'/g, "\\'");
-      return `<button class="picks-radio ${isSel ? 'selected' : ''}" onclick="picksRadio('${step.key}', '${safe}')">${opt.l}</button>`;
-    }).join('') + '</div>';
-  }
-
-  const isLast = picksState.step === total - 1;
-  const nextLabel = isLast ? 'GET MY PICKS →' : 'NEXT →';
-  const nextDisabled = !picksIsAnswered(picksState.step);
+function picksInputHTML() {
+  const q = picksState.query || '';
+  const esc = q.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const disabled = q.trim().length < 4;
+  const exChips = PICKS_EXAMPLES.map((ex, i) =>
+    `<button class="picks-example" onclick="picksUseExample(${i})">${ex}</button>`
+  ).join('');
 
   return `
-    <div class="picks-dots">${dots}</div>
-    <div class="picks-step-label">${step.label} · STEP ${picksState.step + 1} OF ${total}</div>
-    <div class="picks-question">${step.prompt}</div>
-    ${step.sub ? `<div class="picks-sub">${step.sub}</div>` : ''}
-    <div>${input}</div>
-    <div class="picks-nav">
-      <button class="picks-btn" ${picksState.step === 0 ? 'disabled' : ''} onclick="picksBack()">← BACK</button>
-      <button class="picks-btn picks-btn-primary" ${nextDisabled ? 'disabled' : ''} onclick="picksNext()">${nextLabel}</button>
+    <div class="picks-prompt-wrap">
+      <textarea
+        id="picksQueryBox"
+        class="picks-prompt"
+        placeholder="e.g. I want something slow and contemplative like Stalker, but under 2 hours — no Russian films."
+        oninput="picksUpdate(this.value)"
+        onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')picksSubmit()"
+      >${esc}</textarea>
+      <div class="picks-hint">⌘ + RETURN TO SUBMIT</div>
     </div>
+    <div class="picks-examples-label">OR TAP AN EXAMPLE:</div>
+    <div class="picks-examples">${exChips}</div>
+    <button class="picks-submit" ${disabled ? 'disabled' : ''} onclick="picksSubmit()">
+      GET MY PICKS →
+    </button>
   `;
 }
 
@@ -3534,14 +3449,14 @@ function picksLoadingHTML() {
   return `
     <div class="picks-loading">
       <div class="loading-spinner"></div>
-      <div class="picks-loading-text">CURATING YOUR PROGRAMME</div>
-      <div class="picks-loading-sub">The programmer is pulling films from the archive…</div>
+      <div class="picks-loading-text">THINKING</div>
+      <div class="picks-loading-sub">Parsing your request · pulling matches from the archive</div>
     </div>
   `;
 }
 
 function picksErrorHTML() {
-  const err = (picksState.error || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const err = (picksState.error || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   return `
     <div class="picks-error">
       <div class="picks-error-title">Couldn't reach the programmer</div>
@@ -3552,6 +3467,12 @@ function picksErrorHTML() {
 }
 
 function picksResultsHTML() {
+  const interp = picksState.interpretation
+    ? `<div class="picks-interp">
+         <span class="picks-interp-label">I READ YOU AS WANTING</span>
+         <span class="picks-interp-body">${picksState.interpretation}</span>
+       </div>`
+    : '';
   const cards = picksState.results.map((rec, i) => {
     const poster = rec.poster_path
       ? `<img src="${TMDB_IMG}w342${rec.poster_path}" alt="${rec.title}" loading="lazy">`
@@ -3573,64 +3494,51 @@ function picksResultsHTML() {
     `;
   }).join('');
   return `
-    <div class="picks-results-header">YOUR PROGRAMME · 3 FILMS CURATED FROM YOUR ANSWERS</div>
+    ${interp}
+    <div class="picks-results-header">YOUR PROGRAMME · 3 FILMS</div>
     ${cards}
-    <button class="picks-again" onclick="picksRestart()">START OVER</button>
+    <button class="picks-again" onclick="picksRestart()">ASK SOMETHING ELSE</button>
   `;
 }
 
-function picksText(key, value) {
-  picksState.answers[key] = value;
-  const btn = document.querySelector('#picksContent .picks-btn-primary');
-  if (btn) btn.disabled = !picksIsAnswered(picksState.step);
+function picksUpdate(v) {
+  picksState.query = v;
+  const btn = document.querySelector('.picks-submit');
+  if (btn) btn.disabled = (v || '').trim().length < 4;
 }
 
-function picksChip(key, value, max) {
-  const cur = picksState.answers[key] || [];
-  if (cur.includes(value)) {
-    picksState.answers[key] = cur.filter(v => v !== value);
-  } else {
-    if (cur.length >= max) return;
-    picksState.answers[key] = [...cur, value];
-  }
+function picksUseExample(idx) {
+  picksState.query = PICKS_EXAMPLES[idx] || '';
   renderPicks();
-}
-
-function picksRadio(key, value) {
-  picksState.answers[key] = value;
-  renderPicks();
-}
-
-function picksBack() {
-  if (picksState.step > 0) { picksState.step--; renderPicks(); }
-}
-
-function picksNext() {
-  if (!picksIsAnswered(picksState.step)) return;
-  if (picksState.step < PICKS_STEPS.length - 1) {
-    picksState.step++;
-    renderPicks();
-  } else {
-    picksSubmit();
-  }
+  // Put the cursor at the end, ready to edit
+  setTimeout(() => {
+    const box = document.getElementById('picksQueryBox');
+    if (box) { box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
+  }, 20);
 }
 
 async function picksSubmit() {
+  const q = (picksState.query || '').trim();
+  if (q.length < 4) return;
+
   picksState.loading = true;
   picksState.error = null;
   picksState.results = null;
+  picksState.interpretation = null;
   renderPicks();
 
   try {
     const resp = await fetch('/api/recommend', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(picksState.answers),
+      body: JSON.stringify({ query: q }),
     });
     const data = await resp.json();
     if (!resp.ok || data.error) throw new Error(data.error || 'Request failed');
 
     const recs = Array.isArray(data.recommendations) ? data.recommendations : [];
+    picksState.interpretation = data.interpretation || null;
+
     // Enrich with TMDB data for posters + modal links
     await Promise.all(recs.map(async rec => {
       try {
@@ -3654,10 +3562,10 @@ async function picksSubmit() {
 }
 
 function picksRestart() {
-  picksState.step = 0;
-  picksState.answers = { anchor: '', mood: [], pacing: '', visual: [], ambiguity: '', runtime: '', avoid: '' };
+  picksState.query = '';
   picksState.loading = false;
   picksState.results = null;
+  picksState.interpretation = null;
   picksState.error = null;
   renderPicks();
 }
