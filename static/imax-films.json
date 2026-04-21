@@ -446,5 +446,19 @@
     "month": 3,
     "format": "IMAX Digital",
     "note": "DP Greig Fraser and director Phil Lord shot the film on the ARRI ALEXA 65 under IMAX's official \"Filmed for IMAX\" designation, with ARRI Rental engineering a completely custom set of vertical-squeeze anamorphic lenses built specifically for this production — mounted sideways on the ALEXA 65 to natively fill the taller IMAX sensor. The space sequences expand to the full 1.43:1 IMAX ratio, while Earth and memory sequences play in 2.39:1, using the aspect ratio shift as a structural storytelling device in the same vein as Oppenheimer. The custom vertical lens configuration produces distinctive vertical lens flares — an optical signature unique to this film."
+  },
+  {
+    "title": "Mercy",
+    "year": 2026,
+    "month": 1,
+    "format": "IMAX Digital",
+    "note": "Director Timur Bekmambetov shot Mercy with IMAX-certified digital cameras, presenting approximately 62 minutes — nearly all of the near-future sci-fi thriller's runtime — in the exclusive IMAX Expanded Aspect Ratio. Known for the visual inventiveness of Night Watch and Wanted, Bekmambetov framed the film specifically for the taller IMAX canvas, with the sustained EAR coverage unusual in length for a genre film. Released as an IMAX 3D Experience in January 2026 with Chris Pratt and Rebecca Ferguson."
+  },
+  {
+    "title": "The Bride!",
+    "year": 2026,
+    "month": 3,
+    "format": "IMAX Digital",
+    "note": "Director Maggie Gyllenhaal and DP Lawrence Sher — fresh off Joker: Folie à Deux — shot the entire film on IMAX-certified digital cameras, engineering one of the most dynamic aspect-ratio uses in recent IMAX cinema. The film shifts between 2.39:1, 1.90:1, and the full 1.43:1 ratio — sometimes across three consecutive cuts — with the vertical expansions specifically aligned to the film's Frankenstein-adjacent resurrection imagery. Gyllenhaal described the approach as creating \"a feeling of magic\" through scale alone, with the vertical grows as a visual metaphor for bringing the dead back to life. Starring Jessie Buckley and Christian Bale."
   }
 ]
