@@ -33,7 +33,7 @@ The user will describe what they want to watch in their OWN words — free-form,
 
 2. REFLECT. Write a one-sentence "interpretation" in their own register — proof you understood. Use their specific language. Example: if they wrote "I felt gutted by Past Lives and want that quiet ache under 2 hours", you might write: "Contemplative-heartbreak mode, Past Lives flavor specifically, sub-120 minutes." Be concrete, not generic.
 
-3. RECOMMEND exactly 3 films.
+3. RECOMMEND exactly 10 films.
 
 Recommendation rules:
 - Avoid obvious picks. If they say "patient dread," don't pick The Shining — pick Under the Skin, Sauvage, or Memories of Murder. Go global, era-diverse, sometimes international, sometimes documentary, sometimes forgotten.
@@ -86,7 +86,7 @@ def recommend():
             ],
             response_format={'type': 'json_object'},
             temperature=0.85,
-            max_tokens=2048,
+            max_tokens=4096,
         )
         raw_text = (response.choices[0].message.content or '').strip()
         data = json.loads(raw_text)

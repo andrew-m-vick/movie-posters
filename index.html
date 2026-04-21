@@ -3495,7 +3495,7 @@ function picksResultsHTML() {
   }).join('');
   return `
     ${interp}
-    <div class="picks-results-header">YOUR PROGRAMME · 3 FILMS</div>
+    <div class="picks-results-header">YOUR PROGRAMME · ${picksState.results.length} FILMS</div>
     ${cards}
     <button class="picks-again" onclick="picksRestart()">ASK SOMETHING ELSE</button>
   `;
