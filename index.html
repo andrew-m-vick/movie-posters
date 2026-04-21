@@ -1198,12 +1198,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .picks-prompt::placeholder{color:var(--text3)}
 .picks-hint{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--text3);margin-top:8px;text-transform:uppercase}
 
-.picks-examples-label{font-family:var(--font-mono);font-size:10px;letter-spacing:2.5px;color:var(--text3);margin:28px 0 12px;text-transform:uppercase}
-.picks-examples{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
-.picks-example{padding:10px 14px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);border-radius:8px;cursor:pointer;font-size:13px;font-family:var(--font-body);text-align:left;transition:all .15s;font-style:italic}
-.picks-example:hover{background:var(--bg3);color:var(--text);border-color:var(--gold)}
-
-.picks-submit{display:block;width:100%;padding:16px;border-radius:8px;background:var(--gold);color:#0a0a0a;border:none;font-family:var(--font-mono);font-size:12px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.picks-submit{display:block;width:100%;margin-top:20px;padding:16px;border-radius:8px;background:var(--gold);color:#0a0a0a;border:none;font-family:var(--font-mono);font-size:12px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:all .15s;text-transform:uppercase}
 .picks-submit:hover:not(:disabled){background:var(--gold2)}
 .picks-submit:disabled{opacity:.3;cursor:not-allowed}
 
@@ -1222,7 +1217,10 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .picks-loading-sub{color:var(--text3);font-size:13px;margin-top:10px}
 
 /* results */
-.picks-results-header{font-family:var(--font-mono);font-size:11px;letter-spacing:2.5px;color:var(--text3);margin-bottom:22px;text-transform:uppercase}
+.picks-results-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.picks-results-header{font-family:var(--font-mono);font-size:11px;letter-spacing:2.5px;color:var(--text3);text-transform:uppercase;margin:0}
+.picks-reset-top{padding:9px 16px;background:transparent;border:1px solid var(--border);color:var(--text);border-radius:6px;font-family:var(--font-mono);font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .15s;text-transform:uppercase;white-space:nowrap}
+.picks-reset-top:hover{border-color:var(--gold);color:var(--gold)}
 .picks-card{display:flex;gap:22px;padding:22px;margin-bottom:18px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
 .picks-card:hover{border-color:var(--gold);transform:translateY(-1px)}
 .picks-card-poster{width:130px;flex-shrink:0;aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:30px}
@@ -3399,13 +3397,6 @@ const picksState = {
   error: null,
 };
 
-const PICKS_EXAMPLES = [
-  'I just watched Past Lives and felt gutted — want something with that quiet ache, under 2 hours.',
-  'A tight 90-minute heist film I probably haven\'t seen.',
-  'Something patient and dreadful, Arrival energy, no pre-1980.',
-  'Pick me a foreign slow-burn for a rainy Sunday afternoon.',
-];
-
 function renderPicks() {
   const el = document.getElementById('picksContent');
   if (!el) return;
@@ -3422,9 +3413,6 @@ function picksInputHTML() {
   const q = picksState.query || '';
   const esc = q.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const disabled = q.trim().length < 4;
-  const exChips = PICKS_EXAMPLES.map((ex, i) =>
-    `<button class="picks-example" onclick="picksUseExample(${i})">${ex}</button>`
-  ).join('');
 
   return `
     <div class="picks-prompt-wrap">
@@ -3433,12 +3421,10 @@ function picksInputHTML() {
         class="picks-prompt"
         placeholder="e.g. I want something slow and contemplative like Stalker, but under 2 hours — no Russian films."
         oninput="picksUpdate(this.value)"
-        onkeydown="if((event.metaKey||event.ctrlKey)&&event.key==='Enter')picksSubmit()"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();picksSubmit();}"
       >${esc}</textarea>
-      <div class="picks-hint">⌘ + RETURN TO SUBMIT</div>
+      <div class="picks-hint">RETURN to submit · SHIFT+RETURN for a new line</div>
     </div>
-    <div class="picks-examples-label">OR TAP AN EXAMPLE:</div>
-    <div class="picks-examples">${exChips}</div>
     <button class="picks-submit" ${disabled ? 'disabled' : ''} onclick="picksSubmit()">
       GET MY PICKS →
     </button>
@@ -3495,7 +3481,10 @@ function picksResultsHTML() {
   }).join('');
   return `
     ${interp}
-    <div class="picks-results-header">YOUR PROGRAMME · ${picksState.results.length} FILMS</div>
+    <div class="picks-results-bar">
+      <div class="picks-results-header">YOUR PROGRAMME · ${picksState.results.length} FILMS</div>
+      <button class="picks-reset-top" onclick="picksRestart()">↺ NEW QUERY</button>
+    </div>
     ${cards}
     <button class="picks-again" onclick="picksRestart()">ASK SOMETHING ELSE</button>
   `;
@@ -3505,16 +3494,6 @@ function picksUpdate(v) {
   picksState.query = v;
   const btn = document.querySelector('.picks-submit');
   if (btn) btn.disabled = (v || '').trim().length < 4;
-}
-
-function picksUseExample(idx) {
-  picksState.query = PICKS_EXAMPLES[idx] || '';
-  renderPicks();
-  // Put the cursor at the end, ready to edit
-  setTimeout(() => {
-    const box = document.getElementById('picksQueryBox');
-    if (box) { box.focus(); box.setSelectionRange(box.value.length, box.value.length); }
-  }, 20);
 }
 
 async function picksSubmit() {
