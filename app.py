@@ -24,8 +24,10 @@ def apple_touch_icon():
     return send_from_directory('static', 'apple-touch-icon.png')
 
 
-# ─── Recommender endpoint (Google Gemini) ─────────────────────────────────
-GEMINI_MODEL_NAME = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+# ─── Recommender endpoint (Groq) ──────────────────────────────────────────
+# Default to Llama 3.3 70B — strong general reasoning, great for nuanced film
+# recommendations. Free tier on Groq: 30 req/min, 14,400 req/day.
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
 
 RECOMMENDER_SYSTEM = """You are the head programmer at a cinephile repertory theatre — someone who has seen everything from Tarkovsky to Tsai Ming-liang, who knows the second wave of 70s horror, the French extremity movement, and can confidently recommend a Chantal Akerman film without irony.
 
@@ -39,7 +41,7 @@ Rules:
 - Respect anti-patterns (things they said to avoid).
 - Tags should be concrete and descriptive (e.g. "slow-burn", "body horror", "New Hollywood", "neorealism"). 3–5 tags each.
 
-Return ONLY valid JSON in this shape:
+Return ONLY valid JSON in this exact shape — no markdown, no preamble, no trailing commentary:
 {
   "recommendations": [
     {
@@ -54,7 +56,7 @@ Return ONLY valid JSON in this shape:
 """
 
 
-def _build_user_prompt(prefs: dict) -> str:
+def _build_user_prompt(prefs):
     lines = []
     if prefs.get('anchor'):
         lines.append(f"ANCHOR FILM & WHAT THEY LOVED: {prefs['anchor']}")
@@ -77,28 +79,28 @@ def _build_user_prompt(prefs: dict) -> str:
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
-    api_key = os.environ.get('GEMINI_API_KEY')
+    api_key = os.environ.get('GROQ_API_KEY')
     if not api_key:
-        return jsonify({'error': 'GEMINI_API_KEY environment variable not set on the server'}), 500
+        return jsonify({'error': 'GROQ_API_KEY environment variable not set on the server'}), 500
 
     prefs = request.get_json(silent=True) or {}
     user_prompt = _build_user_prompt(prefs)
 
     raw_text = None
     try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-
-        model = genai.GenerativeModel(
-            model_name=GEMINI_MODEL_NAME,
-            system_instruction=RECOMMENDER_SYSTEM,
-            generation_config=genai.GenerationConfig(
-                response_mime_type='application/json',
-                temperature=0.85,
-            ),
+        from groq import Groq
+        client = Groq(api_key=api_key)
+        response = client.chat.completions.create(
+            model=GROQ_MODEL,
+            messages=[
+                {'role': 'system', 'content': RECOMMENDER_SYSTEM},
+                {'role': 'user',   'content': user_prompt},
+            ],
+            response_format={'type': 'json_object'},
+            temperature=0.85,
+            max_tokens=2048,
         )
-        resp = model.generate_content(user_prompt)
-        raw_text = (resp.text or '').strip()
+        raw_text = (response.choices[0].message.content or '').strip()
         data = json.loads(raw_text)
         return jsonify(data)
     except json.JSONDecodeError:
