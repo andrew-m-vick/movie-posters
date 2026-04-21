@@ -100,6 +100,36 @@ def recommend():
         return jsonify({'error': f'{type(e).__name__}: {e}'}), 502
 
 
+@app.route('/api/health/groq', methods=['GET'])
+def groq_health():
+    """Lightweight Groq reachability check used by the OPS dashboard.
+    Pings the /models endpoint (no billing, no generation) and reports
+    whether the configured key + network path work end-to-end.
+    """
+    api_key = os.environ.get('GROQ_API_KEY')
+    if not api_key:
+        return jsonify({'status': 'no-key', 'detail': 'GROQ_API_KEY not set'}), 200
+
+    import time, urllib.request, urllib.error
+    t0 = time.time()
+    req = urllib.request.Request(
+        'https://api.groq.com/openai/v1/models',
+        headers={'Authorization': f'Bearer {api_key}'},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            latency_ms = int((time.time() - t0) * 1000)
+            return jsonify({
+                'status': 'online' if resp.status == 200 else 'error',
+                'latency_ms': latency_ms,
+                'model': GROQ_MODEL,
+            }), 200
+    except urllib.error.HTTPError as e:
+        return jsonify({'status': 'error', 'detail': f'HTTP {e.code}'}), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'detail': type(e).__name__}), 200
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

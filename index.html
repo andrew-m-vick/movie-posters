@@ -1859,15 +1859,18 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
         <div class="section-title" style="font-size:22px;letter-spacing:3px">Data Pipeline Architecture</div>
         <span style="font-size:10px;font-family:var(--font-mono);letter-spacing:1.5px;padding:3px 8px;border-radius:3px;border:1px solid rgba(26,155,170,.4);color:var(--teal);background:rgba(26,155,170,.08)">ARCHITECTURE REFERENCE</span>
       </div>
-      <div style="color:var(--text2);font-size:13px;margin-top:6px">Medallion Architecture · Bronze → Silver → Gold · Apache Airflow Orchestration</div>
-      <div style="color:var(--text3);font-size:11px;font-family:var(--font-mono);margin-top:4px">Design document for production implementation · Live data ingested via browser APIs</div>
+      <div style="color:var(--text2);font-size:13px;margin-top:6px">Medallion Architecture · Bronze → Silver → Gold · Apache Airflow Orchestration · LLM-Backed Recommender Service</div>
+      <div style="color:var(--text3);font-size:11px;font-family:var(--font-mono);margin-top:4px">Design document for production implementation · Live data ingested via browser APIs · Groq-backed AI recommendations live in-browser</div>
       <div class="tech-stack">
         <span class="tech-pill">Python 3.11</span>
+        <span class="tech-pill">Flask</span>
         <span class="tech-pill">PostgreSQL 15</span>
         <span class="tech-pill">Apache Airflow 2.7</span>
         <span class="tech-pill">TMDB API</span>
         <span class="tech-pill">OMDb API</span>
         <span class="tech-pill">Watchmode API</span>
+        <span class="tech-pill" style="border-color:rgba(232,160,32,.45);color:var(--gold2);background:rgba(232,160,32,.08)">Groq Cloud</span>
+        <span class="tech-pill" style="border-color:rgba(232,160,32,.45);color:var(--gold2);background:rgba(232,160,32,.08)">Llama 3.3 70B</span>
         <span class="tech-pill">Power BI</span>
         <span class="tech-pill">dbt Core</span>
         <span class="tech-pill">Docker</span>
@@ -2131,6 +2134,132 @@ DB_CONN  = os.environ[<span class="dag-string">'POSTGRES_CONN'</span>]
       </div>
     </div>
 
+    <!-- AI RECOMMENDER SERVICE -->
+    <div class="card mb-16">
+      <div class="card-title">
+        <span class="dot teal"></span> AI Recommender Service — Groq · Llama 3.3 70B
+        <span style="font-size:10px;font-family:var(--font-mono);letter-spacing:1.5px;padding:3px 8px;border-radius:3px;border:1px solid rgba(232,160,32,.45);color:var(--gold2);background:rgba(232,160,32,.08);margin-left:8px">LIVE</span>
+      </div>
+      <div style="color:var(--text2);font-size:13px;margin-bottom:16px;line-height:1.55">
+        A free-text input recommender. The model parses intent from an unstructured query, reflects its understanding back to the user, then returns 10 films each with a "why" grounded in the user's own language. Deployed live — see the <b style="color:var(--gold)">For You</b> tab.
+      </div>
+
+      <!-- Request flow -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:22px 18px;margin-bottom:16px;overflow-x:auto">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0;min-width:760px;font-family:var(--font-mono);font-size:11px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--text3);letter-spacing:1px">BROWSER</div>
+            <div style="padding:7px 12px;border:1px solid var(--border2);border-radius:5px;color:var(--text);background:var(--bg3);text-align:center">Free-text<br>query</div>
+          </div>
+          <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--text3);letter-spacing:1px">FLASK</div>
+            <div style="padding:7px 12px;border:1px solid rgba(26,155,170,.4);border-radius:5px;color:var(--teal);background:rgba(26,155,170,.06);text-align:center">/api/recommend<br>POST</div>
+          </div>
+          <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--text3);letter-spacing:1px">GROQ SDK</div>
+            <div style="padding:7px 12px;border:1px solid rgba(232,160,32,.4);border-radius:5px;color:var(--gold);background:rgba(232,160,32,.06);text-align:center">chat.completions<br>response_format=json</div>
+          </div>
+          <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--text3);letter-spacing:1px">INFERENCE</div>
+            <div style="padding:7px 12px;border:1px solid rgba(232,160,32,.4);border-radius:5px;color:var(--gold2);background:rgba(232,160,32,.08);text-align:center">Llama 3.3 70B<br>Versatile</div>
+          </div>
+          <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--text3);letter-spacing:1px">ENRICH</div>
+            <div style="padding:7px 12px;border:1px solid rgba(26,155,170,.4);border-radius:5px;color:var(--teal);background:rgba(26,155,170,.06);text-align:center">TMDB search<br>poster + id</div>
+          </div>
+          <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--text3);letter-spacing:1px">RENDER</div>
+            <div style="padding:7px 12px;border:1px solid var(--border2);border-radius:5px;color:var(--text);background:var(--bg3);text-align:center">Interpretation<br>+ 10 cards</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prompt engineering + config, side-by-side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Prompt Engineering</div>
+          <div class="dag-block">
+<span class="dag-comment"># System prompt enforces three jobs:</span>
+
+<span class="dag-fn">1. PARSE</span>   &#8594; extract every signal from the free-text input
+            (mood, pacing, anchor films, runtime, anti-patterns)
+
+<span class="dag-fn">2. REFLECT</span> &#8594; write a one-sentence "interpretation" that
+            mirrors the user's own language — proof the model
+            actually understood
+
+<span class="dag-fn">3. RECOMMEND</span> &#8594; exactly 10 films, each "why" must reference
+            the user's language, avoid obvious picks, respect
+            runtime ceiling + anti-patterns
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Model Configuration</div>
+          <div class="dag-block">
+<span class="dag-comment"># Groq SDK configuration</span>
+model:            <span class="dag-string">llama-3.3-70b-versatile</span>
+temperature:      <span class="dag-string">0.85</span>  <span class="dag-comment"># creative but coherent</span>
+max_tokens:       <span class="dag-string">4096</span>
+response_format:  {<span class="dag-string">"type": "json_object"</span>}
+
+<span class="dag-comment"># Free tier headroom</span>
+rate_limit:       30 req/min &#183; 14,400/day
+avg_latency:      &#126;1.5&#8211;3.5s for 10 recs
+input_cap:        1500 chars (soft)
+          </div>
+        </div>
+      </div>
+
+      <!-- Code snippet -->
+      <div class="dag-block">
+<span class="dag-comment"># app.py — /api/recommend (abbreviated)</span>
+<span class="dag-keyword">from</span> groq <span class="dag-keyword">import</span> Groq
+client = Groq(api_key=os.environ[<span class="dag-string">'GROQ_API_KEY'</span>])
+
+<span class="dag-keyword">@app.route</span>(<span class="dag-string">'/api/recommend'</span>, methods=[<span class="dag-string">'POST'</span>])
+<span class="dag-fn">def</span> recommend():
+    query = (request.get_json() <span class="dag-keyword">or</span> {}).get(<span class="dag-string">'query'</span>, '').strip()
+    <span class="dag-keyword">if</span> <span class="dag-keyword">not</span> query:
+        <span class="dag-keyword">return</span> jsonify({<span class="dag-string">'error'</span>: <span class="dag-string">'No query provided'</span>}), 400
+
+    resp = client.chat.completions.create(
+        model=<span class="dag-string">'llama-3.3-70b-versatile'</span>,
+        messages=[
+            {<span class="dag-string">'role'</span>: <span class="dag-string">'system'</span>, <span class="dag-string">'content'</span>: RECOMMENDER_SYSTEM},
+            {<span class="dag-string">'role'</span>: <span class="dag-string">'user'</span>,   <span class="dag-string">'content'</span>: query},
+        ],
+        response_format={<span class="dag-string">'type'</span>: <span class="dag-string">'json_object'</span>},
+        temperature=0.85,
+        max_tokens=4096,
+    )
+    <span class="dag-keyword">return</span> jsonify(json.loads(resp.choices[0].message.content))
+      </div>
+
+      <!-- Response shape -->
+      <div style="margin-top:16px">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Response Schema (JSON-mode-enforced)</div>
+        <div class="schema-block">
+{
+  <span class="dag-string">"interpretation"</span>: <span class="dag-string">"one-sentence reflection in user's register"</span>,
+  <span class="dag-string">"recommendations"</span>: [
+    {
+      <span class="dag-string">"title"</span>:    <span class="dag-string">"Under the Skin"</span>,
+      <span class="dag-string">"year"</span>:     2013,
+      <span class="dag-string">"director"</span>: <span class="dag-string">"Jonathan Glazer"</span>,
+      <span class="dag-string">"why"</span>:      <span class="dag-string">"2-4 sentences referencing user's own words"</span>,
+      <span class="dag-string">"tags"</span>:     [<span class="dag-string">"slow-burn"</span>, <span class="dag-string">"alien POV"</span>, <span class="dag-string">"dread"</span>]
+    }
+  ]  <span class="dag-comment">// exactly 10</span>
+}
+        </div>
+      </div>
+    </div>
+
     <!-- POWER BI CONNECTION -->
     <div class="card mb-16">
       <div class="card-title"><span class="dot"></span> Power BI — PostgreSQL Connection</div>
@@ -2194,6 +2323,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="health-card"><div class="health-indicator checking" id="h-tmdb"></div><div><div class="health-name">TMDB API</div><div class="health-detail">api.themoviedb.org</div></div><div class="health-latency" id="h-tmdb-lat">—</div></div>
       <div class="health-card"><div class="health-indicator checking" id="h-omdb"></div><div><div class="health-name">OMDb API</div><div class="health-detail">www.omdbapi.com</div></div><div class="health-latency" id="h-omdb-lat">—</div></div>
       <div class="health-card"><div class="health-indicator checking" id="h-watchmode"></div><div><div class="health-name">Watchmode API</div><div class="health-detail">api.watchmode.com</div></div><div class="health-latency" id="h-watchmode-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator checking" id="h-groq"></div><div><div class="health-name">Groq API <span style="font-size:9px;color:var(--gold);letter-spacing:1px;margin-left:4px">LLM</span></div><div class="health-detail">api.groq.com · Llama 3.3 70B</div></div><div class="health-latency" id="h-groq-lat">—</div></div>
     </div>
 
     <!-- DATA QUALITY CHECKS -->
@@ -2203,6 +2333,18 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="dq-card"><div class="dq-score" id="dq-accuracy">—</div><div class="dq-label">Accuracy</div><div class="dq-def">% with both budget + revenue confirmed</div></div>
       <div class="dq-card"><div class="dq-score" id="dq-freshness">—</div><div class="dq-label">Freshness</div><div class="dq-def">% of films within 16-week window</div></div>
       <div class="dq-card"><div class="dq-score" id="dq-coverage">—</div><div class="dq-label">Coverage</div><div class="dq-def">% of films with rating data (≥10 votes)</div></div>
+    </div>
+
+    <!-- AI RECOMMENDER OBSERVABILITY -->
+    <div class="card-title mb-8 mt-16">
+      <span class="dot teal"></span> AI Recommender — Session Observability
+      <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">— live metrics from /api/recommend calls this session</span>
+    </div>
+    <div class="dq-grid" id="llmMetricsGrid">
+      <div class="dq-card"><div class="dq-score" id="llm-requests">0</div><div class="dq-label">Requests</div><div class="dq-def">Total /api/recommend calls this session</div></div>
+      <div class="dq-card"><div class="dq-score" id="llm-latency">—</div><div class="dq-label">Avg Latency</div><div class="dq-def">End-to-end time incl. TMDB enrichment</div></div>
+      <div class="dq-card"><div class="dq-score" id="llm-last-count">—</div><div class="dq-label">Last Films</div><div class="dq-def">Films returned in the most recent request</div></div>
+      <div class="dq-card"><div class="dq-score" id="llm-errors">0</div><div class="dq-label">Errors</div><div class="dq-def">Failed /api/recommend calls (incl. rate limits)</div></div>
     </div>
 
     <!-- RECORD COUNTS -->
@@ -2335,6 +2477,15 @@ const state = {
   streamingLoaded: false,
   streamingCount: null,
   fetchLog: [],
+  // LLM recommender session metrics (observed by OPS dashboard)
+  llm: {
+    requests: 0,
+    errors: 0,
+    totalLatencyMs: 0,
+    lastCount: null,
+    lastLatencyMs: null,
+    lastTimestamp: null,
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3506,6 +3657,10 @@ async function picksSubmit() {
   picksState.interpretation = null;
   renderPicks();
 
+  // Track for OPS observability
+  state.llm.requests++;
+  const t0 = Date.now();
+
   try {
     const resp = await fetch('/api/recommend', {
       method: 'POST',
@@ -3530,10 +3685,18 @@ async function picksSubmit() {
       } catch {}
     }));
 
+    // Record success metrics
+    const dt = Date.now() - t0;
+    state.llm.totalLatencyMs += dt;
+    state.llm.lastLatencyMs   = dt;
+    state.llm.lastCount       = recs.length;
+    state.llm.lastTimestamp   = new Date();
+
     picksState.results = recs;
     picksState.loading = false;
     renderPicks();
   } catch (e) {
+    state.llm.errors++;
     picksState.error = e.message || String(e);
     picksState.loading = false;
     renderPicks();
@@ -4267,6 +4430,19 @@ async function renderOPS() {
   populateRecordCounts();
   renderRunHistory();
   renderDQScores();
+  renderLLMMetrics();
+}
+
+function renderLLMMetrics() {
+  const m = state.llm;
+  const $ = id => document.getElementById(id);
+  if ($('llm-requests'))   $('llm-requests').textContent   = m.requests.toLocaleString();
+  if ($('llm-errors'))     $('llm-errors').textContent     = m.errors.toLocaleString();
+  if ($('llm-last-count')) $('llm-last-count').textContent = m.lastCount ?? '—';
+  if ($('llm-latency')) {
+    const n = m.requests - m.errors;
+    $('llm-latency').textContent = n > 0 ? `${Math.round(m.totalLatencyMs / n).toLocaleString()}ms` : '—';
+  }
 }
 
 async function checkAPIHealth() {
@@ -4288,6 +4464,19 @@ async function checkAPIHealth() {
       const t = Date.now();
       const r = await wmGet('/status');
       return r ? Date.now() - t : 'error';
+    }},
+    { id: 'groq', name: 'Groq', fn: async () => {
+      // Server-side health check — hits /api/health/groq which pings
+      // api.groq.com/openai/v1/models without consuming a generation.
+      try {
+        const r = await fetch('/api/health/groq');
+        const d = await r.json();
+        if (d.status === 'no-key') return 'no-key';
+        if (d.status !== 'online')  return 'error';
+        return d.latency_ms ?? 'error';
+      } catch {
+        return 'error';
+      }
     }},
   ];
 
