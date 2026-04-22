@@ -40,6 +40,9 @@ Analytics views over the box office and upcoming slate.
 ### OPS
 Internal diagnostics — API health, latency, model status.
 
+### Installable (PWA)
+CINEDATA is a Progressive Web App — installable on iOS/Android/desktop via "Add to Home Screen." Launches standalone (no browser chrome), with a service worker for offline asset caching and maskable 192/512 icons.
+
 ---
 
 ## Tech Stack
