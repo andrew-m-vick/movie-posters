@@ -49,11 +49,7 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
 
-/* SCROLLBAR */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+/* SCROLLBAR — use browser defaults (custom 6px bar was getting clipped at the viewport edge) */
 
 /* HEADER */
 #header{
