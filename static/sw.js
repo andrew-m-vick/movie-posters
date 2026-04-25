@@ -1,7 +1,7 @@
 // CINEDATA Service Worker
 // Caches the app shell so it loads instantly and works offline.
 
-const CACHE = 'cinedata-v2';
+const CACHE = 'cinedata-v3';
 const SHELL = [
   '/',
   'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap',
@@ -23,10 +23,12 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Let TMDB API and tile requests always go to the network
+  // Let TMDB API, tile requests, and curated IMAX JSON files always go to the network
+  // (so manual updates to imax-films / imax-theaters / imax-now-playing land immediately)
   const url = e.request.url;
   if (url.includes('api.themoviedb.org') || url.includes('basemaps.cartocdn') ||
-      url.includes('nominatim.openstreetmap') || url.includes('router.project-osrm')) {
+      url.includes('nominatim.openstreetmap') || url.includes('router.project-osrm') ||
+      url.includes('/static/imax-')) {
     return;
   }
   e.respondWith(

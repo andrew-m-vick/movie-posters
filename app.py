@@ -1,5 +1,8 @@
 import os
+import re
 import json
+import time
+import requests
 from flask import Flask, send_file, send_from_directory, request, jsonify
 
 # Flask serves ./static/ at /static/<filename> automatically
@@ -128,6 +131,88 @@ def groq_health():
             'status': 'error',
             'detail': f'{type(e).__name__}: {str(e)[:200]}',
         }), 200
+
+
+# ─── IMAX "Now Playing" — auto-scrape r/imax weekly sticky ─────────────────
+# r/imax has a weekly stickied "General Discussion Thread" whose title lists
+# every film currently in IMAX rotation, e.g.:
+#   "General Discussion Thread - Week of 04-19-26 -
+#    Project Hail Mary, The Super Mario Galaxy Movie, Michael, 2DIE4, ..."
+# Reddit's JSON API is free, no key, no Cloudflare. We parse the sticky title
+# and return the headline film (first in list), with the rest available as
+# `films`. Falls back to /static/imax-now-playing.json if Reddit is down.
+# Cached in-memory for IMAX_CACHE_TTL seconds.
+
+IMAX_CACHE_TTL = 6 * 60 * 60  # 6 hours
+_imax_cache = {'data': None, 'fetched_at': 0}
+
+REDDIT_HEADERS = {
+    'User-Agent': 'cinedata-app/1.0 (https://movie-posters-production.up.railway.app)',
+    'Accept': 'application/json',
+}
+
+
+def _scrape_reddit_imax():
+    """Pull this week's IMAX films from r/imax's stickied discussion thread.
+
+    Returns {'title': str, 'year': None, 'films': [str, ...], 'source': 'reddit'}
+    on success, or None on any failure (network, parse, missing sticky).
+    """
+    try:
+        r = requests.get(
+            'https://www.reddit.com/r/imax/hot.json?limit=10',
+            headers=REDDIT_HEADERS,
+            timeout=8,
+        )
+        if r.status_code != 200:
+            return None
+        posts = r.json().get('data', {}).get('children', []) or []
+        for p in posts:
+            d = p.get('data', {}) or {}
+            if not d.get('stickied'):
+                continue
+            title = d.get('title', '') or ''
+            # Match the canonical weekly format
+            m = re.search(r'Week of \d{2}-\d{2}-\d{2}\s*[-–—]\s*(.+)$', title)
+            if not m:
+                continue
+            films = [f.strip() for f in m.group(1).split(',') if f.strip()]
+            if not films:
+                continue
+            return {
+                'title': films[0],
+                'year': None,
+                'films': films,
+                'source': 'reddit',
+            }
+        return None
+    except Exception:
+        return None
+
+
+def _read_manual_fallback():
+    try:
+        with open(os.path.join(app.root_path, 'static', 'imax-now-playing.json')) as f:
+            data = json.load(f)
+            data['source'] = 'manual'
+            return data
+    except Exception:
+        return None
+
+
+@app.route('/api/imax-now-playing')
+def imax_now_playing():
+    now = time.time()
+    if _imax_cache['data'] and (now - _imax_cache['fetched_at']) < IMAX_CACHE_TTL:
+        return jsonify({**_imax_cache['data'], 'cached': True})
+
+    payload = _scrape_reddit_imax() or _read_manual_fallback()
+    if not payload:
+        return jsonify({'error': 'No IMAX data available'}), 503
+
+    _imax_cache['data'] = payload
+    _imax_cache['fetched_at'] = now
+    return jsonify({**payload, 'cached': False})
 
 
 if __name__ == '__main__':

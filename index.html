@@ -2801,30 +2801,47 @@ async function renderNowInIMAX() {
   const el = document.getElementById('imaxNowPlaying');
   if (!el || !CFG.tmdb) return;
 
-  // Use now_playing endpoint — purpose-built for currently-in-theaters films
-  const data = await tmdbGet('/movie/now_playing', {
-    language: 'en-US',
-    region: 'US',
-    page: 1,
-  });
-
-  const movies = (data?.results || [])
-    .filter(m => m.poster_path)
-    .sort((a, b) => b.popularity - a.popularity);
-
-  if (!movies.length) {
-    el.textContent = 'No current releases found.';
+  // Server endpoint scrapes imax.com (cached 6h) with /static/imax-now-playing.json
+  // as a manual fallback. Either way we get { title, year?, note?, source }.
+  let curated;
+  try {
+    const r = await fetch('/api/imax-now-playing', { cache: 'no-store' });
+    if (!r.ok) throw new Error('endpoint failed');
+    curated = await r.json();
+  } catch {
+    try {
+      const r = await fetch('/static/imax-now-playing.json', { cache: 'no-store' });
+      curated = await r.json();
+    } catch {
+      el.textContent = 'No IMAX feature currently set.';
+      return;
+    }
+  }
+  if (!curated || !curated.title) {
+    el.textContent = 'No IMAX feature currently set.';
     return;
   }
 
-  // Show the single most popular currently-in-theaters film
-  const m       = movies[0];
-  const year    = m.release_date ? m.release_date.slice(0, 4) : '';
+  // Resolve the curated title against TMDB to fetch poster + metadata.
+  const search = await tmdbGet('/search/movie', {
+    query: curated.title,
+    year: curated.year,
+    language: 'en-US',
+    page: 1,
+  });
+  const m = (search?.results || []).find(r => r.poster_path) || (search?.results || [])[0];
+  if (!m) {
+    el.textContent = `Could not find "${curated.title}" on TMDB.`;
+    return;
+  }
+
+  const year    = m.release_date ? m.release_date.slice(0, 4) : (curated.year || '');
   const rating  = m.vote_average ? m.vote_average.toFixed(1) : '';
   const img     = `${TMDB_IMG}w500${m.poster_path}`;
   const imgOrig = `${TMDB_IMG}original${m.poster_path}`;
   const safe    = m.title.replace(/'/g, "\\'");
-  const overview = (m.overview || '').length > 220 ? m.overview.slice(0, 217) + '…' : m.overview;
+  const baseOverview = curated.note || m.overview || '';
+  const overview = baseOverview.length > 220 ? baseOverview.slice(0, 217) + '…' : baseOverview;
   const fandango = `https://www.fandango.com/search?q=${encodeURIComponent(m.title)}`;
 
   el.className = 'imax-now-wrap';
@@ -2833,12 +2850,11 @@ async function renderNowInIMAX() {
       <img class="imax-now-poster" src="${img}" alt="${m.title}"
            onclick="openPoster('${imgOrig}','${safe}',${m.id})" style="cursor:pointer">
       <div class="imax-now-info">
-        <div class="imax-now-badge">NOW IN THEATERS</div>
+        <div class="imax-now-badge">NOW PLAYING IN IMAX</div>
         <div class="imax-now-title">${m.title}</div>
         <div class="imax-now-meta">
           ${year ? `<span>${year}</span>` : ''}
           ${rating ? `<span>★ ${rating}</span>` : ''}
-          <span>Popularity #1 This Week</span>
         </div>
         <div class="imax-now-overview">${overview}</div>
         <a class="imax-now-fandango" href="${fandango}" target="_blank" rel="noopener">BUY IMAX TICKETS ON FANDANGO</a>
