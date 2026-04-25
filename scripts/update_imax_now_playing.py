@@ -15,22 +15,42 @@ from pathlib import Path
 import requests
 
 
+# Reddit's policy requires a UA in the form "platform:app:version (by /u/user)".
+# Generic UAs ("python-requests", "curl") get auto-blocked from cloud IPs.
 REDDIT_HEADERS = {
-    'User-Agent': 'cinedata-app/1.0 (github actions imax updater)',
+    'User-Agent': 'github-actions:cinedata-imax-updater:v1.0 (by /u/andrew-m-vick)',
     'Accept': 'application/json',
 }
+
+REDDIT_HOSTS = (
+    'https://old.reddit.com',  # Often less strict than www
+    'https://www.reddit.com',
+)
 
 OUTPUT = Path(__file__).resolve().parent.parent / 'static' / 'imax-now-playing.json'
 
 
+def _fetch_with_fallback():
+    """Try old.reddit.com first, then www, then plain RSS as last resort."""
+    last_err = None
+    for host in REDDIT_HOSTS:
+        try:
+            r = requests.get(
+                f'{host}/r/imax/hot.json?limit=10',
+                headers=REDDIT_HEADERS,
+                timeout=15,
+            )
+            if r.status_code == 200:
+                return r.json()
+            last_err = f'{host} -> HTTP {r.status_code}'
+        except Exception as e:
+            last_err = f'{host} -> {e}'
+    raise RuntimeError(f'All Reddit hosts failed. Last error: {last_err}')
+
+
 def scrape():
-    r = requests.get(
-        'https://www.reddit.com/r/imax/hot.json?limit=10',
-        headers=REDDIT_HEADERS,
-        timeout=15,
-    )
-    r.raise_for_status()
-    posts = r.json().get('data', {}).get('children', []) or []
+    data = _fetch_with_fallback()
+    posts = data.get('data', {}).get('children', []) or []
     for p in posts:
         d = p.get('data', {}) or {}
         if not d.get('stickied'):
