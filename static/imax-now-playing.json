@@ -1,5 +1,13 @@
 {
-  "title": "Michael",
+  "title": "Project Hail Mary",
   "year": 2026,
-  "note": "Antoine Fuqua's Michael Jackson biopic — currently the featured IMAX theatrical run."
+  "films": [
+    "Project Hail Mary",
+    "The Super Mario Galaxy Movie",
+    "Michael",
+    "2DIE4",
+    "Lee Cronin's The Mummy"
+  ],
+  "source": "reddit",
+  "sticky_title": "General Discussion Thread - Week of 04-19-26 - Project Hail Mary, The Super Mario Galaxy Movie, Michael, 2DIE4, Lee Cronin's The Mummy"
 }
