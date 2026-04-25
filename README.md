@@ -2,7 +2,7 @@
 
 A cinephile's dashboard for tracking what's in theaters, what's streaming, and what's coming — with a focus on premium formats and the curation a repertory programmer would actually give you.
 
-**Live:** https://movie-posters-production.up.railway.app
+**Live:** https://andrew-vick-movies.up.railway.app
 
 ---
 

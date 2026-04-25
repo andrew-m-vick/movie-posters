@@ -221,17 +221,29 @@ def _read_manual_fallback():
 def imax_now_playing():
     now = time.time()
     week_boundary = _last_thursday_8pm_et_ts()
-    # Cache is valid only if it was fetched after the most recent Thursday 8pm ET.
-    if _imax_cache['data'] and _imax_cache['fetched_at'] >= week_boundary:
+    force = request.args.get('refresh') == '1'
+
+    # Cache is valid only if it was fetched after the most recent Thursday 8pm ET
+    # AND the cached payload came from Reddit (manual fallback never gets cached
+    # so a transient Reddit failure can't poison a whole week).
+    if (not force
+            and _imax_cache['data']
+            and _imax_cache['fetched_at'] >= week_boundary):
         return jsonify({**_imax_cache['data'], 'cached': True})
 
-    payload = _scrape_reddit_imax() or _read_manual_fallback()
-    if not payload:
-        return jsonify({'error': 'No IMAX data available'}), 503
+    reddit = _scrape_reddit_imax()
+    if reddit:
+        _imax_cache['data'] = reddit
+        _imax_cache['fetched_at'] = now
+        return jsonify({**reddit, 'cached': False})
 
-    _imax_cache['data'] = payload
-    _imax_cache['fetched_at'] = now
-    return jsonify({**payload, 'cached': False})
+    # Reddit failed — serve manual fallback but DON'T cache it, so the next
+    # request retries Reddit instead of being stuck on the manual entry.
+    fallback = _read_manual_fallback()
+    if fallback:
+        return jsonify({**fallback, 'cached': False})
+
+    return jsonify({'error': 'No IMAX data available'}), 503
 
 
 if __name__ == '__main__':
