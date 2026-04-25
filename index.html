@@ -2848,7 +2848,7 @@ async function renderNowInIMAX() {
   el.innerHTML = `
     <div class="imax-now-card">
       <img class="imax-now-poster" src="${img}" alt="${m.title}"
-           onclick="openPoster('${imgOrig}','${safe}',${m.id})" style="cursor:pointer">
+           onclick="openModal(${m.id})" style="cursor:pointer">
       <div class="imax-now-info">
         <div class="imax-now-badge">NOW PLAYING IN IMAX</div>
         <div class="imax-now-title">${m.title}</div>
