@@ -1041,11 +1041,29 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   transition:max-height .25s ease,max-width .25s ease,border-radius .25s ease;
   animation:posterIn .2s ease;
 }
+/* Zoomed mode: take over the entire viewport (above navbar) and show the
+   poster at its natural TMDB-original pixel size. Container scrolls if the
+   image exceeds the viewport. */
+.poster-lightbox.zoomed-mode{
+  top:0;
+  z-index:1200;
+  overflow:auto;
+  align-items:flex-start;
+  justify-content:center;
+  padding:20px;
+}
 .poster-lightbox.zoomed-mode .poster-lightbox-img{
-  max-height:calc(100vh - 56px - env(safe-area-inset-top) - 24px);
-  max-width:calc(100vw - 24px);
+  max-height:none;
+  max-width:none;
+  width:auto;
+  height:auto;
   border-radius:0;
   cursor:zoom-out;
+  flex-shrink:0;
+}
+.poster-lightbox.zoomed-mode .poster-lightbox-close{
+  top:20px;
+  z-index:1210;
 }
 .poster-lightbox.zoomed-mode .poster-lightbox-footer,
 .poster-lightbox.zoomed-mode .poster-thumb-strip,
