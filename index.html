@@ -394,7 +394,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 /* MODAL */
 .modal-overlay{
   position:fixed;left:0;right:0;bottom:0;
-  top:calc(56px + env(safe-area-inset-top) + 16px);
+  top:calc(56px + env(safe-area-inset-top));
   z-index:1050;
   background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
   display:none;align-items:center;justify-content:center;padding:20px;
@@ -906,7 +906,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 /* IMAX INFO MODAL */
 .imax-modal{
   display:none;position:fixed;left:0;right:0;bottom:0;
-  top:calc(56px + env(safe-area-inset-top) + 16px);
+  top:calc(56px + env(safe-area-inset-top));
   z-index:1050;
   background:rgba(0,0,0,.88);backdrop-filter:blur(6px);
   align-items:center;justify-content:center;padding:20px;
