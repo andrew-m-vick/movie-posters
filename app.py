@@ -3,6 +3,8 @@ import re
 import json
 import time
 import requests
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from flask import Flask, send_file, send_from_directory, request, jsonify
 
 # Flask serves ./static/ at /static/<filename> automatically
@@ -143,8 +145,23 @@ def groq_health():
 # `films`. Falls back to /static/imax-now-playing.json if Reddit is down.
 # Cached in-memory for IMAX_CACHE_TTL seconds.
 
-IMAX_CACHE_TTL = 6 * 60 * 60  # 6 hours
+# Cache is invalidated at the most recent Thursday 8pm ET — r/imax mods post
+# the next week's discussion thread Thursday night ahead of Friday releases,
+# so this gives us exactly one Reddit fetch per week per server instance.
 _imax_cache = {'data': None, 'fetched_at': 0}
+
+
+def _last_thursday_8pm_et_ts():
+    """Unix timestamp of the most recent Thursday 8:00 PM US/Eastern."""
+    now_et = datetime.now(ZoneInfo('America/New_York'))
+    # Monday=0 ... Thursday=3 ... Sunday=6
+    days_since_thu = (now_et.weekday() - 3) % 7
+    last_thu = (now_et - timedelta(days=days_since_thu)).replace(
+        hour=20, minute=0, second=0, microsecond=0
+    )
+    if last_thu > now_et:
+        last_thu -= timedelta(days=7)
+    return last_thu.timestamp()
 
 REDDIT_HEADERS = {
     'User-Agent': 'cinedata-app/1.0 (https://movie-posters-production.up.railway.app)',
@@ -203,7 +220,9 @@ def _read_manual_fallback():
 @app.route('/api/imax-now-playing')
 def imax_now_playing():
     now = time.time()
-    if _imax_cache['data'] and (now - _imax_cache['fetched_at']) < IMAX_CACHE_TTL:
+    week_boundary = _last_thursday_8pm_et_ts()
+    # Cache is valid only if it was fetched after the most recent Thursday 8pm ET.
+    if _imax_cache['data'] and _imax_cache['fetched_at'] >= week_boundary:
         return jsonify({**_imax_cache['data'], 'cached': True})
 
     payload = _scrape_reddit_imax() or _read_manual_fallback()
