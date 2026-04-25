@@ -4,10 +4,20 @@ film + full slate to static/imax-now-playing.json.
 
 Run weekly via GitHub Actions (.github/workflows/imax-update.yml). The action
 commits the updated JSON, Railway redeploys, and the frontend's manual
-fallback path serves fresh Reddit-derived data — bypassing the cloud-IP
-block that prevents the live Flask scrape from working on Railway.
+fallback path serves fresh Reddit-derived data.
+
+Requires Reddit OAuth (Reddit blocks unauthenticated requests from
+datacenter IPs including GitHub Actions runners). Setup:
+
+  1. Create a "script" type Reddit app at https://www.reddit.com/prefs/apps
+  2. Add to GitHub repo Secrets (Settings -> Secrets and variables -> Actions):
+       REDDIT_CLIENT_ID      = the string under your app name
+       REDDIT_CLIENT_SECRET  = the field labeled "secret"
+
+Local testing: set the same env vars in your shell before running.
 """
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -16,40 +26,51 @@ import requests
 
 
 # Reddit's policy requires a UA in the form "platform:app:version (by /u/user)".
-# Generic UAs ("python-requests", "curl") get auto-blocked from cloud IPs.
-REDDIT_HEADERS = {
-    'User-Agent': 'github-actions:cinedata-imax-updater:v1.0 (by /u/andrew-m-vick)',
-    'Accept': 'application/json',
-}
+USER_AGENT = 'github-actions:cinedata-imax-updater:v1.0 (by /u/andrew-m-vick)'
 
-REDDIT_HOSTS = (
-    'https://old.reddit.com',  # Often less strict than www
-    'https://www.reddit.com',
-)
+REDDIT_TOKEN_URL = 'https://www.reddit.com/api/v1/access_token'
+REDDIT_OAUTH_HOST = 'https://oauth.reddit.com'
 
 OUTPUT = Path(__file__).resolve().parent.parent / 'static' / 'imax-now-playing.json'
 
 
-def _fetch_with_fallback():
-    """Try old.reddit.com first, then www, then plain RSS as last resort."""
-    last_err = None
-    for host in REDDIT_HOSTS:
-        try:
-            r = requests.get(
-                f'{host}/r/imax/hot.json?limit=10',
-                headers=REDDIT_HEADERS,
-                timeout=15,
-            )
-            if r.status_code == 200:
-                return r.json()
-            last_err = f'{host} -> HTTP {r.status_code}'
-        except Exception as e:
-            last_err = f'{host} -> {e}'
-    raise RuntimeError(f'All Reddit hosts failed. Last error: {last_err}')
+def _get_oauth_token():
+    """Reddit script-app OAuth, client_credentials grant. Avoids the
+    datacenter-IP block that affects unauthenticated calls."""
+    cid = os.environ.get('REDDIT_CLIENT_ID')
+    csec = os.environ.get('REDDIT_CLIENT_SECRET')
+    if not cid or not csec:
+        raise RuntimeError(
+            'REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET must be set. '
+            'See scripts/update_imax_now_playing.py docstring.'
+        )
+    r = requests.post(
+        REDDIT_TOKEN_URL,
+        auth=requests.auth.HTTPBasicAuth(cid, csec),
+        data={'grant_type': 'client_credentials'},
+        headers={'User-Agent': USER_AGENT},
+        timeout=15,
+    )
+    r.raise_for_status()
+    token = r.json().get('access_token')
+    if not token:
+        raise RuntimeError(f'Reddit token response missing access_token: {r.text[:200]}')
+    return token
 
 
 def scrape():
-    data = _fetch_with_fallback()
+    token = _get_oauth_token()
+    r = requests.get(
+        f'{REDDIT_OAUTH_HOST}/r/imax/hot?limit=10',
+        headers={
+            'User-Agent': USER_AGENT,
+            'Authorization': f'Bearer {token}',
+            'Accept': 'application/json',
+        },
+        timeout=15,
+    )
+    r.raise_for_status()
+    data = r.json()
     posts = data.get('data', {}).get('children', []) or []
     for p in posts:
         d = p.get('data', {}) or {}

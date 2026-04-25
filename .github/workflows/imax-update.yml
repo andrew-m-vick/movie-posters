@@ -25,6 +25,9 @@ jobs:
         run: pip install requests
 
       - name: Scrape r/imax weekly sticky
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         run: python scripts/update_imax_now_playing.py
 
       - name: Commit and push if changed
