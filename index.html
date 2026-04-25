@@ -3518,6 +3518,10 @@ function picksRestart() {
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════════
 function switchTab(id) {
+  // Close any open modals when navigating to a new tab
+  document.querySelectorAll('.modal-overlay.open, .imax-modal.open').forEach(m => m.classList.remove('open'));
+  document.body.style.overflow = '';
+
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${id}`));
   state.activeTab = id;
