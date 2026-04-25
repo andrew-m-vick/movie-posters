@@ -1042,24 +1042,28 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   animation:posterIn .2s ease;
 }
 /* Zoomed mode: take over the entire viewport (above navbar) and show the
-   poster at its natural TMDB-original pixel size. Container scrolls if the
-   image exceeds the viewport. */
+   poster at its natural TMDB-original pixel size. Uses block layout with
+   margin:auto so the image is centered when it fits the viewport AND
+   scrollable in both axes when it's larger. Flex centering can't do both. */
 .poster-lightbox.zoomed-mode{
   top:0;
   z-index:1200;
+  display:block;
   overflow:auto;
-  align-items:flex-start;
-  justify-content:center;
   padding:20px;
 }
+.poster-lightbox.zoomed-mode .poster-lightbox-inner{
+  display:block;
+}
 .poster-lightbox.zoomed-mode .poster-lightbox-img{
+  display:block;
+  margin:0 auto;
   max-height:none;
   max-width:none;
   width:auto;
   height:auto;
   border-radius:0;
   cursor:zoom-out;
-  flex-shrink:0;
 }
 .poster-lightbox.zoomed-mode .poster-lightbox-close{
   top:20px;
