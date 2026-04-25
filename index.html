@@ -1022,19 +1022,34 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 
 /* POSTER LIGHTBOX */
 .poster-lightbox{
-  display:none;position:fixed;inset:0;z-index:300;
+  display:none;position:fixed;left:0;right:0;bottom:0;
+  top:calc(56px + env(safe-area-inset-top));
+  z-index:1050;
   background:rgba(0,0,0,.92);
   align-items:center;justify-content:center;flex-direction:column;
   gap:16px;cursor:zoom-out;
+  padding:20px;
 }
 .poster-lightbox.open{display:flex}
 .poster-lightbox-img{
-  max-height:88vh;max-width:min(500px,90vw);
+  max-height:calc(100vh - 56px - env(safe-area-inset-top) - 140px);
+  max-width:min(500px,90vw);
   border-radius:8px;
   box-shadow:0 24px 80px rgba(0,0,0,.8);
   object-fit:contain;
+  cursor:zoom-in;
+  transition:max-height .25s ease,max-width .25s ease,border-radius .25s ease;
   animation:posterIn .2s ease;
 }
+.poster-lightbox.zoomed-mode .poster-lightbox-img{
+  max-height:calc(100vh - 56px - env(safe-area-inset-top) - 24px);
+  max-width:calc(100vw - 24px);
+  border-radius:0;
+  cursor:zoom-out;
+}
+.poster-lightbox.zoomed-mode .poster-lightbox-footer,
+.poster-lightbox.zoomed-mode .poster-thumb-strip,
+.poster-lightbox.zoomed-mode .poster-lightbox-title{display:none}
 @keyframes posterIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 .poster-lightbox-title{
   font-family:var(--font-head);font-size:18px;letter-spacing:2px;
@@ -1052,9 +1067,10 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   white-space:nowrap;flex-shrink:0;
 }
 .poster-lightbox-close{
-  position:fixed;top:20px;right:24px;
+  position:fixed;
+  top:calc(72px + env(safe-area-inset-top));right:24px;
   background:none;border:none;color:var(--text2);
-  font-size:22px;cursor:pointer;z-index:301;
+  font-size:22px;cursor:pointer;z-index:1060;
   transition:color .15s;line-height:1;
 }
 .poster-lightbox-close:hover{color:var(--text)}
@@ -5094,7 +5110,9 @@ async function openPoster(firstSrc, title, movieId) {
 }
 
 function closePoster() {
-  document.getElementById('posterLightbox').classList.remove('open');
+  const lb = document.getElementById('posterLightbox');
+  lb.classList.remove('open');
+  lb.classList.remove('zoomed-mode');
   document.getElementById('posterLightboxImg').src = '';
   document.getElementById('posterThumbStrip').innerHTML = '';
 }
@@ -5102,6 +5120,13 @@ function closePoster() {
 document.getElementById('posterLightboxClose').addEventListener('click', closePoster);
 document.getElementById('posterLightbox').addEventListener('click', e => {
   if (e.target === e.currentTarget) closePoster();
+});
+
+// Click the poster itself to magnify to viewport scale; click again to restore.
+// stopPropagation prevents the click from bubbling up to the backdrop and closing.
+document.getElementById('posterLightboxImg').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('posterLightbox').classList.toggle('zoomed-mode');
 });
 
 const homeSearchInput = document.getElementById('homeSearchInput');
