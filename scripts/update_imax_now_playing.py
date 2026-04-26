@@ -1,110 +1,119 @@
 #!/usr/bin/env python3
-"""Scrape r/imax's stickied weekly discussion thread and write the headline
-film + full slate to static/imax-now-playing.json.
+"""Scrape Wikipedia's "List of films released in IMAX" and write the most
+recent (already-released) entry to static/imax-now-playing.json.
 
-Run weekly via GitHub Actions (.github/workflows/imax-update.yml). The action
-commits the updated JSON, Railway redeploys, and the frontend's manual
-fallback path serves fresh Reddit-derived data.
+Run weekly via GitHub Actions (.github/workflows/imax-update.yml).
 
-Requires Reddit OAuth (Reddit blocks unauthenticated requests from
-datacenter IPs including GitHub Actions runners). Setup:
-
-  1. Create a "script" type Reddit app at https://www.reddit.com/prefs/apps
-  2. Add to GitHub repo Secrets (Settings -> Secrets and variables -> Actions):
-       REDDIT_CLIENT_ID      = the string under your app name
-       REDDIT_CLIENT_SECRET  = the field labeled "secret"
-
-Local testing: set the same env vars in your shell before running.
+Wikipedia advantages: no auth, no datacenter-IP block, no rate limit
+(unlike Reddit). Trade-off: editors typically update the list 1-2 days
+after a new IMAX release, so the headline lags the actual release weekend.
 """
 import json
-import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import requests
 
 
-# Reddit's policy requires a UA in the form "platform:app:version (by /u/user)".
-USER_AGENT = 'github-actions:cinedata-imax-updater:v1.0 (by /u/andrew-m-vick)'
-
-REDDIT_TOKEN_URL = 'https://www.reddit.com/api/v1/access_token'
-REDDIT_OAUTH_HOST = 'https://oauth.reddit.com'
+WIKI_API = (
+    'https://en.wikipedia.org/w/api.php'
+    '?action=parse&format=json&prop=wikitext&redirects=1'
+    '&page=List_of_films_released_in_IMAX'
+)
+HEADERS = {'User-Agent': 'cinedata-imax-updater/1.0 (github actions)'}
 
 OUTPUT = Path(__file__).resolve().parent.parent / 'static' / 'imax-now-playing.json'
 
+# Date in dmy plain text e.g. "14 January 2026"
+PLAIN_DATE_RE = re.compile(
+    r'\b(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b'
+)
+# Wikipedia dts template e.g. "{{#invoke:dts|main|format=dmy|2026|1|23}}"
+DTS_RE = re.compile(r'#invoke:dts\|[^}]*?\|(\d{4})\|(\d{1,2})\|(\d{1,2})')
 
-def _get_oauth_token():
-    """Reddit script-app OAuth, client_credentials grant. Avoids the
-    datacenter-IP block that affects unauthenticated calls."""
-    cid = os.environ.get('REDDIT_CLIENT_ID')
-    csec = os.environ.get('REDDIT_CLIENT_SECRET')
-    if not cid or not csec:
-        raise RuntimeError(
-            'REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET must be set. '
-            'See scripts/update_imax_now_playing.py docstring.'
-        )
-    r = requests.post(
-        REDDIT_TOKEN_URL,
-        auth=requests.auth.HTTPBasicAuth(cid, csec),
-        data={'grant_type': 'client_credentials'},
-        headers={'User-Agent': USER_AGENT},
-        timeout=15,
-    )
-    r.raise_for_status()
-    token = r.json().get('access_token')
-    if not token:
-        raise RuntimeError(f'Reddit token response missing access_token: {r.text[:200]}')
-    return token
+# Italicized linked title: ''[[Article (suffix)|Display]]'' or ''[[Article]]''
+TITLE_RE = re.compile(r"''\[\[([^|\]]+?)(?:\|([^\]]+?))?\]\]''")
+
+MONTH_TO_NUM = {m: i for i, m in enumerate(
+    ['January','February','March','April','May','June','July','August',
+     'September','October','November','December'], start=1)}
+
+
+def _parse_row_date(row_text):
+    """Return a datetime for the first date found in a row's wikitext, or None."""
+    m = DTS_RE.search(row_text)
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        except ValueError:
+            pass
+    m = PLAIN_DATE_RE.search(row_text)
+    if m:
+        try:
+            return datetime(int(m.group(3)), MONTH_TO_NUM[m.group(2)], int(m.group(1)))
+        except (ValueError, KeyError):
+            pass
+    return None
+
+
+def _parse_row_title(row_text):
+    m = TITLE_RE.search(row_text)
+    if not m:
+        return None
+    # Display name (after the pipe) takes priority over article name
+    return (m.group(2) or m.group(1)).strip()
 
 
 def scrape():
-    token = _get_oauth_token()
-    r = requests.get(
-        f'{REDDIT_OAUTH_HOST}/r/imax/hot?limit=10',
-        headers={
-            'User-Agent': USER_AGENT,
-            'Authorization': f'Bearer {token}',
-            'Accept': 'application/json',
-        },
-        timeout=15,
-    )
+    r = requests.get(WIKI_API, headers=HEADERS, timeout=15)
     r.raise_for_status()
-    data = r.json()
-    posts = data.get('data', {}).get('children', []) or []
-    for p in posts:
-        d = p.get('data', {}) or {}
-        if not d.get('stickied'):
-            continue
-        title = d.get('title', '') or ''
-        # Format: "General Discussion Thread - Week of MM-DD-YY - Film1, Film2, ..."
-        m = re.search(r'Week of (\d{2})-(\d{2})-(\d{2})\s*[-–—]\s*(.+)$', title)
-        if not m:
-            continue
-        wk_year = 2000 + int(m.group(3))  # 2-digit year -> assume 20xx
-        films = [f.strip() for f in m.group(4).split(',') if f.strip()]
-        if films:
-            return {
-                'title': films[0],
-                'year': wk_year,
-                'films': films,
-                'source': 'reddit',
-                'sticky_title': title,
-            }
-    return None
+    wt = r.json()['parse']['wikitext']['*']
+
+    # Split the article into table rows (|-) and look at each.
+    # rowspan can carry a date across multiple rows — track the last seen date
+    # so a row whose dt cell is empty still gets associated correctly.
+    today = datetime.now()
+    candidates = []  # (datetime, title)
+    last_date = None
+
+    for raw_row in wt.split('|-'):
+        title = _parse_row_title(raw_row)
+        dt = _parse_row_date(raw_row)
+        if dt:
+            last_date = dt
+        # If this row has a title but no own date, inherit the most recent
+        # (handles rowspan'd date cells).
+        effective = dt or last_date
+        if title and effective and effective <= today:
+            candidates.append((effective, title))
+
+    if not candidates:
+        return None
+
+    # Most recent release. Tie-break: prefer the row that physically appeared
+    # latest in the article (later wikitext usually = later edit / bigger film).
+    candidates.sort(key=lambda x: x[0])
+    dt, title = candidates[-1]
+    return {
+        'title': title,
+        'year': dt.year,
+        'release_date': dt.strftime('%Y-%m-%d'),
+        'source': 'wikipedia',
+    }
 
 
 def main():
     payload = scrape()
     if not payload:
-        print('Could not find r/imax weekly sticky in hot posts', file=sys.stderr)
+        print('Could not extract a recent IMAX film from Wikipedia', file=sys.stderr)
         sys.exit(1)
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, indent=2) + '\n')
     print(f'Wrote {OUTPUT}')
-    print(f'Headline: {payload["title"]}')
-    print(f'Slate ({len(payload["films"])}): {", ".join(payload["films"])}')
+    print(f'Headline: {payload["title"]} ({payload["release_date"]})')
 
 
 if __name__ == '__main__':

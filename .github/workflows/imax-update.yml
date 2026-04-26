@@ -1,12 +1,13 @@
 name: Update IMAX Now Playing
 
-# Runs every Friday at 04:00 UTC (= Thursday 11pm EST / 12am EDT) — a few
-# hours after r/imax mods post the new weekly discussion thread. Also
-# triggerable manually via the "Run workflow" button on the Actions tab.
+# Runs every Saturday at 12:00 UTC (= Friday 8pm EDT / 7pm EST) — a day
+# or two after a fresh IMAX release weekend, by which point Wikipedia
+# editors have updated the list. Also triggerable manually via the
+# "Run workflow" button on the Actions tab.
 
 on:
   schedule:
-    - cron: '0 4 * * 5'
+    - cron: '0 12 * * 6'
   workflow_dispatch:
 
 jobs:
@@ -21,13 +22,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install requests
+      - name: Install dependencies
         run: pip install requests
 
-      - name: Scrape r/imax weekly sticky
-        env:
-          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
-          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+      - name: Scrape Wikipedia's IMAX DMR film list
         run: python scripts/update_imax_now_playing.py
 
       - name: Commit and push if changed

@@ -1,13 +1,6 @@
 {
-  "title": "Project Hail Mary",
+  "title": "Michael",
   "year": 2026,
-  "films": [
-    "Project Hail Mary",
-    "The Super Mario Galaxy Movie",
-    "Michael",
-    "2DIE4",
-    "Lee Cronin's The Mummy"
-  ],
-  "source": "reddit",
-  "sticky_title": "General Discussion Thread - Week of 04-19-26 - Project Hail Mary, The Super Mario Galaxy Movie, Michael, 2DIE4, Lee Cronin's The Mummy"
+  "release_date": "2026-04-24",
+  "source": "wikipedia"
 }
