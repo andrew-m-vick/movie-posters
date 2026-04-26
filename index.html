@@ -1829,7 +1829,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
             </div>
             <button class="theater-search-btn" id="theaterSearchBtn" onclick="searchTheaterLocation()">SEARCH</button>
             <button class="theater-locate-btn" id="theaterLocateBtn" onclick="useMyLocation()"><span>📍</span> USE MY LOCATION</button>
-            <button class="theater-locate-btn" id="theaterResetBtn" onclick="resetTheaterMap()" style="display:none;border-color:rgba(255,255,255,.15);color:var(--text3)">↺ RESET</button>
+            <button class="theater-locate-btn" id="theaterResetBtn" onclick="resetTheaterMap()" style="border-color:rgba(255,255,255,.15);color:var(--text3)">↺ RESET</button>
           </div>
           <div class="theater-filter-row">
             <span class="theater-filter-label">FORMAT</span>
@@ -3152,7 +3152,6 @@ function resetTheaterMap() {
   if (_tRouteLine) { _tRouteLine.remove(); _tRouteLine = null; }
   _tUserLatLng = null;
   document.getElementById('theaterSearchInput').value = '';
-  document.getElementById('theaterResetBtn').style.display = 'none';
   document.getElementById('theaterResultsHeader').style.display = 'none';
   document.getElementById('theaterResultsList').innerHTML = '';
   if (_tMap) {
@@ -3164,7 +3163,6 @@ function resetTheaterMap() {
 // ── Locate / search ────────────────────────────────────────────────
 function _setUserLocation(lat, lng) {
   _tUserLatLng = [lat, lng];
-  document.getElementById('theaterResetBtn').style.display = '';
   if (_tUserPin) _tUserPin.remove();
   _tUserPin = L.marker([lat, lng], { icon: _tUserIcon() }).addTo(_tMap);
   _plotMarkers();
