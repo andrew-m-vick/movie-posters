@@ -1,10 +1,6 @@
 import os
-import re
 import json
 import time
-import requests
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 from flask import Flask, send_file, send_from_directory, request, jsonify
 
 # Flask serves ./static/ at /static/<filename> automatically
@@ -135,115 +131,46 @@ def groq_health():
         }), 200
 
 
-# ─── IMAX "Now Playing" — auto-scrape r/imax weekly sticky ─────────────────
-# r/imax has a weekly stickied "General Discussion Thread" whose title lists
-# every film currently in IMAX rotation, e.g.:
-#   "General Discussion Thread - Week of 04-19-26 -
-#    Project Hail Mary, The Super Mario Galaxy Movie, Michael, 2DIE4, ..."
-# Reddit's JSON API is free, no key, no Cloudflare. We parse the sticky title
-# and return the headline film (first in list), with the rest available as
-# `films`. Falls back to /static/imax-now-playing.json if Reddit is down.
-# Cached in-memory for IMAX_CACHE_TTL seconds.
+# ─── IMAX "Now Playing" ─────────────────────────────────────────────────────
+# static/imax-now-playing.json is refreshed weekly by GitHub Actions
+# (.github/workflows/imax-update.yml) which scrapes Wikipedia's "List of
+# films released in IMAX". This endpoint just serves the file's contents —
+# no live scrape, no upstream auth, no per-request latency.
+#
+# The file is mtime-cached so we only re-read from disk when it actually
+# changes (i.e. when GH Actions commits an update and Railway redeploys).
 
-# Cache is invalidated at the most recent Thursday 8pm ET — r/imax mods post
-# the next week's discussion thread Thursday night ahead of Friday releases,
-# so this gives us exactly one Reddit fetch per week per server instance.
-_imax_cache = {'data': None, 'fetched_at': 0}
+_imax_cache = {'data': None, 'mtime': 0}
+_IMAX_JSON = None  # resolved on first request
 
 
-def _last_thursday_8pm_et_ts():
-    """Unix timestamp of the most recent Thursday 8:00 PM US/Eastern."""
-    now_et = datetime.now(ZoneInfo('America/New_York'))
-    # Monday=0 ... Thursday=3 ... Sunday=6
-    days_since_thu = (now_et.weekday() - 3) % 7
-    last_thu = (now_et - timedelta(days=days_since_thu)).replace(
-        hour=20, minute=0, second=0, microsecond=0
-    )
-    if last_thu > now_et:
-        last_thu -= timedelta(days=7)
-    return last_thu.timestamp()
-
-REDDIT_HEADERS = {
-    'User-Agent': 'cinedata-app/1.0 (https://movie-posters-production.up.railway.app)',
-    'Accept': 'application/json',
-}
-
-
-def _scrape_reddit_imax():
-    """Pull this week's IMAX films from r/imax's stickied discussion thread.
-
-    Returns {'title': str, 'year': None, 'films': [str, ...], 'source': 'reddit'}
-    on success, or None on any failure (network, parse, missing sticky).
-    """
-    try:
-        r = requests.get(
-            'https://www.reddit.com/r/imax/hot.json?limit=10',
-            headers=REDDIT_HEADERS,
-            timeout=8,
-        )
-        if r.status_code != 200:
-            return None
-        posts = r.json().get('data', {}).get('children', []) or []
-        for p in posts:
-            d = p.get('data', {}) or {}
-            if not d.get('stickied'):
-                continue
-            title = d.get('title', '') or ''
-            # Match the canonical weekly format
-            m = re.search(r'Week of \d{2}-\d{2}-\d{2}\s*[-–—]\s*(.+)$', title)
-            if not m:
-                continue
-            films = [f.strip() for f in m.group(1).split(',') if f.strip()]
-            if not films:
-                continue
-            return {
-                'title': films[0],
-                'year': None,
-                'films': films,
-                'source': 'reddit',
-            }
-        return None
-    except Exception:
-        return None
-
-
-def _read_manual_fallback():
-    try:
-        with open(os.path.join(app.root_path, 'static', 'imax-now-playing.json')) as f:
-            data = json.load(f)
-            data['source'] = 'manual'
-            return data
-    except Exception:
-        return None
+def _imax_json_path():
+    global _IMAX_JSON
+    if _IMAX_JSON is None:
+        _IMAX_JSON = os.path.join(app.root_path, 'static', 'imax-now-playing.json')
+    return _IMAX_JSON
 
 
 @app.route('/api/imax-now-playing')
 def imax_now_playing():
-    now = time.time()
-    week_boundary = _last_thursday_8pm_et_ts()
-    force = request.args.get('refresh') == '1'
+    path = _imax_json_path()
+    try:
+        mtime = os.path.getmtime(path)
+    except OSError:
+        return jsonify({'error': 'No IMAX data available'}), 503
 
-    # Cache is valid only if it was fetched after the most recent Thursday 8pm ET
-    # AND the cached payload came from Reddit (manual fallback never gets cached
-    # so a transient Reddit failure can't poison a whole week).
-    if (not force
-            and _imax_cache['data']
-            and _imax_cache['fetched_at'] >= week_boundary):
+    if _imax_cache['data'] and _imax_cache['mtime'] == mtime:
         return jsonify({**_imax_cache['data'], 'cached': True})
 
-    reddit = _scrape_reddit_imax()
-    if reddit:
-        _imax_cache['data'] = reddit
-        _imax_cache['fetched_at'] = now
-        return jsonify({**reddit, 'cached': False})
+    try:
+        with open(path) as f:
+            data = json.load(f)
+    except Exception as e:
+        return jsonify({'error': f'Failed to read IMAX data: {e}'}), 503
 
-    # Reddit failed — serve manual fallback but DON'T cache it, so the next
-    # request retries Reddit instead of being stuck on the manual entry.
-    fallback = _read_manual_fallback()
-    if fallback:
-        return jsonify({**fallback, 'cached': False})
-
-    return jsonify({'error': 'No IMAX data available'}), 503
+    _imax_cache['data'] = data
+    _imax_cache['mtime'] = mtime
+    return jsonify({**data, 'cached': False})
 
 
 if __name__ == '__main__':
