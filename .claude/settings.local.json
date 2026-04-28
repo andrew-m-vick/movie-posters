@@ -27,7 +27,27 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(python3 -c \"from PIL import Image; print\\('pillow ok'\\)\")",
-      "Bash(python3)"
+      "Bash(python3)",
+      "Bash(curl -s -o /dev/null -w \"index: %{http_code}\\\\nfilms: %{http_code}\\\\n\" http://localhost:8000/)",
+      "Bash(curl -s -o /dev/null -w \"films JSON: %{http_code}\\\\n\" http://localhost:8000/static/imax-films.json)",
+      "Bash(curl -s -o /dev/null -w \"index: %{http_code}\\\\n\" http://localhost:8000/)",
+      "Bash(curl -s -o /dev/null -w \"films: %{http_code}\\\\n\" http://localhost:8000/static/imax-films.json)",
+      "Bash(curl -s -o /dev/null -w \"theaters: %{http_code}\\\\n\" http://localhost:8000/static/imax-theaters.json)",
+      "Bash(curl -s http://localhost:8000/api/imax-now-playing)",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -A \"cinedata-app/1.0\" \"https://www.reddit.com/r/imax/hot.json?limit=5\")",
+      "Bash(pkill -f gunicorn)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('cached:', d.get\\('cached'\\)\\)\")",
+      "Bash(curl -s https://movie-posters-production.up.railway.app/api/imax-now-playing)",
+      "Bash(curl -s -o /dev/null -w \"Root: %{http_code}\\\\n\" https://movie-posters-production.up.railway.app/)",
+      "Bash(curl -s -o /dev/null -w \"Static: %{http_code}\\\\n\" https://movie-posters-production.up.railway.app/static/imax-now-playing.json)",
+      "Bash(curl -s -o /dev/null -w \"Root: %{http_code}\\\\n\" https://andrew-vick-movies.up.railway.app/)",
+      "Bash(curl -s https://andrew-vick-movies.up.railway.app/api/imax-now-playing)",
+      "Bash(curl -s \"https://andrew-vick-movies.up.railway.app/api/imax-now-playing?refresh=1\")",
+      "Bash(python3 scripts/update_imax_now_playing.py)",
+      "Bash(pip install *)",
+      "Bash(curl -s -w \"Time: %{time_total}s\\\\n\" -o /dev/null http://localhost:8000/api/imax-now-playing)"
     ]
   }
 }
