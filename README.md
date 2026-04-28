@@ -27,8 +27,9 @@ Most-anticipated unreleased films sourced from TMDB's discover and upcoming endp
 A free-form recommendation engine powered by Groq (Llama 3.3 70B). Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, anti-patterns — and get 10 hand-picked recommendations with a one-sentence interpretation of your request. Tuned to avoid obvious picks and go global, era-diverse, and sometimes forgotten.
 
 ### IMAX
-Two curated datasets, manually maintained:
-- **Films confirmed to have been *filmed* in IMAX** — not DMR upconverts, not post-converted. Each entry includes the format used (15/70mm film, IMAX-certified digital, or hybrid) and a detailed production note.
+Three datasets, two questions:
+- **Now Playing in IMAX** — auto-updated weekly. A GitHub Actions workflow scrapes Wikipedia's "List of films released in IMAX" every Saturday morning and commits the most recent entry to `static/imax-now-playing.json`. Click the headline card to open the full TMDB detail modal (synopsis, cast, trailer).
+- **Films confirmed to have been *filmed* in IMAX** — manually curated, append-only. Not DMR upconverts, not post-converted. Each entry includes the format used (15/70mm film, IMAX-certified digital, or hybrid) and a detailed production note. Click any poster to open the production-notes modal.
 - **Premium IMAX theater finder** — interactive map of venues that actually deliver the format.
   - **Gold markers** — 70mm Film IMAX (the best)
   - **Teal markers** — Laser Digital IMAX
@@ -81,6 +82,12 @@ Deployed on Railway using the included `Procfile` and `app.py`. Push to `main` t
 
 ---
 
-## Maintaining the IMAX list
+## Maintaining the IMAX data
 
-The IMAX films list is **append-only** — entries are confirmed to have been filmed in IMAX and are never removed. New films are added only when confirmed (e.g. *The Odyssey* on 70mm). The theaters list is updated periodically from venues associated with 70mm IMAX releases.
+| File | How it's maintained |
+|---|---|
+| `static/imax-films.json` | **Manual, append-only.** Entries are confirmed to have been filmed in IMAX and are never removed. New films added only when confirmed (e.g. *The Odyssey* on 70mm). |
+| `static/imax-theaters.json` | **Manual.** Updated periodically from venues associated with 70mm IMAX releases. |
+| `static/imax-now-playing.json` | **Auto.** Refreshed every Saturday by `.github/workflows/imax-update.yml`, which scrapes Wikipedia's "List of films released in IMAX" and commits the most recent entry. Manual edits are overwritten on the next workflow run. |
+
+The auto-update workflow can be triggered on demand from the repo's **Actions** tab → *Update IMAX Now Playing* → *Run workflow*.
