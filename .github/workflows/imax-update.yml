@@ -1,12 +1,16 @@
 name: Update IMAX Now Playing
 
-# Runs every Saturday at 12:00 UTC (= Friday 8pm EDT / 7pm EST) — a day
-# or two after a fresh IMAX release weekend, by which point Wikipedia
-# editors have updated the list. Also triggerable manually via the
-# "Run workflow" button on the Actions tab.
+# Twice a week:
+# - Friday 22:00 UTC (= 6pm EDT / 5pm EST) — catches opening-day releases
+#   once Wikipedia editors have logged them, so the page goes live with
+#   the new IMAX feature on release day rather than the next morning.
+# - Saturday 12:00 UTC (= 8am EDT / 7am EST) — backstop in case Friday's
+#   run was too early relative to the Wikipedia edit.
+# Also triggerable on demand via the "Run workflow" button on Actions.
 
 on:
   schedule:
+    - cron: '0 22 * * 5'
     - cron: '0 12 * * 6'
   workflow_dispatch:
 
