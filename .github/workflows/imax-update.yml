@@ -1,17 +1,14 @@
 name: Update IMAX Now Playing
 
-# Twice a week:
-# - Friday 22:00 UTC (= 6pm EDT / 5pm EST) — catches opening-day releases
-#   once Wikipedia editors have logged them, so the page goes live with
-#   the new IMAX feature on release day rather than the next morning.
-# - Saturday 12:00 UTC (= 8am EDT / 7am EST) — backstop in case Friday's
-#   run was too early relative to the Wikipedia edit.
+# Saturday at 11:00 UTC = 6am Central Daylight Time (5am during Standard
+# Time — GitHub Actions cron is UTC and not DST-aware, so the run drifts
+# by an hour in winter). Saturday morning catches Friday's new IMAX
+# releases once Wikipedia editors have logged them.
 # Also triggerable on demand via the "Run workflow" button on Actions.
 
 on:
   schedule:
-    - cron: '0 22 * * 5'
-    - cron: '0 12 * * 6'
+    - cron: '0 11 * * 6'
   workflow_dispatch:
 
 jobs:
