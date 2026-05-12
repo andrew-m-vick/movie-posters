@@ -20,7 +20,7 @@
 <meta name="apple-mobile-web-app-title" content="CINEDATA">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1293,6 +1293,316 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     height: calc(56px + env(safe-area-inset-top) + 10px);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   AUTEURS TAB — Nolan vs Villeneuve comparative analysis
+   All selectors scoped under #tab-auteurs to keep the styling
+   contained. Director accents (--n-blue / --v-orange) defined locally;
+   everything else routed through site CSS vars.
+   ═══════════════════════════════════════════════════════════════════ */
+#tab-auteurs{
+  --n-blue:#4ea8de;
+  --v-orange:#f4a261;
+  --au-red:#e63946;
+  --au-serif:'Playfair Display',Georgia,serif;
+}
+#tab-auteurs .au-header{
+  text-align:center;padding:48px 24px 40px;position:relative;
+  background:linear-gradient(180deg,rgba(20,20,32,.6) 0%,transparent 100%);
+  border-bottom:1px solid var(--border);margin:-24px -24px 0;
+}
+#tab-auteurs .au-header::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(78,168,222,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(244,162,97,.06) 0%, transparent 70%);
+}
+#tab-auteurs .au-eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:5px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:18px;
+}
+#tab-auteurs .au-headline{
+  font-family:var(--font-head);font-size:clamp(28px,5vw,60px);
+  letter-spacing:2px;line-height:1.05;color:var(--text);
+  max-width:980px;margin:0 auto 16px;
+}
+#tab-auteurs .au-headline .au-gold{color:var(--gold)}
+#tab-auteurs .au-sub{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--text3);
+}
+#tab-auteurs .au-dir-labels{
+  display:flex;justify-content:center;gap:60px;margin-top:28px;flex-wrap:wrap;
+}
+#tab-auteurs .au-dir-label{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-mono);font-size:12px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+}
+#tab-auteurs .au-dir-dot{width:12px;height:12px;border-radius:50%}
+#tab-auteurs .au-section-title{
+  font-family:var(--font-head);font-size:24px;letter-spacing:5px;
+  text-align:center;color:var(--text3);margin:56px 0 36px;text-transform:uppercase;
+}
+
+/* ── Timeline ───────────────────────────────────────────── */
+#tab-auteurs .au-timeline-wrap{position:relative;max-width:1200px;margin:0 auto}
+#tab-auteurs .au-spine{
+  position:absolute;left:50%;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,transparent 0%,var(--border) 5%,var(--border) 95%,transparent 100%);
+  transform:translateX(-50%);pointer-events:none;
+}
+#tab-auteurs .au-timeline{
+  display:grid;grid-template-columns:1fr 60px 1fr;gap:0;position:relative;
+}
+#tab-auteurs .au-tl-left,
+#tab-auteurs .au-tl-right{
+  padding:10px 24px;display:flex;flex-direction:column;justify-content:center;
+}
+#tab-auteurs .au-tl-left{align-items:flex-end;text-align:right}
+#tab-auteurs .au-tl-right{align-items:flex-start;text-align:left}
+#tab-auteurs .au-tl-center{
+  display:flex;align-items:center;justify-content:center;padding:10px 0;
+  position:relative;z-index:2;
+}
+#tab-auteurs .au-node{
+  width:14px;height:14px;border-radius:50%;border:2px solid;
+  background:var(--bg);box-shadow:0 0 10px currentColor;
+}
+#tab-auteurs .au-node.n{border-color:var(--n-blue);color:var(--n-blue)}
+#tab-auteurs .au-node.v{border-color:var(--v-orange);color:var(--v-orange)}
+#tab-auteurs .au-film{
+  background:var(--bg3);border-radius:6px;padding:14px 16px;max-width:380px;
+  border:1px solid transparent;transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+#tab-auteurs .au-film.n{border-color:rgba(78,168,222,.22)}
+#tab-auteurs .au-film.n:hover{border-color:rgba(78,168,222,.55);transform:translateY(-2px);box-shadow:0 8px 30px rgba(78,168,222,.12)}
+#tab-auteurs .au-film.v{border-color:rgba(244,162,97,.22)}
+#tab-auteurs .au-film.v:hover{border-color:rgba(244,162,97,.55);transform:translateY(-2px);box-shadow:0 8px 30px rgba(244,162,97,.12)}
+#tab-auteurs .au-film-title{
+  font-family:var(--au-serif);font-size:15px;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+}
+#tab-auteurs .au-film-meta{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:1px;
+}
+#tab-auteurs .au-tl-left .au-film-meta{justify-content:flex-end}
+#tab-auteurs .au-tl-right .au-film-meta{justify-content:flex-start}
+#tab-auteurs .au-film-year{color:var(--text3);font-size:10px;letter-spacing:2px}
+#tab-auteurs .au-imdb{background:#f5c518;color:#000;font-weight:700;padding:2px 7px;border-radius:3px;font-size:11px;letter-spacing:.5px}
+#tab-auteurs .au-spacer{height:6px}
+
+/* ── Scorecard tables ───────────────────────────────────── */
+#tab-auteurs .au-scores{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1300px;margin:0 auto;
+}
+@media(max-width:900px){#tab-auteurs .au-scores{grid-template-columns:1fr}}
+#tab-auteurs .au-score-table{
+  background:var(--bg3);border-radius:8px;overflow:hidden;border:1px solid var(--border);
+}
+#tab-auteurs .au-score-hdr{
+  padding:14px 18px;font-family:var(--font-head);font-size:18px;letter-spacing:4px;
+  display:flex;align-items:center;gap:12px;
+}
+#tab-auteurs .au-score-hdr.n{background:rgba(78,168,222,.12);color:var(--n-blue)}
+#tab-auteurs .au-score-hdr.v{background:rgba(244,162,97,.12);color:var(--v-orange)}
+#tab-auteurs .au-score-table table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:11px}
+#tab-auteurs .au-score-table thead th{
+  background:var(--bg2);padding:10px 12px;text-align:left;color:var(--text3);
+  letter-spacing:2px;font-size:9px;text-transform:uppercase;border-bottom:1px solid var(--border);
+}
+#tab-auteurs .au-score-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+#tab-auteurs .au-score-table tbody tr:last-child{border-bottom:none}
+#tab-auteurs .au-score-table tbody tr:hover{background:var(--bg2)}
+#tab-auteurs .au-score-table tbody td{padding:11px 12px;vertical-align:middle}
+#tab-auteurs .au-td-title{font-family:var(--au-serif);font-size:12px;font-weight:700;color:var(--text)}
+#tab-auteurs .au-td-year{color:var(--text3);font-size:10px;letter-spacing:1px}
+#tab-auteurs .au-sc{font-weight:700;font-size:12px;text-align:center}
+#tab-auteurs .au-sc-imdb{color:#f5c518}
+#tab-auteurs .au-sc-rt-fresh{color:#58c758}
+#tab-auteurs .au-sc-rt-rotten{color:var(--au-red)}
+#tab-auteurs .au-sc-mc-good{color:#6ccf6c}
+#tab-auteurs .au-sc-mc-mid{color:#fcbc53}
+#tab-auteurs .au-row-highlight{background:rgba(212,175,55,.05)}
+#tab-auteurs .au-row-highlight .au-td-title{color:var(--gold)}
+#tab-auteurs .au-row-highlight-v{background:rgba(244,162,97,.06)}
+#tab-auteurs .au-row-highlight-v .au-td-title{color:var(--v-orange)}
+
+/* ── Trilogy section ───────────────────────────────────── */
+#tab-auteurs .au-intro{
+  text-align:center;max-width:760px;margin:0 auto 44px;
+  font-family:var(--font-body);font-size:13px;line-height:1.85;color:var(--text3);
+}
+#tab-auteurs .au-intro strong{color:var(--text)}
+#tab-auteurs .au-dna-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;
+  max-width:1300px;margin-left:auto;margin-right:auto;
+}
+@media(max-width:900px){#tab-auteurs .au-dna-grid{grid-template-columns:1fr}}
+#tab-auteurs .au-dna{
+  background:var(--bg3);border-radius:10px;padding:30px;
+  border:1px solid var(--border);position:relative;overflow:hidden;
+}
+#tab-auteurs .au-dna.n{border-color:rgba(78,168,222,.22)}
+#tab-auteurs .au-dna.v{border-color:rgba(244,162,97,.22)}
+#tab-auteurs .au-dna-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px}
+#tab-auteurs .au-dna-eyebrow.n{color:var(--n-blue)}
+#tab-auteurs .au-dna-eyebrow.v{color:var(--v-orange)}
+#tab-auteurs .au-dna-title{font-family:var(--font-head);font-size:34px;letter-spacing:2px;line-height:1;margin-bottom:22px}
+#tab-auteurs .au-dna-title.n{color:var(--n-blue)}
+#tab-auteurs .au-dna-title.v{color:var(--v-orange)}
+#tab-auteurs .au-influences{display:flex;flex-direction:column;gap:18px}
+#tab-auteurs .au-inf-row{display:flex;gap:14px;align-items:flex-start}
+#tab-auteurs .au-inf-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+#tab-auteurs .au-inf-name{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text);margin-bottom:6px}
+#tab-auteurs .au-inf-desc{font-family:var(--au-serif);font-size:12px;line-height:1.85;color:var(--text2)}
+#tab-auteurs .au-inf-desc em{color:var(--gold);font-style:italic}
+
+/* Trilogy film cards */
+#tab-auteurs .au-trilogy-grid{
+  display:grid;grid-template-columns:1fr 60px 1fr;gap:0;
+  max-width:1300px;margin:0 auto 40px;align-items:start;
+}
+@media(max-width:800px){
+  #tab-auteurs .au-trilogy-grid{grid-template-columns:1fr}
+  #tab-auteurs .au-trilogy-vs{display:none}
+}
+#tab-auteurs .au-tri-col{display:flex;flex-direction:column;gap:12px}
+#tab-auteurs .au-tri-col-hdr{
+  font-family:var(--font-head);font-size:16px;letter-spacing:4px;
+  padding:12px 16px;border-radius:6px;text-align:center;
+}
+#tab-auteurs .au-tri-col-hdr.n{background:rgba(78,168,222,.1);color:var(--n-blue)}
+#tab-auteurs .au-tri-col-hdr.v{background:rgba(244,162,97,.1);color:var(--v-orange)}
+#tab-auteurs .au-tri-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+  padding:18px 20px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s;
+}
+#tab-auteurs .au-tri-card.gold{border-color:rgba(212,175,55,.3);background:var(--bg2)}
+#tab-auteurs .au-tri-card.tbd{opacity:.7;border-style:dashed}
+#tab-auteurs .au-tri-num{font-family:var(--font-head);font-size:28px;letter-spacing:2px;flex-shrink:0;line-height:1;margin-top:2px}
+#tab-auteurs .au-tri-body{flex:1}
+#tab-auteurs .au-tri-title{font-family:var(--au-serif);font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+#tab-auteurs .au-tri-year{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--text3);margin-bottom:10px;text-transform:uppercase}
+#tab-auteurs .au-tri-scores{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+#tab-auteurs .au-tri-score{font-family:var(--font-mono);font-size:9px;font-weight:700;padding:3px 8px;border-radius:3px;letter-spacing:.5px}
+#tab-auteurs .au-tri-score.imdb{background:rgba(245,197,24,.15);color:#f5c518}
+#tab-auteurs .au-tri-score.rt{background:rgba(88,199,88,.12);color:#58c758}
+#tab-auteurs .au-tri-score.mc{background:rgba(108,207,108,.12);color:#6ccf6c}
+#tab-auteurs .au-tri-score.tbd{background:rgba(136,136,153,.12);color:var(--text3)}
+#tab-auteurs .au-verdict{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:3px;display:inline-block}
+#tab-auteurs .au-verdict.masterpiece{background:rgba(212,175,55,.15);color:var(--gold)}
+#tab-auteurs .au-verdict.good{background:rgba(78,168,222,.12);color:var(--n-blue)}
+#tab-auteurs .au-verdict.disappointing{background:rgba(230,57,70,.12);color:var(--au-red)}
+#tab-auteurs .au-verdict.pending{background:rgba(136,136,153,.12);color:var(--text3)}
+#tab-auteurs .au-trilogy-vs{display:flex;align-items:center;justify-content:center;min-height:200px}
+#tab-auteurs .au-trilogy-vs span{font-family:var(--font-head);font-size:32px;color:var(--text3);letter-spacing:4px;writing-mode:vertical-rl;opacity:.5}
+
+/* Trilogy analysis */
+#tab-auteurs .au-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1300px;margin:0 auto}
+@media(max-width:900px){#tab-auteurs .au-analysis-grid{grid-template-columns:1fr}}
+#tab-auteurs .au-analysis{background:var(--bg3);border-radius:10px;padding:30px;border:1px solid var(--border)}
+#tab-auteurs .au-analysis.n{border-color:rgba(78,168,222,.22)}
+#tab-auteurs .au-analysis.v{border-color:rgba(244,162,97,.22)}
+#tab-auteurs .au-analysis-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:4px;text-transform:uppercase;font-weight:700;margin-bottom:18px}
+#tab-auteurs .au-analysis-eyebrow.n{color:var(--n-blue)}
+#tab-auteurs .au-analysis-eyebrow.v{color:var(--v-orange)}
+#tab-auteurs .au-analysis-body{font-family:var(--au-serif);font-size:13px;line-height:1.9;color:var(--text2)}
+#tab-auteurs .au-analysis-body p{margin-bottom:14px}
+#tab-auteurs .au-analysis-body p:last-child{margin-bottom:0}
+#tab-auteurs .au-analysis-body strong{color:var(--text)}
+#tab-auteurs .au-analysis-body em{color:var(--gold);font-style:italic}
+
+/* ── Verdict (opinion card) ─────────────────────────────── */
+#tab-auteurs .au-opinion{max-width:880px;margin:0 auto}
+#tab-auteurs .au-opinion-card{
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:44px;position:relative;overflow:hidden;
+}
+#tab-auteurs .au-opinion-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--n-blue) 0%,var(--v-orange) 100%);
+}
+#tab-auteurs .au-opinion-card::after{
+  content:'\201C';position:absolute;top:16px;right:36px;
+  font-family:var(--au-serif);font-size:160px;color:rgba(244,162,97,.06);
+  line-height:1;pointer-events:none;
+}
+#tab-auteurs .au-opinion-eyebrow{
+  font-family:var(--font-mono);font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--v-orange);margin-bottom:18px;
+}
+#tab-auteurs .au-opinion-text{font-family:var(--au-serif);font-size:16px;line-height:1.9;color:var(--text2)}
+#tab-auteurs .au-opinion-text p{margin-bottom:18px}
+#tab-auteurs .au-opinion-text p:last-child{margin-bottom:0}
+#tab-auteurs .au-opinion-text strong{color:var(--text)}
+#tab-auteurs .au-opinion-text em{color:var(--gold);font-style:italic}
+
+/* ── 2026 Reckoning (battle grid) ───────────────────────── */
+#tab-auteurs .au-battle{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:start;
+  max-width:1300px;margin:0 auto;
+}
+@media(max-width:800px){
+  #tab-auteurs .au-battle{grid-template-columns:1fr}
+  #tab-auteurs .au-vs{display:none}
+}
+#tab-auteurs .au-spot{background:var(--bg3);border-radius:10px;padding:34px;position:relative;overflow:hidden}
+#tab-auteurs .au-spot.n{border:1px solid rgba(78,168,222,.25);box-shadow:inset 0 0 80px rgba(78,168,222,.04)}
+#tab-auteurs .au-spot.v{border:1px solid rgba(244,162,97,.25);box-shadow:inset 0 0 80px rgba(244,162,97,.04)}
+#tab-auteurs .au-spot-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
+#tab-auteurs .au-spot-tag.n{color:var(--n-blue)}
+#tab-auteurs .au-spot-tag.v{color:var(--v-orange)}
+#tab-auteurs .au-spot-title{font-family:var(--font-head);font-size:42px;letter-spacing:2px;line-height:1;margin-bottom:6px}
+#tab-auteurs .au-spot-title.n{color:var(--n-blue)}
+#tab-auteurs .au-spot-title.v{color:var(--v-orange)}
+#tab-auteurs .au-spot-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:22px}
+#tab-auteurs .au-spot-stats{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+#tab-auteurs .au-pill{background:rgba(255,255,255,.04);padding:8px 14px;border-radius:4px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px}
+#tab-auteurs .au-pill .au-pill-val{display:block;font-family:var(--font-head);font-size:16px;font-weight:700;letter-spacing:2px}
+#tab-auteurs .au-pill.n .au-pill-val{color:var(--n-blue)}
+#tab-auteurs .au-pill.v .au-pill-val{color:var(--v-orange)}
+#tab-auteurs .au-pill .au-pill-lbl{color:var(--text3);font-size:8px;letter-spacing:2px;text-transform:uppercase}
+#tab-auteurs .au-spot-desc{font-family:var(--au-serif);font-size:13px;line-height:1.85;color:var(--text2)}
+#tab-auteurs .au-spot-desc em{color:var(--gold);font-style:italic}
+#tab-auteurs .au-spot-desc strong{color:var(--text)}
+#tab-auteurs .au-cast{margin-top:14px;font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:1px;line-height:1.6}
+#tab-auteurs .au-cast strong{color:var(--text)}
+#tab-auteurs .au-hype{margin-top:20px}
+#tab-auteurs .au-hype-lbl{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+#tab-auteurs .au-hype-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+#tab-auteurs .au-hype-fill{height:100%;border-radius:2px;animation:auHypeFill 1.5s ease forwards}
+#tab-auteurs .au-hype-fill.n{background:linear-gradient(90deg,#2a6a9e,var(--n-blue));width:91%}
+#tab-auteurs .au-hype-fill.v{background:linear-gradient(90deg,#b86a30,var(--v-orange));width:88%}
+@keyframes auHypeFill{from{width:0}}
+#tab-auteurs .au-vs{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;min-height:300px}
+#tab-auteurs .au-vs span{font-family:var(--font-head);font-size:48px;color:var(--border);letter-spacing:4px;writing-mode:vertical-rl}
+
+/* ── Wildcard ──────────────────────────────────────────── */
+#tab-auteurs .au-wild{max-width:900px;margin:0 auto 56px}
+#tab-auteurs .au-wild-card{
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  border:1px solid var(--border2);border-radius:10px;padding:40px;
+  text-align:center;position:relative;overflow:hidden;
+}
+#tab-auteurs .au-wild-card::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%, rgba(212,175,55,.08) 0%, transparent 70%);
+}
+#tab-auteurs .au-wild-icon{font-size:42px;margin-bottom:14px}
+#tab-auteurs .au-wild-title{font-family:var(--font-head);font-size:30px;letter-spacing:4px;color:var(--gold);margin-bottom:14px}
+#tab-auteurs .au-wild-text{font-family:var(--au-serif);font-size:13px;line-height:1.9;color:var(--text2);max-width:720px;margin:0 auto}
+#tab-auteurs .au-wild-text p{margin-bottom:14px}
+#tab-auteurs .au-wild-text p:last-child{margin-bottom:0}
+#tab-auteurs .au-wild-text strong{color:var(--text)}
+#tab-auteurs .au-wild-text em{color:var(--gold);font-style:italic}
+
+#tab-auteurs .au-footer{
+  text-align:center;padding:24px;font-family:var(--font-mono);
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+  border-top:1px solid var(--border);margin-top:24px;
+}
 </style>
 </head>
 <body>
@@ -1306,6 +1616,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     <button class="nav-tab" data-tab="upcoming" role="tab">Upcoming</button>
     <button class="nav-tab" data-tab="picks" role="tab">For You</button>
     <button class="nav-tab" data-tab="imax" role="tab">IMAX</button>
+    <button class="nav-tab" data-tab="auteurs" role="tab">Auteurs</button>
     <button class="nav-tab" data-tab="trends" role="tab">Trends</button>
     <button class="nav-tab" data-tab="forecast" role="tab">Forecast</button>
     <button class="nav-tab" data-tab="pipeline" role="tab">Pipeline</button>
@@ -2421,6 +2732,398 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="card-title mb-8"><span class="dot"></span> Session Fetch Log <span style="font-size:10px;font-family:var(--font-mono);color:var(--text3);font-weight:normal;letter-spacing:0;text-transform:none">— real API calls made this session</span></div>
       <div id="runHistory"></div>
     </div>
+  </section>
+
+  <!-- ═══════════════════ AUTEURS — NOLAN vs VILLENEUVE ═══════════════════ -->
+  <section class="tab-panel" id="tab-auteurs">
+
+    <!-- HEADER -->
+    <div class="au-header">
+      <div class="au-eyebrow">A Comparative Analysis · 2014 – Present</div>
+      <h1 class="au-headline">Two Auteurs. One Decade. <span class="au-gold">One Throne.</span></h1>
+      <div class="au-sub">Christopher Nolan vs Denis Villeneuve — Parallel Timelines</div>
+      <div class="au-dir-labels">
+        <div class="au-dir-label"><div class="au-dir-dot" style="background:#4ea8de"></div><span style="color:#4ea8de">Christopher Nolan</span></div>
+        <div class="au-dir-label"><div class="au-dir-dot" style="background:#f4a261"></div><span style="color:#f4a261">Denis Villeneuve</span></div>
+      </div>
+    </div>
+
+    <!-- PARALLEL TIMELINE -->
+    <div class="au-section-title">Parallel Timelines</div>
+    <div class="au-timeline-wrap">
+      <div class="au-spine"></div>
+      <div class="au-timeline">
+
+        <div class="au-tl-left"><div class="au-film n">
+          <div class="au-film-title">Interstellar</div>
+          <div class="au-film-meta"><span class="au-film-year">2014</span><span class="au-imdb">IMDb 8.7</span></div>
+        </div></div>
+        <div class="au-tl-center"><div class="au-node n"></div></div>
+        <div class="au-tl-right"><div class="au-film v">
+          <div class="au-film-title">Enemy</div>
+          <div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 6.9</span></div>
+        </div></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"></div>
+        <div class="au-tl-center"><div class="au-node v"></div></div>
+        <div class="au-tl-right"><div class="au-film v">
+          <div class="au-film-title">Sicario</div>
+          <div class="au-film-meta"><span class="au-film-year">2015</span><span class="au-imdb">IMDb 7.6</span></div>
+        </div></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"></div>
+        <div class="au-tl-center"><div class="au-node v"></div></div>
+        <div class="au-tl-right"><div class="au-film v">
+          <div class="au-film-title">Arrival</div>
+          <div class="au-film-meta"><span class="au-film-year">2016</span><span class="au-imdb">IMDb 7.9</span></div>
+        </div></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"><div class="au-film n">
+          <div class="au-film-title">Dunkirk</div>
+          <div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 7.9</span></div>
+        </div></div>
+        <div class="au-tl-center"><div class="au-node n"></div></div>
+        <div class="au-tl-right"><div class="au-film v">
+          <div class="au-film-title">Blade Runner 2049</div>
+          <div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 8.0</span></div>
+        </div></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"><div class="au-film n">
+          <div class="au-film-title">Tenet</div>
+          <div class="au-film-meta"><span class="au-film-year">2020</span><span class="au-imdb">IMDb 7.3</span></div>
+        </div></div>
+        <div class="au-tl-center"><div class="au-node n"></div></div>
+        <div class="au-tl-right"></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"></div>
+        <div class="au-tl-center"><div class="au-node v"></div></div>
+        <div class="au-tl-right"><div class="au-film v">
+          <div class="au-film-title">Dune: Part One</div>
+          <div class="au-film-meta"><span class="au-film-year">2021</span><span class="au-imdb">IMDb 8.0</span></div>
+        </div></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"><div class="au-film n">
+          <div class="au-film-title">Oppenheimer</div>
+          <div class="au-film-meta"><span class="au-film-year">2023</span><span class="au-imdb">IMDb 8.3</span></div>
+        </div></div>
+        <div class="au-tl-center"><div class="au-node n"></div></div>
+        <div class="au-tl-right"></div>
+
+        <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
+
+        <div class="au-tl-left"></div>
+        <div class="au-tl-center"><div class="au-node v"></div></div>
+        <div class="au-tl-right"><div class="au-film v">
+          <div class="au-film-title">Dune: Part Two</div>
+          <div class="au-film-meta"><span class="au-film-year">2024</span><span class="au-imdb">IMDb 8.5</span></div>
+        </div></div>
+
+      </div>
+    </div>
+
+    <!-- SCORECARD -->
+    <div class="au-section-title">The Scorecard — Complete Filmographies</div>
+    <div class="au-scores">
+
+      <!-- Nolan table -->
+      <div class="au-score-table">
+        <div class="au-score-hdr n">
+          <div style="width:10px;height:10px;border-radius:50%;background:#4ea8de;flex-shrink:0"></div>
+          Christopher Nolan · 12 Films (1998–2023)
+        </div>
+        <table>
+          <thead><tr><th>Film</th><th>Year</th><th>IMDb</th><th>RT%</th><th>Meta</th></tr></thead>
+          <tbody>
+            <tr><td class="au-td-title">Following</td><td class="au-td-year">1998</td><td class="au-sc au-sc-imdb">7.5</td><td class="au-sc au-sc-rt-fresh">79%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
+            <tr><td class="au-td-title">Memento</td><td class="au-td-year">2000</td><td class="au-sc au-sc-imdb">8.4</td><td class="au-sc au-sc-rt-fresh">93%</td><td class="au-sc au-sc-mc-good">80</td></tr>
+            <tr><td class="au-td-title">Insomnia</td><td class="au-td-year">2002</td><td class="au-sc au-sc-imdb">7.2</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">78</td></tr>
+            <tr><td class="au-td-title">Batman Begins</td><td class="au-td-year">2005</td><td class="au-sc au-sc-imdb">8.2</td><td class="au-sc au-sc-rt-fresh">84%</td><td class="au-sc au-sc-mc-mid">70</td></tr>
+            <tr><td class="au-td-title">The Prestige</td><td class="au-td-year">2006</td><td class="au-sc au-sc-imdb">8.5</td><td class="au-sc au-sc-rt-fresh">76%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
+            <tr class="au-row-highlight"><td class="au-td-title">The Dark Knight ★</td><td class="au-td-year">2008</td><td class="au-sc au-sc-imdb">9.0</td><td class="au-sc au-sc-rt-fresh">94%</td><td class="au-sc au-sc-mc-good">84</td></tr>
+            <tr><td class="au-td-title">Inception</td><td class="au-td-year">2010</td><td class="au-sc au-sc-imdb">8.8</td><td class="au-sc au-sc-rt-fresh">87%</td><td class="au-sc au-sc-mc-good">74</td></tr>
+            <tr><td class="au-td-title">The Dark Knight Rises</td><td class="au-td-year">2012</td><td class="au-sc au-sc-imdb">8.4</td><td class="au-sc au-sc-rt-fresh">87%</td><td class="au-sc au-sc-mc-mid">78</td></tr>
+            <tr><td class="au-td-title">Interstellar</td><td class="au-td-year">2014</td><td class="au-sc au-sc-imdb">8.7</td><td class="au-sc au-sc-rt-fresh">73%</td><td class="au-sc au-sc-mc-mid">74</td></tr>
+            <tr><td class="au-td-title">Dunkirk</td><td class="au-td-year">2017</td><td class="au-sc au-sc-imdb">7.9</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">94</td></tr>
+            <tr><td class="au-td-title">Tenet</td><td class="au-td-year">2020</td><td class="au-sc au-sc-imdb">7.3</td><td class="au-sc au-sc-rt-rotten">69%</td><td class="au-sc au-sc-mc-mid">69</td></tr>
+            <tr><td class="au-td-title">Oppenheimer</td><td class="au-td-year">2023</td><td class="au-sc au-sc-imdb">8.3</td><td class="au-sc au-sc-rt-fresh">93%</td><td class="au-sc au-sc-mc-good">90</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Villeneuve table -->
+      <div class="au-score-table">
+        <div class="au-score-hdr v">
+          <div style="width:10px;height:10px;border-radius:50%;background:#f4a261;flex-shrink:0"></div>
+          Denis Villeneuve · 10 Films (1998–2024)
+        </div>
+        <table>
+          <thead><tr><th>Film</th><th>Year</th><th>IMDb</th><th>RT%</th><th>Meta</th></tr></thead>
+          <tbody>
+            <tr><td class="au-td-title">August 32nd on Earth</td><td class="au-td-year">1998</td><td class="au-sc au-sc-imdb">6.7</td><td class="au-sc au-sc-rt-fresh">71%</td><td class="au-sc au-sc-mc-mid">—</td></tr>
+            <tr><td class="au-td-title">Maelström</td><td class="au-td-year">2000</td><td class="au-sc au-sc-imdb">7.1</td><td class="au-sc au-sc-rt-fresh">73%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
+            <tr><td class="au-td-title">Polytechnique</td><td class="au-td-year">2009</td><td class="au-sc au-sc-imdb">7.6</td><td class="au-sc au-sc-rt-fresh">96%</td><td class="au-sc au-sc-mc-mid">63</td></tr>
+            <tr><td class="au-td-title">Incendies</td><td class="au-td-year">2010</td><td class="au-sc au-sc-imdb">8.1</td><td class="au-sc au-sc-rt-fresh">91%</td><td class="au-sc au-sc-mc-good">80</td></tr>
+            <tr><td class="au-td-title">Prisoners</td><td class="au-td-year">2013</td><td class="au-sc au-sc-imdb">8.1</td><td class="au-sc au-sc-rt-fresh">81%</td><td class="au-sc au-sc-mc-mid">70</td></tr>
+            <tr><td class="au-td-title">Enemy</td><td class="au-td-year">2013</td><td class="au-sc au-sc-imdb">6.9</td><td class="au-sc au-sc-rt-fresh">90%</td><td class="au-sc au-sc-mc-mid">61</td></tr>
+            <tr><td class="au-td-title">Sicario</td><td class="au-td-year">2015</td><td class="au-sc au-sc-imdb">7.6</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">82</td></tr>
+            <tr><td class="au-td-title">Arrival</td><td class="au-td-year">2016</td><td class="au-sc au-sc-imdb">7.9</td><td class="au-sc au-sc-rt-fresh">94%</td><td class="au-sc au-sc-mc-good">81</td></tr>
+            <tr><td class="au-td-title">Blade Runner 2049</td><td class="au-td-year">2017</td><td class="au-sc au-sc-imdb">8.0</td><td class="au-sc au-sc-rt-fresh">88%</td><td class="au-sc au-sc-mc-good">81</td></tr>
+            <tr><td class="au-td-title">Dune: Part One</td><td class="au-td-year">2021</td><td class="au-sc au-sc-imdb">8.0</td><td class="au-sc au-sc-rt-fresh">83%</td><td class="au-sc au-sc-mc-mid">74</td></tr>
+            <tr class="au-row-highlight-v"><td class="au-td-title">Dune: Part Two ★</td><td class="au-td-year">2024</td><td class="au-sc au-sc-imdb">8.5</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">79</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- TRILOGY WARS -->
+    <div class="au-section-title">Trilogy Wars</div>
+    <div class="au-intro">Before we render a final verdict on these two directors, we must confront the defining body of work each has produced — not individual films, but the <strong>complete trilogies</strong> that cement a director's legacy. One is already finished. One is not. And that asymmetry is the whole story.</div>
+
+    <div class="au-dna-grid">
+      <div class="au-dna n">
+        <div class="au-dna-eyebrow n">🎬 The Dark Knight Trilogy · 2005–2012</div>
+        <div class="au-dna-title n">Gotham's<br>Anatomy</div>
+        <div class="au-influences">
+          <div class="au-inf-row">
+            <div class="au-inf-icon">🎥</div>
+            <div>
+              <div class="au-inf-name">Ridley Scott</div>
+              <div class="au-inf-desc">The visual grammar of Batman Begins owes a profound debt to Scott's blade-lit, rain-soaked urban decay — the Gotham of <em>Batman Begins</em> carries the same industrial gothic menace as the Los Angeles of <em>Blade Runner</em>. Scott proved that genre cinema could be art. Nolan took the lesson and applied it to a man in a bat suit.</div>
+            </div>
+          </div>
+          <div class="au-inf-row">
+            <div class="au-inf-icon">🔫</div>
+            <div>
+              <div class="au-inf-name">Michael Mann's Heat (1995)</div>
+              <div class="au-inf-desc">The Dark Knight is essentially <em>Heat</em> in a cape. The Joker is Nolan's Neil McCauley — a criminal philosopher who cannot stop being what he is. The interrogation scenes, the moral mirror between hero and villain, the operatic bank robbery, the suffocating urban tension — all of it traces directly back to Mann's influence. Nolan has openly cited Mann as a formative influence, and nowhere is it more visible than in TDK's relentless procedural dread.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="au-dna v">
+        <div class="au-dna-eyebrow v">🎬 The Dune Trilogy · 2021–2026</div>
+        <div class="au-dna-title v">Desert<br>Mythology</div>
+        <div class="au-influences">
+          <div class="au-inf-row">
+            <div class="au-inf-icon">🎥</div>
+            <div>
+              <div class="au-inf-name">Ridley Scott</div>
+              <div class="au-inf-desc">Just as Scott's influence shaped Nolan's Gotham, it permeates Villeneuve's Arrakis. The monolithic alien architecture, the sense that civilizations have weight and history, the use of light as a narrative tool — Denis has spoken about Scott's <em>Alien</em> and <em>Blade Runner</em> as foundational texts. Villeneuve doesn't simply borrow Scott's visual language; he <em>evolves</em> it, pushing the grandiosity of those worlds to an IMAX scale Scott himself never attempted.</div>
+            </div>
+          </div>
+          <div class="au-inf-row">
+            <div class="au-inf-icon">🌊</div>
+            <div>
+              <div class="au-inf-name">Apocalypse Now (1979)</div>
+              <div class="au-inf-desc">Villeneuve has cited Coppola's Vietnam masterpiece as the spiritual blueprint for the Dune saga — and it shows in every frame. Like Willard's journey upriver, Paul Atreides travels deeper into a world that strips away civilization, identity, and innocence. Both are stories about the seduction of charismatic power and the atrocity it justifies. The desert messiah arc in Part Two — the worm-riding scene, the army gathering, the holy war ignited — is Coppola's <em>horror</em> dressed in prophecy. Paul is Kurtz. The Fremen are the horror.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="au-trilogy-grid">
+
+      <div class="au-tri-col">
+        <div class="au-tri-col-hdr n">The Dark Knight Trilogy</div>
+
+        <div class="au-tri-card">
+          <div class="au-tri-num" style="color:#4ea8de">I</div>
+          <div class="au-tri-body">
+            <div class="au-tri-title">Batman Begins</div>
+            <div class="au-tri-year">2005</div>
+            <div class="au-tri-scores">
+              <span class="au-tri-score imdb">IMDb 8.2</span>
+              <span class="au-tri-score rt">RT 84%</span>
+              <span class="au-tri-score mc">Meta 70</span>
+            </div>
+            <div class="au-verdict good">Strong Foundation</div>
+          </div>
+        </div>
+
+        <div class="au-tri-card gold">
+          <div class="au-tri-num" style="color:var(--gold)">II</div>
+          <div class="au-tri-body">
+            <div class="au-tri-title">The Dark Knight</div>
+            <div class="au-tri-year">2008</div>
+            <div class="au-tri-scores">
+              <span class="au-tri-score imdb">IMDb 9.0</span>
+              <span class="au-tri-score rt">RT 94%</span>
+              <span class="au-tri-score mc">Meta 84</span>
+            </div>
+            <div class="au-verdict masterpiece">All-Time Masterpiece</div>
+          </div>
+        </div>
+
+        <div class="au-tri-card">
+          <div class="au-tri-num" style="color:var(--text3)">III</div>
+          <div class="au-tri-body">
+            <div class="au-tri-title">The Dark Knight Rises</div>
+            <div class="au-tri-year">2012</div>
+            <div class="au-tri-scores">
+              <span class="au-tri-score imdb">IMDb 8.4</span>
+              <span class="au-tri-score rt">RT 87%</span>
+              <span class="au-tri-score mc">Meta 78</span>
+            </div>
+            <div class="au-verdict disappointing">Disappointing Conclusion</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="au-trilogy-vs"><span>VS</span></div>
+
+      <div class="au-tri-col">
+        <div class="au-tri-col-hdr v">The Dune Trilogy</div>
+
+        <div class="au-tri-card">
+          <div class="au-tri-num" style="color:#f4a261">I</div>
+          <div class="au-tri-body">
+            <div class="au-tri-title">Dune: Part One</div>
+            <div class="au-tri-year">2021</div>
+            <div class="au-tri-scores">
+              <span class="au-tri-score imdb">IMDb 8.0</span>
+              <span class="au-tri-score rt">RT 83%</span>
+              <span class="au-tri-score mc">Meta 74</span>
+            </div>
+            <div class="au-verdict good">Epic World-Building</div>
+          </div>
+        </div>
+
+        <div class="au-tri-card gold">
+          <div class="au-tri-num" style="color:var(--gold)">II</div>
+          <div class="au-tri-body">
+            <div class="au-tri-title">Dune: Part Two</div>
+            <div class="au-tri-year">2024</div>
+            <div class="au-tri-scores">
+              <span class="au-tri-score imdb">IMDb 8.5</span>
+              <span class="au-tri-score rt">RT 92%</span>
+              <span class="au-tri-score mc">Meta 79</span>
+            </div>
+            <div class="au-verdict masterpiece">Modern Sci-Fi Classic</div>
+          </div>
+        </div>
+
+        <div class="au-tri-card tbd">
+          <div class="au-tri-num" style="color:var(--text3)">III</div>
+          <div class="au-tri-body">
+            <div class="au-tri-title">Dune: Part Three</div>
+            <div class="au-tri-year">2026</div>
+            <div class="au-tri-scores">
+              <span class="au-tri-score tbd">IMDb —</span>
+              <span class="au-tri-score tbd">RT —</span>
+              <span class="au-tri-score tbd">Meta —</span>
+            </div>
+            <div class="au-verdict pending">⏳ TBD — Dec 18, 2026</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="au-analysis-grid">
+      <div class="au-analysis n">
+        <div class="au-analysis-eyebrow n">🦇 THE DARK KNIGHT · Legacy Assessment</div>
+        <div class="au-analysis-body">
+          <p><strong>The Dark Knight</strong> is not merely one of the greatest superhero films ever made — it is one of the greatest <em>crime films</em> ever made, full stop. Heath Ledger's Joker remains the single most compelling villain in the history of the genre, a performance so complete and so destabilizing that it permanently altered what audiences would accept from comic book cinema. The film proved, definitively, that the superhero genre could carry genuine moral weight, genuine dread, and genuine art.</p>
+          <p>But then came <strong>The Dark Knight Rises</strong>. It is not a bad film — there are sequences of genuine power. <strong>But it is a disappointing conclusion to a trilogy that deserved better.</strong> The plot creaks under its own weight. The villain is diminished mid-film by a twist that undercuts everything. The pacing sprawls. For a film ending one of the most celebrated trilogies in modern cinema, it lands with the energy of a man who sprinted the first two miles of a marathon and then developed a mild cramp in the third.</p>
+        </div>
+      </div>
+
+      <div class="au-analysis v">
+        <div class="au-analysis-eyebrow v">🌌 THE DUNE TRILOGY · An Incomplete Verdict</div>
+        <div class="au-analysis-body">
+          <p><strong>Dune: Part Two</strong> is one of the greatest science fiction films of the 21st century. The sandworm ride alone belongs in the pantheon of cinema's most purely overwhelming moments. The film escalates the mythology, darkens the themes, and delivers the <em>Apocalypse Now</em> reckoning the story always promised: that Paul Atreides is not a hero, but a weapon — and that the Fremen are not liberators, but an army being aimed.</p>
+          <p>But here is the uncomfortable truth: <strong>we cannot fairly compare these two trilogies yet.</strong> The Dark Knight Rises had the unenviable task of following a cultural phenomenon — and stumbled. Dune: Part Three has the same task. It may soar. It may stumble. What we <em>can</em> say is this: <strong>if Dune: Part Three matches the quality of the first two films, it is — without serious debate — the superior trilogy.</strong> A three-film arc that sustains that level of filmmaking, from first frame to last, would be an achievement without precedent in modern science fiction.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERDICT -->
+    <div class="au-section-title">The Verdict</div>
+    <div class="au-opinion">
+      <div class="au-opinion-card">
+        <div class="au-opinion-eyebrow">⚖ An Earnest, if Extremely Confident, Critical Assessment</div>
+        <div class="au-opinion-text">
+          <p>To render a verdict in the ongoing debate over cinema's current ruling auteur requires one to confront an uncomfortable truth: <strong>Denis Villeneuve has, with remarkable consistency, outclassed his contemporaries not by loudly declaring his ambitions — but by quietly executing them with terrifying precision.</strong></p>
+          <p>Where Nolan has built a cathedral of intellect — imposing, magnificent, and occasionally so cavernously self-serious that the echo drowns out the humanity — <strong>Villeneuve constructs living, breathing worlds</strong> with the precise technical architecture of a David Fincher and the mythic sweep of a Nolan at full flight. The crucial distinction is that <em>Denis lets his films breathe</em>. He is not afraid of digital formats, of CGI as a tool of genuine wonder rather than spectacle for its own sake, of moral and emotional rawness as a weapon.</p>
+          <p>Sicario is suffocatingly adult. Arrival ends on an act of grief so quietly devastating it could make a stone weep. Blade Runner 2049 was a $150 million gamble on three hours of contemplative noir — and it paid off in pure cinema. The Dune films represent the most ambitious science fiction franchise filmmaking since Kubrick.</p>
+          <p>The scoreboard, too, speaks. Six films since 2014. <strong>Not one below 88% on Rotten Tomatoes.</strong> Not one Metacritic score under 72. Denis Villeneuve has not had a "Tenet." <em>Every single swing has connected.</em></p>
+          <p>The crown, as it currently sits, belongs to the man from Gentilly, Québec. <strong>And he has earned every jewel in it.</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE 2026 RECKONING -->
+    <div class="au-section-title">The 2026 Reckoning</div>
+    <div class="au-intro"><strong>Everything above could be rendered irrelevant by what comes next.</strong><br>Two giants. Two films. The same year. The throne is once again up for grabs.</div>
+
+    <div class="au-battle">
+
+      <div class="au-spot n">
+        <div class="au-spot-tag n">▲ Christopher Nolan · July 17, 2026</div>
+        <div class="au-spot-title n">The<br>Odyssey</div>
+        <div class="au-spot-sub">Universal Pictures · IMAX 70mm</div>
+        <div class="au-spot-stats">
+          <div class="au-pill n"><span class="au-pill-val">2,700</span><span class="au-pill-lbl">Years Old (Source)</span></div>
+          <div class="au-pill n"><span class="au-pill-val">Jul 17</span><span class="au-pill-lbl">Release Date</span></div>
+        </div>
+        <div class="au-spot-desc">Nolan adapts Homer's <em>Odyssey</em> — arguably Western civilization's foundational text — for the IMAX screen in what may be his most ambitious undertaking yet. Coming off Best Picture-winning Oppenheimer, the man arrives with maximum cultural capital and zero obligation to play it safe. The sheer mythological scale — gods, monsters, a decade-long journey home — will demand that Nolan finally make peace with the fantastical. <strong>For the first time in his career, Nolan cannot build a Cyclops practically.</strong> This is the film that could silence every critic who ever called him emotionally distant: The Odyssey is, at its core, a love story about a man desperate to get home.</div>
+        <div class="au-cast"><strong>Cast:</strong> Matt Damon, Tom Holland, Zendaya, Anne Hathaway, Robert Pattinson, Charlize Theron, Lupita Nyong'o, Mia Goth, Jon Bernthal</div>
+        <div class="au-hype">
+          <div class="au-hype-lbl">Hype Index</div>
+          <div class="au-hype-bar"><div class="au-hype-fill n"></div></div>
+        </div>
+      </div>
+
+      <div class="au-vs"><span>VS</span></div>
+
+      <div class="au-spot v">
+        <div class="au-spot-tag v">▲ Denis Villeneuve · Dec 18, 2026</div>
+        <div class="au-spot-title v">Dune:<br>Part Three</div>
+        <div class="au-spot-sub">Warner Bros. · IMAX</div>
+        <div class="au-spot-stats">
+          <div class="au-pill v"><span class="au-pill-val">$714M</span><span class="au-pill-lbl">Part Two Box Office</span></div>
+          <div class="au-pill v"><span class="au-pill-val">Dec 18</span><span class="au-pill-lbl">Release Date</span></div>
+        </div>
+        <div class="au-spot-desc">Villeneuve closes his Dune trilogy with the adaptation of <em>Dune Messiah</em> — the darkest, most subversive entry in Herbert's saga. Paul Atreides, once the hero, is now an emperor complicit in galactic genocide, grappling with the monstrous consequences of the prophecy he fulfilled. Villeneuve has stated he would only make this film if the script was <em>superior to Part Two</em> — and with cast members describing it as "phenomenal," the bar is set stratospherically high. <strong>A 15-20 year time jump, Robert Pattinson as Scytale, and the return of Jason Momoa</strong> signal a film that refuses to repeat itself.</div>
+        <div class="au-cast"><strong>Cast:</strong> Timothée Chalamet, Zendaya, Florence Pugh, Robert Pattinson, Josh Brolin, Jason Momoa, Rebecca Ferguson</div>
+        <div class="au-hype">
+          <div class="au-hype-lbl">Hype Index</div>
+          <div class="au-hype-bar"><div class="au-hype-fill v"></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- WILDCARD -->
+    <div class="au-wild">
+      <div class="au-wild-card">
+        <div class="au-wild-icon">👑</div>
+        <div class="au-wild-title">The Throne is Never Permanent</div>
+        <div class="au-wild-text">
+          <p>Here is the uncomfortable caveat that every argument in this document must contend with: <strong>Christopher Nolan has done this before.</strong> He spent years operating in the shadow of skeptics — and then made <em>The Dark Knight</em>. He made <em>Inception</em> when studios said audiences wouldn't follow an original idea. He made <em>Dunkirk</em> when people said a war film with no villain and minimal dialogue couldn't work. And then, in 2023, he made <strong>Oppenheimer</strong> — a three-hour, R-rated, non-linear biopic about nuclear physics that became a billion-dollar cultural phenomenon and swept the Oscars.</p>
+          <p>If The Odyssey arrives in July 2026 and proves to be — as it very plausibly could be — <em>the single greatest film of the 21st century</em>, then the entirety of this infographic becomes a delightfully premature eulogy. <strong>The crown would return to London.</strong></p>
+          <p>That is what makes 2026 the most extraordinary year in modern cinema. Two masters. Two titans of vision. <strong>One throne.</strong> Denis currently sits on it — <em>but Nolan is coming up the hill with a 3,000-year-old story and an IMAX camera.</em></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="au-footer">All scores approximate · IMDb / Rotten Tomatoes / Metacritic · Data as of May 2026</div>
+
   </section>
 
 </main>
