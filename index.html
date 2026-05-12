@@ -1543,12 +1543,11 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 
 /* ── 2026 Reckoning (battle grid) ───────────────────────── */
 #tab-auteurs .au-battle{
-  display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:start;
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;
   max-width:1300px;margin:0 auto;
 }
 @media(max-width:800px){
   #tab-auteurs .au-battle{grid-template-columns:1fr}
-  #tab-auteurs .au-vs{display:none}
 }
 #tab-auteurs .au-spot{
   background:var(--bg3);border-radius:10px;padding:34px;position:relative;overflow:hidden;
@@ -1584,8 +1583,6 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 #tab-auteurs .au-hype-fill.n{background:linear-gradient(90deg,#2a6a9e,var(--n-blue));width:91%}
 #tab-auteurs .au-hype-fill.v{background:linear-gradient(90deg,#b86a30,var(--v-orange));width:88%}
 @keyframes auHypeFill{from{width:0}}
-#tab-auteurs .au-vs{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 28px;min-height:300px}
-#tab-auteurs .au-vs span{font-family:var(--font-head);font-size:48px;color:var(--border);letter-spacing:4px;writing-mode:vertical-rl}
 
 /* ── Wildcard ──────────────────────────────────────────── */
 #tab-auteurs .au-wild{max-width:900px;margin:0 auto 56px}
@@ -3217,8 +3214,6 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
           <div class="au-hype-bar"><div class="au-hype-fill n"></div></div>
         </div>
       </div>
-
-      <div class="au-vs"><span>VS</span></div>
 
       <div class="au-spot v" onclick="auOpenFilm('Dune Part Three',2026)">
         <div class="au-spot-tag v">▲ Denis Villeneuve · Dec 18, 2026</div>
