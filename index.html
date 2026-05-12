@@ -6011,8 +6011,8 @@ async function loadAuteursPosters() {
         const body = card.querySelector('.au-tri-body');
         if (body) card.insertBefore(img, body); else card.prepend(img);
       } else {
-        // Timeline card
-        img.src = `${TMDB_IMG}w154${hit.poster_path}`;
+        // Timeline card — w342 because cards are now ~200px wide (retina-safe)
+        img.src = `${TMDB_IMG}w342${hit.poster_path}`;
         img.className = 'au-film-poster';
         card.prepend(img);
       }
