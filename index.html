@@ -1462,12 +1462,11 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 
 /* Trilogy film cards */
 #tab-auteurs .au-trilogy-grid{
-  display:grid;grid-template-columns:1fr 60px 1fr;gap:0;
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
   max-width:1300px;margin:0 auto 40px;align-items:start;
 }
 @media(max-width:800px){
   #tab-auteurs .au-trilogy-grid{grid-template-columns:1fr}
-  #tab-auteurs .au-trilogy-vs{display:none}
 }
 #tab-auteurs .au-tri-col{display:flex;flex-direction:column;gap:12px}
 #tab-auteurs .au-tri-col-hdr{
@@ -1501,8 +1500,6 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 #tab-auteurs .au-verdict.good{background:rgba(78,168,222,.12);color:var(--n-blue)}
 #tab-auteurs .au-verdict.disappointing{background:rgba(230,57,70,.12);color:var(--au-red)}
 #tab-auteurs .au-verdict.pending{background:rgba(136,136,153,.12);color:var(--text3)}
-#tab-auteurs .au-trilogy-vs{display:flex;align-items:center;justify-content:center;min-height:200px}
-#tab-auteurs .au-trilogy-vs span{font-family:var(--font-head);font-size:32px;color:var(--text3);letter-spacing:4px;writing-mode:vertical-rl;opacity:.5}
 
 /* Trilogy analysis */
 #tab-auteurs .au-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1300px;margin:0 auto}
@@ -3117,8 +3114,6 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
           </div>
         </div>
       </div>
-
-      <div class="au-trilogy-vs"><span>VS</span></div>
 
       <div class="au-tri-col">
         <div class="au-tri-col-hdr v">The Dune Trilogy</div>
