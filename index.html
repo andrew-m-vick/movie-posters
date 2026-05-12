@@ -1372,10 +1372,36 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 #tab-auteurs .au-node.n{border-color:var(--n-blue);color:var(--n-blue)}
 #tab-auteurs .au-node.v{border-color:var(--v-orange);color:var(--v-orange)}
 #tab-auteurs .au-film{
-  background:var(--bg3);border-radius:6px;padding:14px 16px;max-width:380px;
+  background:var(--bg3);border-radius:6px;padding:12px 14px;max-width:380px;
   border:1px solid transparent;transition:transform .25s,border-color .25s,box-shadow .25s;
   cursor:pointer;
+  display:flex;align-items:center;gap:12px;
 }
+#tab-auteurs .au-tl-left .au-film{flex-direction:row-reverse}
+#tab-auteurs .au-film-body{flex:1;min-width:0}
+#tab-auteurs .au-film-poster{
+  width:44px;height:66px;object-fit:cover;border-radius:3px;flex-shrink:0;
+  background:var(--bg2);box-shadow:0 4px 12px rgba(0,0,0,.4);
+  animation:auPosterFade .25s ease;
+}
+#tab-auteurs .au-tri-poster{
+  width:56px;height:84px;object-fit:cover;border-radius:4px;flex-shrink:0;
+  background:var(--bg2);box-shadow:0 4px 12px rgba(0,0,0,.4);
+  animation:auPosterFade .25s ease;
+  align-self:center;
+}
+#tab-auteurs .au-spot{padding-right:170px}
+#tab-auteurs .au-spot-poster{
+  position:absolute;top:30px;right:30px;
+  width:130px;border-radius:6px;
+  box-shadow:0 12px 40px rgba(0,0,0,.55);
+  animation:auPosterFade .3s ease;
+}
+@media (max-width:700px){
+  #tab-auteurs .au-spot{padding-right:34px}
+  #tab-auteurs .au-spot-poster{position:static;display:block;margin:0 auto 20px;width:140px}
+}
+@keyframes auPosterFade{from{opacity:0}to{opacity:1}}
 #tab-auteurs .au-film.n{border-color:rgba(78,168,222,.22)}
 #tab-auteurs .au-film.n:hover{border-color:rgba(78,168,222,.55);transform:translateY(-2px);box-shadow:0 8px 30px rgba(78,168,222,.12)}
 #tab-auteurs .au-film.v{border-color:rgba(244,162,97,.22)}
@@ -2760,66 +2786,42 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="au-timeline">
 
         <!-- 1998 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Following',1998)">
-          <div class="au-film-title">Following</div>
-          <div class="au-film-meta"><span class="au-film-year">1998</span><span class="au-imdb">IMDb 7.5</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Following',1998)"><div class="au-film-body"><div class="au-film-title">Following</div><div class="au-film-meta"><span class="au-film-year">1998</span><span class="au-imdb">IMDb 7.5</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('August 32nd on Earth',1998)">
-          <div class="au-film-title">August 32nd on Earth</div>
-          <div class="au-film-meta"><span class="au-film-year">1998</span><span class="au-imdb">IMDb 6.7</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('August 32nd on Earth',1998)"><div class="au-film-body"><div class="au-film-title">August 32nd on Earth</div><div class="au-film-meta"><span class="au-film-year">1998</span><span class="au-imdb">IMDb 6.7</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2000 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Memento',2000)">
-          <div class="au-film-title">Memento</div>
-          <div class="au-film-meta"><span class="au-film-year">2000</span><span class="au-imdb">IMDb 8.4</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Memento',2000)"><div class="au-film-body"><div class="au-film-title">Memento</div><div class="au-film-meta"><span class="au-film-year">2000</span><span class="au-imdb">IMDb 8.4</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Maelström',2000)">
-          <div class="au-film-title">Maelström</div>
-          <div class="au-film-meta"><span class="au-film-year">2000</span><span class="au-imdb">IMDb 7.1</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Maelström',2000)"><div class="au-film-body"><div class="au-film-title">Maelström</div><div class="au-film-meta"><span class="au-film-year">2000</span><span class="au-imdb">IMDb 7.1</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2002 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Insomnia',2002)">
-          <div class="au-film-title">Insomnia</div>
-          <div class="au-film-meta"><span class="au-film-year">2002</span><span class="au-imdb">IMDb 7.2</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Insomnia',2002)"><div class="au-film-body"><div class="au-film-title">Insomnia</div><div class="au-film-meta"><span class="au-film-year">2002</span><span class="au-imdb">IMDb 7.2</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2005 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Batman Begins',2005)">
-          <div class="au-film-title">Batman Begins</div>
-          <div class="au-film-meta"><span class="au-film-year">2005</span><span class="au-imdb">IMDb 8.2</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Batman Begins',2005)"><div class="au-film-body"><div class="au-film-title">Batman Begins</div><div class="au-film-meta"><span class="au-film-year">2005</span><span class="au-imdb">IMDb 8.2</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2006 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Prestige',2006)">
-          <div class="au-film-title">The Prestige</div>
-          <div class="au-film-meta"><span class="au-film-year">2006</span><span class="au-imdb">IMDb 8.5</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Prestige',2006)"><div class="au-film-body"><div class="au-film-title">The Prestige</div><div class="au-film-meta"><span class="au-film-year">2006</span><span class="au-imdb">IMDb 8.5</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2008 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Dark Knight ★',2008)">
-          <div class="au-film-title">The Dark Knight ★</div>
-          <div class="au-film-meta"><span class="au-film-year">2008</span><span class="au-imdb">IMDb 9.0</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Dark Knight ★',2008)"><div class="au-film-body"><div class="au-film-title">The Dark Knight ★</div><div class="au-film-meta"><span class="au-film-year">2008</span><span class="au-imdb">IMDb 9.0</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
@@ -2828,31 +2830,19 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2009 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Polytechnique',2009)">
-          <div class="au-film-title">Polytechnique</div>
-          <div class="au-film-meta"><span class="au-film-year">2009</span><span class="au-imdb">IMDb 7.6</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Polytechnique',2009)"><div class="au-film-body"><div class="au-film-title">Polytechnique</div><div class="au-film-meta"><span class="au-film-year">2009</span><span class="au-imdb">IMDb 7.6</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2010 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Inception',2010)">
-          <div class="au-film-title">Inception</div>
-          <div class="au-film-meta"><span class="au-film-year">2010</span><span class="au-imdb">IMDb 8.8</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Inception',2010)"><div class="au-film-body"><div class="au-film-title">Inception</div><div class="au-film-meta"><span class="au-film-year">2010</span><span class="au-imdb">IMDb 8.8</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Incendies',2010)">
-          <div class="au-film-title">Incendies</div>
-          <div class="au-film-meta"><span class="au-film-year">2010</span><span class="au-imdb">IMDb 8.1</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Incendies',2010)"><div class="au-film-body"><div class="au-film-title">Incendies</div><div class="au-film-meta"><span class="au-film-year">2010</span><span class="au-imdb">IMDb 8.1</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2012 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Dark Knight Rises',2012)">
-          <div class="au-film-title">The Dark Knight Rises</div>
-          <div class="au-film-meta"><span class="au-film-year">2012</span><span class="au-imdb">IMDb 8.4</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Dark Knight Rises',2012)"><div class="au-film-body"><div class="au-film-title">The Dark Knight Rises</div><div class="au-film-meta"><span class="au-film-year">2012</span><span class="au-imdb">IMDb 8.4</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
@@ -2861,27 +2851,18 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2013 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Prisoners',2013)">
-          <div class="au-film-title">Prisoners</div>
-          <div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 8.1</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Prisoners',2013)"><div class="au-film-body"><div class="au-film-title">Prisoners</div><div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 8.1</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Enemy',2013)">
-          <div class="au-film-title">Enemy</div>
-          <div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 6.9</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Enemy',2013)"><div class="au-film-body"><div class="au-film-title">Enemy</div><div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 6.9</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2014 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Interstellar',2014)">
-          <div class="au-film-title">Interstellar</div>
-          <div class="au-film-meta"><span class="au-film-year">2014</span><span class="au-imdb">IMDb 8.7</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Interstellar',2014)"><div class="au-film-body"><div class="au-film-title">Interstellar</div><div class="au-film-meta"><span class="au-film-year">2014</span><span class="au-imdb">IMDb 8.7</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
@@ -2890,41 +2871,26 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2015 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Sicario',2015)">
-          <div class="au-film-title">Sicario</div>
-          <div class="au-film-meta"><span class="au-film-year">2015</span><span class="au-imdb">IMDb 7.6</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Sicario',2015)"><div class="au-film-body"><div class="au-film-title">Sicario</div><div class="au-film-meta"><span class="au-film-year">2015</span><span class="au-imdb">IMDb 7.6</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2016 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Arrival',2016)">
-          <div class="au-film-title">Arrival</div>
-          <div class="au-film-meta"><span class="au-film-year">2016</span><span class="au-imdb">IMDb 7.9</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Arrival',2016)"><div class="au-film-body"><div class="au-film-title">Arrival</div><div class="au-film-meta"><span class="au-film-year">2016</span><span class="au-imdb">IMDb 7.9</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2017 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Dunkirk',2017)">
-          <div class="au-film-title">Dunkirk</div>
-          <div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 7.9</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Dunkirk',2017)"><div class="au-film-body"><div class="au-film-title">Dunkirk</div><div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 7.9</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Blade Runner 2049',2017)">
-          <div class="au-film-title">Blade Runner 2049</div>
-          <div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 8.0</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Blade Runner 2049',2017)"><div class="au-film-body"><div class="au-film-title">Blade Runner 2049</div><div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 8.0</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2020 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Tenet',2020)">
-          <div class="au-film-title">Tenet</div>
-          <div class="au-film-meta"><span class="au-film-year">2020</span><span class="au-imdb">IMDb 7.3</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Tenet',2020)"><div class="au-film-body"><div class="au-film-title">Tenet</div><div class="au-film-meta"><span class="au-film-year">2020</span><span class="au-imdb">IMDb 7.3</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
@@ -2933,18 +2899,12 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2021 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Dune: Part One',2021)">
-          <div class="au-film-title">Dune: Part One</div>
-          <div class="au-film-meta"><span class="au-film-year">2021</span><span class="au-imdb">IMDb 8.0</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Dune: Part One',2021)"><div class="au-film-body"><div class="au-film-title">Dune: Part One</div><div class="au-film-meta"><span class="au-film-year">2021</span><span class="au-imdb">IMDb 8.0</span></div></div></div></div>
 
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2023 -->
-        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Oppenheimer',2023)">
-          <div class="au-film-title">Oppenheimer</div>
-          <div class="au-film-meta"><span class="au-film-year">2023</span><span class="au-imdb">IMDb 8.3</span></div>
-        </div></div>
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Oppenheimer',2023)"><div class="au-film-body"><div class="au-film-title">Oppenheimer</div><div class="au-film-meta"><span class="au-film-year">2023</span><span class="au-imdb">IMDb 8.3</span></div></div></div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
         <div class="au-tl-right"></div>
 
@@ -2953,10 +2913,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2024 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Dune: Part Two ★',2024)">
-          <div class="au-film-title">Dune: Part Two ★</div>
-          <div class="au-film-meta"><span class="au-film-year">2024</span><span class="au-imdb">IMDb 8.5</span></div>
-        </div></div>
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Dune: Part Two ★',2024)"><div class="au-film-body"><div class="au-film-title">Dune: Part Two ★</div><div class="au-film-meta"><span class="au-film-year">2024</span><span class="au-imdb">IMDb 8.5</span></div></div></div></div>
 
       </div>
     </div>
@@ -4403,6 +4360,7 @@ function switchTab(id) {
   if (id === 'picks')     renderPicks();
   if (id === 'trends'   && state.movies.length) renderTrends();
   if (id === 'ops') renderOPS();
+  if (id === 'auteurs') loadAuteursPosters();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -6013,6 +5971,50 @@ async function auOpenFilm(title, year) {
   if (hit) openModal(hit.id);
 }
 window.auOpenFilm = auOpenFilm;
+
+// Eagerly load posters for every card in the Auteurs tab on first open.
+// Parses title + year out of each card's onclick attribute so we don't
+// have to maintain a separate id list. Idempotent — re-runs are no-ops.
+let _auPostersLoaded = false;
+async function loadAuteursPosters() {
+  if (_auPostersLoaded || !CFG.tmdb) return;
+  _auPostersLoaded = true;
+  const cards = Array.from(document.querySelectorAll(
+    '#tab-auteurs .au-film[onclick], #tab-auteurs .au-tri-card[onclick], #tab-auteurs .au-spot[onclick]'
+  ));
+  await Promise.all(cards.map(async card => {
+    const m = (card.getAttribute('onclick') || '').match(/auOpenFilm\('([^']+)',(\d+)\)/);
+    if (!m) return;
+    const [, rawTitle, yearStr] = m;
+    const title = rawTitle.replace(/[★]/g, '').trim();
+    const year = parseInt(yearStr, 10);
+    try {
+      const data = await tmdbGet('/search/movie', { query: title, year, language: 'en-US', page: 1 });
+      const hit = (data?.results || []).find(r => r.poster_path);
+      if (!hit) return;
+      const img = document.createElement('img');
+      img.alt = title;
+      img.loading = 'lazy';
+      if (card.classList.contains('au-spot')) {
+        img.src = `${TMDB_IMG}w342${hit.poster_path}`;
+        img.className = 'au-spot-poster';
+        card.prepend(img);
+      } else if (card.classList.contains('au-tri-card')) {
+        img.src = `${TMDB_IMG}w154${hit.poster_path}`;
+        img.className = 'au-tri-poster';
+        // Insert between the Roman numeral and the body
+        const body = card.querySelector('.au-tri-body');
+        if (body) card.insertBefore(img, body); else card.prepend(img);
+      } else {
+        // Timeline card
+        img.src = `${TMDB_IMG}w154${hit.poster_path}`;
+        img.className = 'au-film-poster';
+        card.prepend(img);
+      }
+    } catch (e) { /* swallow — card just stays poster-less */ }
+  }));
+}
+window.loadAuteursPosters = loadAuteursPosters;
 
 // Delegated handler for the dense scorecard tables — rows carry
 // data-au-title / data-year. Hooked once at load.
