@@ -1374,6 +1374,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 #tab-auteurs .au-film{
   background:var(--bg3);border-radius:6px;padding:14px 16px;max-width:380px;
   border:1px solid transparent;transition:transform .25s,border-color .25s,box-shadow .25s;
+  cursor:pointer;
 }
 #tab-auteurs .au-film.n{border-color:rgba(78,168,222,.22)}
 #tab-auteurs .au-film.n:hover{border-color:rgba(78,168,222,.55);transform:translateY(-2px);box-shadow:0 8px 30px rgba(78,168,222,.12)}
@@ -1412,7 +1413,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   background:var(--bg2);padding:10px 12px;text-align:left;color:var(--text3);
   letter-spacing:2px;font-size:9px;text-transform:uppercase;border-bottom:1px solid var(--border);
 }
-#tab-auteurs .au-score-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+#tab-auteurs .au-score-table tbody tr{border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
 #tab-auteurs .au-score-table tbody tr:last-child{border-bottom:none}
 #tab-auteurs .au-score-table tbody tr:hover{background:var(--bg2)}
 #tab-auteurs .au-score-table tbody td{padding:11px 12px;vertical-align:middle}
@@ -1477,10 +1478,14 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 #tab-auteurs .au-tri-col-hdr.v{background:rgba(244,162,97,.1);color:var(--v-orange)}
 #tab-auteurs .au-tri-card{
   background:var(--bg3);border:1px solid var(--border);border-radius:8px;
-  padding:18px 20px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s;
+  padding:18px 20px;display:flex;gap:16px;align-items:flex-start;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+  cursor:pointer;
 }
+#tab-auteurs .au-tri-card:hover{border-color:var(--gold);transform:translateY(-1px)}
 #tab-auteurs .au-tri-card.gold{border-color:rgba(212,175,55,.3);background:var(--bg2)}
-#tab-auteurs .au-tri-card.tbd{opacity:.7;border-style:dashed}
+#tab-auteurs .au-tri-card.tbd{opacity:.7;border-style:dashed;cursor:default}
+#tab-auteurs .au-tri-card.tbd:hover{border-color:var(--border);transform:none}
 #tab-auteurs .au-tri-num{font-family:var(--font-head);font-size:28px;letter-spacing:2px;flex-shrink:0;line-height:1;margin-top:2px}
 #tab-auteurs .au-tri-body{flex:1}
 #tab-auteurs .au-tri-title{font-family:var(--au-serif);font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
@@ -1548,7 +1553,13 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   #tab-auteurs .au-battle{grid-template-columns:1fr}
   #tab-auteurs .au-vs{display:none}
 }
-#tab-auteurs .au-spot{background:var(--bg3);border-radius:10px;padding:34px;position:relative;overflow:hidden}
+#tab-auteurs .au-spot{
+  background:var(--bg3);border-radius:10px;padding:34px;position:relative;overflow:hidden;
+  cursor:pointer;transition:transform .25s,box-shadow .25s;
+}
+#tab-auteurs .au-spot:hover{transform:translateY(-2px)}
+#tab-auteurs .au-spot.n:hover{box-shadow:inset 0 0 80px rgba(78,168,222,.07),0 8px 30px rgba(78,168,222,.15)}
+#tab-auteurs .au-spot.v:hover{box-shadow:inset 0 0 80px rgba(244,162,97,.07),0 8px 30px rgba(244,162,97,.15)}
 #tab-auteurs .au-spot.n{border:1px solid rgba(78,168,222,.25);box-shadow:inset 0 0 80px rgba(78,168,222,.04)}
 #tab-auteurs .au-spot.v{border:1px solid rgba(244,162,97,.25);box-shadow:inset 0 0 80px rgba(244,162,97,.04)}
 #tab-auteurs .au-spot-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
@@ -2755,12 +2766,12 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="au-timeline">
 
         <!-- 1998 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Following',1998)">
           <div class="au-film-title">Following</div>
           <div class="au-film-meta"><span class="au-film-year">1998</span><span class="au-imdb">IMDb 7.5</span></div>
         </div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('August 32nd on Earth',1998)">
           <div class="au-film-title">August 32nd on Earth</div>
           <div class="au-film-meta"><span class="au-film-year">1998</span><span class="au-imdb">IMDb 6.7</span></div>
         </div></div>
@@ -2768,12 +2779,12 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2000 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Memento',2000)">
           <div class="au-film-title">Memento</div>
           <div class="au-film-meta"><span class="au-film-year">2000</span><span class="au-imdb">IMDb 8.4</span></div>
         </div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Maelström',2000)">
           <div class="au-film-title">Maelström</div>
           <div class="au-film-meta"><span class="au-film-year">2000</span><span class="au-imdb">IMDb 7.1</span></div>
         </div></div>
@@ -2781,7 +2792,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2002 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Insomnia',2002)">
           <div class="au-film-title">Insomnia</div>
           <div class="au-film-meta"><span class="au-film-year">2002</span><span class="au-imdb">IMDb 7.2</span></div>
         </div></div>
@@ -2791,7 +2802,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2005 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Batman Begins',2005)">
           <div class="au-film-title">Batman Begins</div>
           <div class="au-film-meta"><span class="au-film-year">2005</span><span class="au-imdb">IMDb 8.2</span></div>
         </div></div>
@@ -2801,7 +2812,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2006 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Prestige',2006)">
           <div class="au-film-title">The Prestige</div>
           <div class="au-film-meta"><span class="au-film-year">2006</span><span class="au-imdb">IMDb 8.5</span></div>
         </div></div>
@@ -2811,7 +2822,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2008 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Dark Knight ★',2008)">
           <div class="au-film-title">The Dark Knight ★</div>
           <div class="au-film-meta"><span class="au-film-year">2008</span><span class="au-imdb">IMDb 9.0</span></div>
         </div></div>
@@ -2823,7 +2834,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2009 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Polytechnique',2009)">
           <div class="au-film-title">Polytechnique</div>
           <div class="au-film-meta"><span class="au-film-year">2009</span><span class="au-imdb">IMDb 7.6</span></div>
         </div></div>
@@ -2831,12 +2842,12 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2010 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Inception',2010)">
           <div class="au-film-title">Inception</div>
           <div class="au-film-meta"><span class="au-film-year">2010</span><span class="au-imdb">IMDb 8.8</span></div>
         </div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Incendies',2010)">
           <div class="au-film-title">Incendies</div>
           <div class="au-film-meta"><span class="au-film-year">2010</span><span class="au-imdb">IMDb 8.1</span></div>
         </div></div>
@@ -2844,7 +2855,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2012 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('The Dark Knight Rises',2012)">
           <div class="au-film-title">The Dark Knight Rises</div>
           <div class="au-film-meta"><span class="au-film-year">2012</span><span class="au-imdb">IMDb 8.4</span></div>
         </div></div>
@@ -2856,7 +2867,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2013 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Prisoners',2013)">
           <div class="au-film-title">Prisoners</div>
           <div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 8.1</span></div>
         </div></div>
@@ -2865,7 +2876,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
 
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Enemy',2013)">
           <div class="au-film-title">Enemy</div>
           <div class="au-film-meta"><span class="au-film-year">2013</span><span class="au-imdb">IMDb 6.9</span></div>
         </div></div>
@@ -2873,7 +2884,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2014 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Interstellar',2014)">
           <div class="au-film-title">Interstellar</div>
           <div class="au-film-meta"><span class="au-film-year">2014</span><span class="au-imdb">IMDb 8.7</span></div>
         </div></div>
@@ -2885,7 +2896,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2015 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Sicario',2015)">
           <div class="au-film-title">Sicario</div>
           <div class="au-film-meta"><span class="au-film-year">2015</span><span class="au-imdb">IMDb 7.6</span></div>
         </div></div>
@@ -2895,7 +2906,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2016 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Arrival',2016)">
           <div class="au-film-title">Arrival</div>
           <div class="au-film-meta"><span class="au-film-year">2016</span><span class="au-imdb">IMDb 7.9</span></div>
         </div></div>
@@ -2903,12 +2914,12 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2017 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Dunkirk',2017)">
           <div class="au-film-title">Dunkirk</div>
           <div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 7.9</span></div>
         </div></div>
         <div class="au-tl-center"><div class="au-node n"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Blade Runner 2049',2017)">
           <div class="au-film-title">Blade Runner 2049</div>
           <div class="au-film-meta"><span class="au-film-year">2017</span><span class="au-imdb">IMDb 8.0</span></div>
         </div></div>
@@ -2916,7 +2927,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2020 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Tenet',2020)">
           <div class="au-film-title">Tenet</div>
           <div class="au-film-meta"><span class="au-film-year">2020</span><span class="au-imdb">IMDb 7.3</span></div>
         </div></div>
@@ -2928,7 +2939,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2021 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Dune: Part One',2021)">
           <div class="au-film-title">Dune: Part One</div>
           <div class="au-film-meta"><span class="au-film-year">2021</span><span class="au-imdb">IMDb 8.0</span></div>
         </div></div>
@@ -2936,7 +2947,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="au-spacer"></div><div class="au-spacer"></div><div class="au-spacer"></div>
 
         <!-- 2023 -->
-        <div class="au-tl-left"><div class="au-film n">
+        <div class="au-tl-left"><div class="au-film n" onclick="auOpenFilm('Oppenheimer',2023)">
           <div class="au-film-title">Oppenheimer</div>
           <div class="au-film-meta"><span class="au-film-year">2023</span><span class="au-imdb">IMDb 8.3</span></div>
         </div></div>
@@ -2948,7 +2959,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <!-- 2024 -->
         <div class="au-tl-left"></div>
         <div class="au-tl-center"><div class="au-node v"></div></div>
-        <div class="au-tl-right"><div class="au-film v">
+        <div class="au-tl-right"><div class="au-film v" onclick="auOpenFilm('Dune: Part Two ★',2024)">
           <div class="au-film-title">Dune: Part Two ★</div>
           <div class="au-film-meta"><span class="au-film-year">2024</span><span class="au-imdb">IMDb 8.5</span></div>
         </div></div>
@@ -2969,18 +2980,18 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <table>
           <thead><tr><th>Film</th><th>Year</th><th>IMDb</th><th>RT%</th><th>Meta</th></tr></thead>
           <tbody>
-            <tr><td class="au-td-title">Following</td><td class="au-td-year">1998</td><td class="au-sc au-sc-imdb">7.5</td><td class="au-sc au-sc-rt-fresh">79%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
-            <tr><td class="au-td-title">Memento</td><td class="au-td-year">2000</td><td class="au-sc au-sc-imdb">8.4</td><td class="au-sc au-sc-rt-fresh">93%</td><td class="au-sc au-sc-mc-good">80</td></tr>
-            <tr><td class="au-td-title">Insomnia</td><td class="au-td-year">2002</td><td class="au-sc au-sc-imdb">7.2</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">78</td></tr>
-            <tr><td class="au-td-title">Batman Begins</td><td class="au-td-year">2005</td><td class="au-sc au-sc-imdb">8.2</td><td class="au-sc au-sc-rt-fresh">84%</td><td class="au-sc au-sc-mc-mid">70</td></tr>
-            <tr><td class="au-td-title">The Prestige</td><td class="au-td-year">2006</td><td class="au-sc au-sc-imdb">8.5</td><td class="au-sc au-sc-rt-fresh">76%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
-            <tr class="au-row-highlight"><td class="au-td-title">The Dark Knight ★</td><td class="au-td-year">2008</td><td class="au-sc au-sc-imdb">9.0</td><td class="au-sc au-sc-rt-fresh">94%</td><td class="au-sc au-sc-mc-good">84</td></tr>
-            <tr><td class="au-td-title">Inception</td><td class="au-td-year">2010</td><td class="au-sc au-sc-imdb">8.8</td><td class="au-sc au-sc-rt-fresh">87%</td><td class="au-sc au-sc-mc-good">74</td></tr>
-            <tr><td class="au-td-title">The Dark Knight Rises</td><td class="au-td-year">2012</td><td class="au-sc au-sc-imdb">8.4</td><td class="au-sc au-sc-rt-fresh">87%</td><td class="au-sc au-sc-mc-mid">78</td></tr>
-            <tr><td class="au-td-title">Interstellar</td><td class="au-td-year">2014</td><td class="au-sc au-sc-imdb">8.7</td><td class="au-sc au-sc-rt-fresh">73%</td><td class="au-sc au-sc-mc-mid">74</td></tr>
-            <tr><td class="au-td-title">Dunkirk</td><td class="au-td-year">2017</td><td class="au-sc au-sc-imdb">7.9</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">94</td></tr>
-            <tr><td class="au-td-title">Tenet</td><td class="au-td-year">2020</td><td class="au-sc au-sc-imdb">7.3</td><td class="au-sc au-sc-rt-rotten">69%</td><td class="au-sc au-sc-mc-mid">69</td></tr>
-            <tr><td class="au-td-title">Oppenheimer</td><td class="au-td-year">2023</td><td class="au-sc au-sc-imdb">8.3</td><td class="au-sc au-sc-rt-fresh">93%</td><td class="au-sc au-sc-mc-good">90</td></tr>
+            <tr data-au-title="Following" data-year="1998"><td class="au-td-title">Following</td><td class="au-td-year">1998</td><td class="au-sc au-sc-imdb">7.5</td><td class="au-sc au-sc-rt-fresh">79%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
+            <tr data-au-title="Memento" data-year="2000"><td class="au-td-title">Memento</td><td class="au-td-year">2000</td><td class="au-sc au-sc-imdb">8.4</td><td class="au-sc au-sc-rt-fresh">93%</td><td class="au-sc au-sc-mc-good">80</td></tr>
+            <tr data-au-title="Insomnia" data-year="2002"><td class="au-td-title">Insomnia</td><td class="au-td-year">2002</td><td class="au-sc au-sc-imdb">7.2</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">78</td></tr>
+            <tr data-au-title="Batman Begins" data-year="2005"><td class="au-td-title">Batman Begins</td><td class="au-td-year">2005</td><td class="au-sc au-sc-imdb">8.2</td><td class="au-sc au-sc-rt-fresh">84%</td><td class="au-sc au-sc-mc-mid">70</td></tr>
+            <tr data-au-title="The Prestige" data-year="2006"><td class="au-td-title">The Prestige</td><td class="au-td-year">2006</td><td class="au-sc au-sc-imdb">8.5</td><td class="au-sc au-sc-rt-fresh">76%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
+            <tr class="au-row-highlight" data-au-title="The Dark Knight ★" data-year="2008"><td class="au-td-title">The Dark Knight ★</td><td class="au-td-year">2008</td><td class="au-sc au-sc-imdb">9.0</td><td class="au-sc au-sc-rt-fresh">94%</td><td class="au-sc au-sc-mc-good">84</td></tr>
+            <tr data-au-title="Inception" data-year="2010"><td class="au-td-title">Inception</td><td class="au-td-year">2010</td><td class="au-sc au-sc-imdb">8.8</td><td class="au-sc au-sc-rt-fresh">87%</td><td class="au-sc au-sc-mc-good">74</td></tr>
+            <tr data-au-title="The Dark Knight Rises" data-year="2012"><td class="au-td-title">The Dark Knight Rises</td><td class="au-td-year">2012</td><td class="au-sc au-sc-imdb">8.4</td><td class="au-sc au-sc-rt-fresh">87%</td><td class="au-sc au-sc-mc-mid">78</td></tr>
+            <tr data-au-title="Interstellar" data-year="2014"><td class="au-td-title">Interstellar</td><td class="au-td-year">2014</td><td class="au-sc au-sc-imdb">8.7</td><td class="au-sc au-sc-rt-fresh">73%</td><td class="au-sc au-sc-mc-mid">74</td></tr>
+            <tr data-au-title="Dunkirk" data-year="2017"><td class="au-td-title">Dunkirk</td><td class="au-td-year">2017</td><td class="au-sc au-sc-imdb">7.9</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">94</td></tr>
+            <tr data-au-title="Tenet" data-year="2020"><td class="au-td-title">Tenet</td><td class="au-td-year">2020</td><td class="au-sc au-sc-imdb">7.3</td><td class="au-sc au-sc-rt-rotten">69%</td><td class="au-sc au-sc-mc-mid">69</td></tr>
+            <tr data-au-title="Oppenheimer" data-year="2023"><td class="au-td-title">Oppenheimer</td><td class="au-td-year">2023</td><td class="au-sc au-sc-imdb">8.3</td><td class="au-sc au-sc-rt-fresh">93%</td><td class="au-sc au-sc-mc-good">90</td></tr>
           </tbody>
         </table>
       </div>
@@ -2994,17 +3005,17 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <table>
           <thead><tr><th>Film</th><th>Year</th><th>IMDb</th><th>RT%</th><th>Meta</th></tr></thead>
           <tbody>
-            <tr><td class="au-td-title">August 32nd on Earth</td><td class="au-td-year">1998</td><td class="au-sc au-sc-imdb">6.7</td><td class="au-sc au-sc-rt-fresh">71%</td><td class="au-sc au-sc-mc-mid">—</td></tr>
-            <tr><td class="au-td-title">Maelström</td><td class="au-td-year">2000</td><td class="au-sc au-sc-imdb">7.1</td><td class="au-sc au-sc-rt-fresh">73%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
-            <tr><td class="au-td-title">Polytechnique</td><td class="au-td-year">2009</td><td class="au-sc au-sc-imdb">7.6</td><td class="au-sc au-sc-rt-fresh">96%</td><td class="au-sc au-sc-mc-mid">63</td></tr>
-            <tr><td class="au-td-title">Incendies</td><td class="au-td-year">2010</td><td class="au-sc au-sc-imdb">8.1</td><td class="au-sc au-sc-rt-fresh">91%</td><td class="au-sc au-sc-mc-good">80</td></tr>
-            <tr><td class="au-td-title">Prisoners</td><td class="au-td-year">2013</td><td class="au-sc au-sc-imdb">8.1</td><td class="au-sc au-sc-rt-fresh">81%</td><td class="au-sc au-sc-mc-mid">70</td></tr>
-            <tr><td class="au-td-title">Enemy</td><td class="au-td-year">2013</td><td class="au-sc au-sc-imdb">6.9</td><td class="au-sc au-sc-rt-fresh">90%</td><td class="au-sc au-sc-mc-mid">61</td></tr>
-            <tr><td class="au-td-title">Sicario</td><td class="au-td-year">2015</td><td class="au-sc au-sc-imdb">7.6</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">82</td></tr>
-            <tr><td class="au-td-title">Arrival</td><td class="au-td-year">2016</td><td class="au-sc au-sc-imdb">7.9</td><td class="au-sc au-sc-rt-fresh">94%</td><td class="au-sc au-sc-mc-good">81</td></tr>
-            <tr><td class="au-td-title">Blade Runner 2049</td><td class="au-td-year">2017</td><td class="au-sc au-sc-imdb">8.0</td><td class="au-sc au-sc-rt-fresh">88%</td><td class="au-sc au-sc-mc-good">81</td></tr>
-            <tr><td class="au-td-title">Dune: Part One</td><td class="au-td-year">2021</td><td class="au-sc au-sc-imdb">8.0</td><td class="au-sc au-sc-rt-fresh">83%</td><td class="au-sc au-sc-mc-mid">74</td></tr>
-            <tr class="au-row-highlight-v"><td class="au-td-title">Dune: Part Two ★</td><td class="au-td-year">2024</td><td class="au-sc au-sc-imdb">8.5</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">79</td></tr>
+            <tr data-au-title="August 32nd on Earth" data-year="1998"><td class="au-td-title">August 32nd on Earth</td><td class="au-td-year">1998</td><td class="au-sc au-sc-imdb">6.7</td><td class="au-sc au-sc-rt-fresh">71%</td><td class="au-sc au-sc-mc-mid">—</td></tr>
+            <tr data-au-title="Maelström" data-year="2000"><td class="au-td-title">Maelström</td><td class="au-td-year">2000</td><td class="au-sc au-sc-imdb">7.1</td><td class="au-sc au-sc-rt-fresh">73%</td><td class="au-sc au-sc-mc-mid">66</td></tr>
+            <tr data-au-title="Polytechnique" data-year="2009"><td class="au-td-title">Polytechnique</td><td class="au-td-year">2009</td><td class="au-sc au-sc-imdb">7.6</td><td class="au-sc au-sc-rt-fresh">96%</td><td class="au-sc au-sc-mc-mid">63</td></tr>
+            <tr data-au-title="Incendies" data-year="2010"><td class="au-td-title">Incendies</td><td class="au-td-year">2010</td><td class="au-sc au-sc-imdb">8.1</td><td class="au-sc au-sc-rt-fresh">91%</td><td class="au-sc au-sc-mc-good">80</td></tr>
+            <tr data-au-title="Prisoners" data-year="2013"><td class="au-td-title">Prisoners</td><td class="au-td-year">2013</td><td class="au-sc au-sc-imdb">8.1</td><td class="au-sc au-sc-rt-fresh">81%</td><td class="au-sc au-sc-mc-mid">70</td></tr>
+            <tr data-au-title="Enemy" data-year="2013"><td class="au-td-title">Enemy</td><td class="au-td-year">2013</td><td class="au-sc au-sc-imdb">6.9</td><td class="au-sc au-sc-rt-fresh">90%</td><td class="au-sc au-sc-mc-mid">61</td></tr>
+            <tr data-au-title="Sicario" data-year="2015"><td class="au-td-title">Sicario</td><td class="au-td-year">2015</td><td class="au-sc au-sc-imdb">7.6</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">82</td></tr>
+            <tr data-au-title="Arrival" data-year="2016"><td class="au-td-title">Arrival</td><td class="au-td-year">2016</td><td class="au-sc au-sc-imdb">7.9</td><td class="au-sc au-sc-rt-fresh">94%</td><td class="au-sc au-sc-mc-good">81</td></tr>
+            <tr data-au-title="Blade Runner 2049" data-year="2017"><td class="au-td-title">Blade Runner 2049</td><td class="au-td-year">2017</td><td class="au-sc au-sc-imdb">8.0</td><td class="au-sc au-sc-rt-fresh">88%</td><td class="au-sc au-sc-mc-good">81</td></tr>
+            <tr data-au-title="Dune: Part One" data-year="2021"><td class="au-td-title">Dune: Part One</td><td class="au-td-year">2021</td><td class="au-sc au-sc-imdb">8.0</td><td class="au-sc au-sc-rt-fresh">83%</td><td class="au-sc au-sc-mc-mid">74</td></tr>
+            <tr class="au-row-highlight-v" data-au-title="Dune: Part Two ★" data-year="2024"><td class="au-td-title">Dune: Part Two ★</td><td class="au-td-year">2024</td><td class="au-sc au-sc-imdb">8.5</td><td class="au-sc au-sc-rt-fresh">92%</td><td class="au-sc au-sc-mc-good">79</td></tr>
           </tbody>
         </table>
       </div>
@@ -3064,7 +3075,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="au-tri-col">
         <div class="au-tri-col-hdr n">The Dark Knight Trilogy</div>
 
-        <div class="au-tri-card">
+        <div class="au-tri-card" onclick="auOpenFilm('Batman Begins',2005)">
           <div class="au-tri-num" style="color:#4ea8de">I</div>
           <div class="au-tri-body">
             <div class="au-tri-title">Batman Begins</div>
@@ -3078,7 +3089,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
           </div>
         </div>
 
-        <div class="au-tri-card gold">
+        <div class="au-tri-card gold" onclick="auOpenFilm('The Dark Knight',2008)">
           <div class="au-tri-num" style="color:var(--gold)">II</div>
           <div class="au-tri-body">
             <div class="au-tri-title">The Dark Knight</div>
@@ -3092,7 +3103,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
           </div>
         </div>
 
-        <div class="au-tri-card">
+        <div class="au-tri-card" onclick="auOpenFilm('The Dark Knight Rises',2012)">
           <div class="au-tri-num" style="color:var(--text3)">III</div>
           <div class="au-tri-body">
             <div class="au-tri-title">The Dark Knight Rises</div>
@@ -3112,7 +3123,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="au-tri-col">
         <div class="au-tri-col-hdr v">The Dune Trilogy</div>
 
-        <div class="au-tri-card">
+        <div class="au-tri-card" onclick="auOpenFilm('Dune: Part One',2021)">
           <div class="au-tri-num" style="color:#f4a261">I</div>
           <div class="au-tri-body">
             <div class="au-tri-title">Dune: Part One</div>
@@ -3126,7 +3137,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
           </div>
         </div>
 
-        <div class="au-tri-card gold">
+        <div class="au-tri-card gold" onclick="auOpenFilm('Dune: Part Two',2024)">
           <div class="au-tri-num" style="color:var(--gold)">II</div>
           <div class="au-tri-body">
             <div class="au-tri-title">Dune: Part Two</div>
@@ -3196,7 +3207,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
 
     <div class="au-battle">
 
-      <div class="au-spot n">
+      <div class="au-spot n" onclick="auOpenFilm('The Odyssey',2026)">
         <div class="au-spot-tag n">▲ Christopher Nolan · July 17, 2026</div>
         <div class="au-spot-title n">The<br>Odyssey</div>
         <div class="au-spot-sub">Universal Pictures · IMAX 70mm</div>
@@ -3214,7 +3225,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
 
       <div class="au-vs"><span>VS</span></div>
 
-      <div class="au-spot v">
+      <div class="au-spot v" onclick="auOpenFilm('Dune Part Three',2026)">
         <div class="au-spot-tag v">▲ Denis Villeneuve · Dec 18, 2026</div>
         <div class="au-spot-title v">Dune:<br>Part Three</div>
         <div class="au-spot-sub">Warner Bros. · IMAX</div>
@@ -5996,6 +6007,31 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft'  && _lb.idx > 0)                      { _lb.idx--; _lbRender(); }
     if (e.key === 'ArrowRight' && _lb.idx < _lb.posters.length - 1) { _lb.idx++; _lbRender(); }
   }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// AUTEURS — click any film card / score row / trilogy entry to open the
+// shared TMDB detail modal. Resolves title -> TMDB id at click time so
+// we never have to hardcode an id list across 23+ films.
+// ═══════════════════════════════════════════════════════════════════
+async function auOpenFilm(title, year) {
+  if (!CFG.tmdb) return;
+  // Strip display markers (★)
+  const q = String(title).replace(/[★]/g, '').trim();
+  const data = await tmdbGet('/search/movie', { query: q, year, language: 'en-US', page: 1 });
+  const hit = (data?.results || []).find(r => r.poster_path) || (data?.results || [])[0];
+  if (hit) openModal(hit.id);
+}
+window.auOpenFilm = auOpenFilm;
+
+// Delegated handler for the dense scorecard tables — rows carry
+// data-au-title / data-year. Hooked once at load.
+document.addEventListener('click', e => {
+  const tr = e.target.closest('#tab-auteurs tr[data-au-title]');
+  if (!tr) return;
+  const title = tr.getAttribute('data-au-title');
+  const year = tr.getAttribute('data-year');
+  if (title) auOpenFilm(title, year ? parseInt(year, 10) : undefined);
 });
 
 // ═══════════════════════════════════════════════════════════════════
