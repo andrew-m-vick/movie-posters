@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import requests
 from flask import Flask, send_file, send_from_directory, request, jsonify
 
 # Flask serves ./static/ at /static/<filename> automatically
@@ -10,6 +11,27 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return send_file('index.html')
+
+
+@app.route('/api/omdb')
+def omdb_proxy():
+    """Proxy OMDb lookups so the API key stays server-side.
+
+    index.html is served byte-for-byte via send_file, so a key embedded
+    there would be public. The browser calls this instead and the key
+    never leaves Railway. Query params (i, t, y, ...) pass straight through.
+    """
+    api_key = os.environ.get('OMDB_API_KEY')
+    if not api_key:
+        return jsonify({'Response': 'False', 'Error': 'OMDB_API_KEY not set on the server'}), 200
+
+    params = {k: v for k, v in request.args.items()}
+    params['apikey'] = api_key
+    try:
+        r = requests.get('https://www.omdbapi.com/', params=params, timeout=8)
+        return jsonify(r.json()), 200
+    except Exception as e:
+        return jsonify({'Response': 'False', 'Error': f'{type(e).__name__}: {str(e)[:120]}'}), 200
 
 
 @app.route('/favicon.ico')

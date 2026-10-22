@@ -3266,11 +3266,6 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
         <div class="settings-hint">themoviedb.org → Settings → API</div>
       </div>
       <div class="settings-group">
-        <div class="settings-label">OMDb API Key</div>
-        <input class="settings-input" id="s-omdb" type="password" placeholder="Your OMDb API key">
-        <div class="settings-hint">omdbapi.com → API Key</div>
-      </div>
-      <div class="settings-group">
         <div class="settings-label">Watchmode API Key</div>
         <input class="settings-input" id="s-watchmode" type="password" placeholder="Your Watchmode API key">
         <div class="settings-hint">api.watchmode.com → Dashboard</div>
@@ -3286,13 +3281,11 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
 // ═══════════════════════════════════════════════════════════════════
 const CFG = {
   get tmdb()     { return localStorage.getItem('cd_tmdb') || '5257b8de97581229fd5a52d5e61a48ec' },
-  get omdb()     { return localStorage.getItem('cd_omdb') || '48f9ec85' },
   get watchmode(){ return localStorage.getItem('cd_watchmode') || 'uPNTzzEd9kQ90VofkkQfnJ8xIBhjyvqFPxOuYMu8' },
 };
 
 const TMDB_IMG = 'https://image.tmdb.org/t/p/';
 const TMDB_BASE = 'https://api.themoviedb.org/3';
-const OMDB_BASE = 'https://www.omdbapi.com/';
 const WM_BASE   = 'https://api.watchmode.com/v1';
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3359,10 +3352,10 @@ async function tmdbGet(path, params = {}) {
   } catch { return null; }
 }
 
+// Routed through /api/omdb so the key lives in a Railway env var rather
+// than in this file (which is served byte-for-byte and publicly readable).
 async function omdbGet(params = {}) {
-  if (!CFG.omdb) return null;
-  const url = new URL(OMDB_BASE);
-  url.searchParams.set('apikey', CFG.omdb);
+  const url = new URL('/api/omdb', location.origin);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   try {
     const r = await fetch(url.toString());
@@ -3408,7 +3401,7 @@ async function loadMovies() {
       const det = await tmdbGet(`/movie/${m.id}`);
       const movie = { ...m, ...(det || {}), _weeks: weeksInRelease(m.release_date) };
       // Fetch IMDb rating via OMDb using the IMDb ID from TMDB details
-      if (det?.imdb_id && CFG.omdb) {
+      if (det?.imdb_id) {
         const omdb = await omdbGet({ i: det.imdb_id });
         if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
           movie.imdb_rating = parseFloat(omdb.imdbRating);
@@ -3463,7 +3456,7 @@ async function renderStreaming() {
     ]);
     const us = wp?.results?.US || {};
     let imdb_rating = null;
-    if (extIds?.imdb_id && CFG.omdb) {
+    if (extIds?.imdb_id) {
       const omdb = await omdbGet({ i: extIds.imdb_id });
       if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
         imdb_rating = parseFloat(omdb.imdbRating);
@@ -5093,10 +5086,10 @@ async function checkAPIHealth() {
       return r ? Date.now() - t : 'error';
     }},
     { id: 'omdb', name: 'OMDb', fn: async () => {
-      if (!CFG.omdb) return 'no-key';
       const t = Date.now();
       const r = await omdbGet({ t: 'inception' });
-      return r?.Response === 'True' ? Date.now() - t : 'error';
+      if (r?.Response === 'True') return Date.now() - t;
+      return /not set on the server/i.test(r?.Error || '') ? 'no-key' : 'error';
     }},
     { id: 'watchmode', name: 'Watchmode', fn: async () => {
       if (!CFG.watchmode) return 'no-key';
@@ -5669,14 +5662,12 @@ function runHypothetical() {
 // ═══════════════════════════════════════════════════════════════════
 function openSettings() {
   document.getElementById('s-tmdb').value     = CFG.tmdb;
-  document.getElementById('s-omdb').value     = CFG.omdb;
   document.getElementById('s-watchmode').value= CFG.watchmode;
   document.getElementById('settingsModal').classList.add('open');
 }
 
 function saveSettings() {
   localStorage.setItem('cd_tmdb',      document.getElementById('s-tmdb').value.trim());
-  localStorage.setItem('cd_omdb',      document.getElementById('s-omdb').value.trim());
   localStorage.setItem('cd_watchmode', document.getElementById('s-watchmode').value.trim());
   document.getElementById('settingsModal').classList.remove('open');
   state.movies = [];
@@ -5712,7 +5703,6 @@ async function doSearch(query) {
   const enriched = await Promise.all(hits.map(async m => {
     const cached_movie = cached.get(m.id);
     if (cached_movie?.imdb_rating) return { ...m, imdb_rating: cached_movie.imdb_rating };
-    if (!CFG.omdb) return m;
     const extIds = await tmdbGet(`/movie/${m.id}/external_ids`);
     if (!extIds?.imdb_id) return m;
     const omdb = await omdbGet({ i: extIds.imdb_id });
@@ -5772,7 +5762,6 @@ async function doHomeSearch(query) {
   const enriched = await Promise.all(hits.map(async m => {
     const cached = state.movies.find(s => s.id === m.id);
     if (cached?.imdb_rating) return { ...m, imdb_rating: cached.imdb_rating };
-    if (!CFG.omdb) return m;
     const extIds = await tmdbGet(`/movie/${m.id}/external_ids`);
     if (!extIds?.imdb_id) return m;
     const omdb = await omdbGet({ i: extIds.imdb_id });
