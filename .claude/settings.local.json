@@ -47,7 +47,19 @@
       "Bash(curl -s \"https://andrew-vick-movies.up.railway.app/api/imax-now-playing?refresh=1\")",
       "Bash(python3 scripts/update_imax_now_playing.py)",
       "Bash(pip install *)",
-      "Bash(curl -s -w \"Time: %{time_total}s\\\\n\" -o /dev/null http://localhost:8000/api/imax-now-playing)"
+      "Bash(curl -s -w \"Time: %{time_total}s\\\\n\" -o /dev/null http://localhost:8000/api/imax-now-playing)",
+      "Bash(grep -n \"au-film{$\\\\|au-film {$\\\\|au-tl-left .au-film\\\\|au-film-body{\\\\|au-film-poster{\\\\|au-film-meta{$\\\\|au-film-meta {\" /Users/andrewvick/Documents/movie-posters/index.html)",
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Bash(python3 -c \"import json;json.load\\(open\\('static/imax-films.json'\\)\\);json.load\\(open\\('static/imax-theaters.json'\\)\\);json.load\\(open\\('static/manifest.json'\\)\\);print\\('All JSON valid'\\)\")",
+      "Bash(curl -s -o /dev/null -w \"TMDB default key: %{http_code}\\\\n\" \"https://api.themoviedb.org/3/movie/now_playing?api_key=5257b8de97581229fd5a52d5e61a48ec&region=US\")",
+      "Bash(curl -s https://andrew-vick-movies.up.railway.app/)",
+      "Bash(grep -o \"get omdb\\(\\).\\\\{0,80\\\\}\")",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"import ast;ast.parse\\(open\\('app.py'\\).read\\(\\)\\);print\\('app.py syntax OK'\\)\")",
+      "Bash(grep -o \"get omdb\\(\\).\\\\{0,60\\\\}\")",
+      "Bash(curl -s https://andrew-vick-movies.up.railway.app/static/sw.js)",
+      "Bash(git ls-remote *)"
     ]
   }
 }
