@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""Scrape Wikipedia's "List of films released in IMAX" and write the most
-recent (already-released) entry to static/imax-now-playing.json.
+"""Scrape Wikipedia's per-decade "List of films released in IMAX" and write
+the most recent (already-released) entry to static/imax-now-playing.json.
 
 Run weekly via GitHub Actions (.github/workflows/imax-update.yml).
 
 Wikipedia advantages: no auth, no datacenter-IP block, no rate limit
 (unlike Reddit). Trade-off: editors typically update the list 1-2 days
 after a new IMAX release, so the headline lags the actual release weekend.
+
+Targets the decade sub-article (e.g. "...IMAX (2020s)"). The parent
+article was split into per-decade pages and now holds only pointers plus
+a "Cancelled releases" section — scraping it yields a handful of unrelated
+rows rather than the release tables.
 """
 import json
 import re
@@ -17,11 +22,23 @@ from pathlib import Path
 import requests
 
 
-WIKI_API = (
-    'https://en.wikipedia.org/w/api.php'
-    '?action=parse&format=json&prop=wikitext&redirects=1'
-    '&page=List_of_films_released_in_IMAX'
-)
+def _wiki_api_url(today=None):
+    """API URL for the decade sub-article covering `today`."""
+    year = (today or datetime.now()).year
+    decade = (year // 10) * 10
+    return (
+        'https://en.wikipedia.org/w/api.php'
+        '?action=parse&format=json&prop=wikitext&redirects=1'
+        f'&page=List_of_films_released_in_IMAX_({decade}s)'
+    )
+
+
+# A release should never be this old — IMAX gets new titles most weeks.
+# If the newest entry we can find is older than this, the page structure
+# has almost certainly changed and we should fail loudly rather than
+# overwrite good data with something stale.
+MAX_STALENESS_DAYS = 75
+
 HEADERS = {'User-Agent': 'cinedata-imax-updater/1.0 (github actions)'}
 
 OUTPUT = Path(__file__).resolve().parent.parent / 'static' / 'imax-now-playing.json'
@@ -67,9 +84,12 @@ def _parse_row_title(row_text):
 
 
 def scrape():
-    r = requests.get(WIKI_API, headers=HEADERS, timeout=15)
+    r = requests.get(_wiki_api_url(), headers=HEADERS, timeout=15)
     r.raise_for_status()
-    wt = r.json()['parse']['wikitext']['*']
+    payload = r.json()
+    if 'error' in payload:
+        raise RuntimeError(f"Wikipedia API error: {payload['error'].get('info', payload['error'])}")
+    wt = payload['parse']['wikitext']['*']
 
     # Split the article into table rows (|-) and look at each.
     # rowspan can carry a date across multiple rows — track the last seen date
@@ -96,6 +116,15 @@ def scrape():
     # latest in the article (later wikitext usually = later edit / bigger film).
     candidates.sort(key=lambda x: x[0])
     dt, title = candidates[-1]
+
+    age_days = (today - dt).days
+    if age_days > MAX_STALENESS_DAYS:
+        raise RuntimeError(
+            f'Newest release found is {age_days} days old ({title}, {dt.date()}). '
+            f'Expected something within {MAX_STALENESS_DAYS} days — the Wikipedia '
+            f'page structure has likely changed. Refusing to write stale data.'
+        )
+
     return {
         'title': title,
         'year': dt.year,
@@ -105,7 +134,11 @@ def scrape():
 
 
 def main():
-    payload = scrape()
+    try:
+        payload = scrape()
+    except Exception as e:
+        print(f'IMAX scrape failed: {e}', file=sys.stderr)
+        sys.exit(1)
     if not payload:
         print('Could not extract a recent IMAX film from Wikipedia', file=sys.stderr)
         sys.exit(1)
