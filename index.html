@@ -1664,6 +1664,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     <input class="search-input" id="searchInput" type="text" placeholder="Search movies…" autocomplete="off">
     <div class="search-results" id="searchResults"></div>
   </div>
+  <button class="icon-btn" id="settingsBtn" title="API configuration" aria-label="API configuration">&#9881;</button>
 </header>
 
 <!-- MAIN CONTENT -->
@@ -3259,7 +3260,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
     <button class="modal-close" id="settingsClose">&#10005;</button>
     <div class="modal-inner">
       <div class="settings-title">API CONFIGURATION</div>
-      <div class="settings-sub">Keys stored locally in your browser. Never sent to any server except the respective APIs.</div>
+      <div class="settings-sub">Stored in this browser only, and sent nowhere but the API each key belongs to. Leave a field blank to use the built-in default. OMDb is configured server-side and isn't set here.</div>
       <div class="settings-group">
         <div class="settings-label">TMDB API Key</div>
         <input class="settings-input" id="s-tmdb" type="password" placeholder="Your TMDB API key (v3 auth)">
@@ -4380,7 +4381,6 @@ async function renderOverview() {
     if (!movies.length) return;
   }
   renderRankings();
-  renderPosterGrid();
 }
 
 function renderKPIs() {
@@ -4415,17 +4415,6 @@ function renderOverviewTable() {
     </tr>`;
   }).join('');
   document.getElementById('overviewTableBody').innerHTML = rows;
-}
-
-function renderPosterGrid() {
-  const html = state.movies.slice(0, 16).map(m => {
-    const src = m.poster_path ? `${TMDB_IMG}w342${m.poster_path}` : '';
-    return `<div class="poster-item" onclick="openModal(${m.id})">
-      ${src ? `<img src="${src}" alt="${m.title}" loading="lazy">` : `<div class="poster-placeholder">&#127916;</div>`}
-      <div class="poster-overlay"><div class="poster-title">${m.title}</div></div>
-    </div>`;
-  }).join('');
-  document.getElementById('posterGrid').innerHTML = html;
 }
 
 function renderWeeklyChart() {
@@ -5661,8 +5650,10 @@ function runHypothetical() {
 // ── Expose for tab switch ──
 // ═══════════════════════════════════════════════════════════════════
 function openSettings() {
-  document.getElementById('s-tmdb').value     = CFG.tmdb;
-  document.getElementById('s-watchmode').value= CFG.watchmode;
+  // Show only what's actually been overridden, so a blank field honestly
+  // means "using the built-in default" rather than echoing it back.
+  document.getElementById('s-tmdb').value      = localStorage.getItem('cd_tmdb') || '';
+  document.getElementById('s-watchmode').value = localStorage.getItem('cd_watchmode') || '';
   document.getElementById('settingsModal').classList.add('open');
 }
 
@@ -5670,8 +5661,10 @@ function saveSettings() {
   localStorage.setItem('cd_tmdb',      document.getElementById('s-tmdb').value.trim());
   localStorage.setItem('cd_watchmode', document.getElementById('s-watchmode').value.trim());
   document.getElementById('settingsModal').classList.remove('open');
+  // Keys changed — drop cached data and re-render whichever tab is open.
   state.movies = [];
-  renderOverview();
+  imaxLoaded = false;
+  switchTab(state.activeTab || 'overview');
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -5846,6 +5839,11 @@ window.closeSearch = closeSearch;
 
 document.getElementById('modalClose').addEventListener('click', () => document.getElementById('movieModal').classList.remove('open'));
 document.getElementById('movieModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
+
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsClose').addEventListener('click', () => document.getElementById('settingsModal').classList.remove('open'));
+document.getElementById('settingsSave').addEventListener('click', saveSettings);
+document.getElementById('settingsModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); });
 
 document.getElementById('opsRefreshBtn').addEventListener('click', renderOPS);
 document.getElementById('mlTrainBtn').addEventListener('click', renderForecast);
