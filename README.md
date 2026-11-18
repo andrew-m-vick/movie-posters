@@ -49,7 +49,7 @@ Add to Home Screen on iOS, Android, or desktop. Pages load network-first so new 
 | Design | Playfair Display · DM Sans · DM Mono |
 | Movie data | [TMDB](https://developer.themoviedb.org), [OMDb](https://www.omdbapi.com) (proxied server-side, cached 24 h), Watchmode |
 | Recommender | [Groq](https://groq.com) · GPT-OSS 120B |
-| Charts / map | Chart.js · [Leaflet](https://leafletjs.com) + CartoDB Dark Matter — both loaded only when a tab needs them |
+| Charts / map | Chart.js · [Leaflet](https://leafletjs.com) + Esri Dark Gray Canvas (OpenStreetMap fallback) — both loaded only when a tab needs them |
 | Geocoding / routing | OpenStreetMap Nominatim · OSRM (free, no key) |
 | Server | Flask + Gunicorn |
 | Hosting | [Railway](https://railway.app) |
