@@ -1287,6 +1287,22 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     radial-gradient(ellipse 55% 90% at 12% 10%,rgba(120,166,217,.16),transparent 70%),
     radial-gradient(ellipse 55% 90% at 88% 10%,rgba(228,140,92,.16),transparent 70%);
 }
+/* Head-to-head portraits: Nolan left facing right, Villeneuve right facing left
+   (both mirrored from the source photos so each sits on his own color side). */
+#tab-auteurs .au-face{
+  position:absolute;top:0;bottom:0;width:42%;z-index:-2;pointer-events:none;
+  background-size:cover;background-repeat:no-repeat;opacity:.5;
+  animation:auFaceIn 1.4s var(--ease) both;
+}
+#tab-auteurs .au-face.n{left:0;background-position:62% 22%;
+  -webkit-mask-image:linear-gradient(to right,#000 30%,transparent 92%);mask-image:linear-gradient(to right,#000 30%,transparent 92%)}
+#tab-auteurs .au-face.v{right:0;background-position:40% 30%;
+  -webkit-mask-image:linear-gradient(to left,#000 30%,transparent 92%);mask-image:linear-gradient(to left,#000 30%,transparent 92%)}
+#tab-auteurs .au-hero::after{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(11,11,12,.35) 0%,transparent 30%,transparent 60%,var(--bg) 100%);
+}
+@keyframes auFaceIn{from{opacity:0;transform:scale(1.03)}to{opacity:.5;transform:none}}
 #tab-auteurs .au-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
 #tab-auteurs .au-hero h1{
   max-width:980px;margin:0 auto;font-family:var(--font-display);font-weight:700;
@@ -1528,6 +1544,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 }
 @media(max-width:768px){
   #tab-auteurs .au-hero{margin-top:-20px;padding:72px 16px 56px}
+  #tab-auteurs .au-face{width:55%;opacity:.32;animation:none}
   #tab-auteurs .au-section{padding-top:72px}
   #tab-auteurs .au-timeline{grid-template-columns:1fr 54px 1fr}
   #tab-auteurs .au-tl-cell{padding:10px 8px}
@@ -1638,13 +1655,14 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <section class="tab-panel" id="tab-overview">
     <!-- BOX OFFICE RANKINGS TABLE -->
     <div class="section-header">
-      <div class="section-title">Now Playing</div>
-      <div class="section-sub">SORTED BY POPULARITY · WORLDWIDE CUMULATIVE REVENUE</div>
+      <div class="section-title" id="rankTitle">Weekend Box Office</div>
+      <div class="section-sub" id="rankSub">DOMESTIC · LOADING CHART…</div>
       <div class="section-actions">
         <select class="select-ctrl" id="rankSort">
-          <option value="popularity">Sort: Popularity</option>
-          <option value="revenue">Sort: Revenue</option>
-          <option value="weeks">Sort: Weeks in Market</option>
+          <option value="gross">Sort: Weekend Gross</option>
+          <option value="total">Sort: Domestic Total</option>
+          <option value="average">Sort: Per-Theater Avg</option>
+          <option value="weeks">Sort: Weeks in Release</option>
         </select>
         <select class="select-ctrl" id="rankFilter">
           <option value="all">All Genres</option>
@@ -1654,14 +1672,15 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     <div class="card" style="padding:0">
       <div class="overflow-x-auto">
         <table class="data-table" id="rankingsTable">
-          <thead>
+          <thead id="rankingsHead">
             <tr>
               <th>#</th>
               <th>Title</th>
-              <th class="right">Worldwide Revenue</th>
-              <th class="right">Budget</th>
-              <th class="right" title="Revenue ÷ Production Budget · Marketing costs not included">Rev/Budget</th>
-              <th class="right">Popularity</th>
+              <th class="right">Weekend</th>
+              <th class="right">vs. LW</th>
+              <th class="right">Theaters</th>
+              <th class="right" title="Weekend gross ÷ theaters">Avg</th>
+              <th class="right">Domestic Total</th>
               <th class="right">Wks</th>
               <th>Genre</th>
             </tr>
@@ -2715,6 +2734,8 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
   <section class="tab-panel" id="tab-auteurs">
 
     <header class="au-hero">
+      <div class="au-face n" style="background-image:url('/static/auteur-nolan.jpg')" role="img" aria-label="Christopher Nolan"></div>
+      <div class="au-face v" style="background-image:url('/static/auteur-villeneuve.jpg')" role="img" aria-label="Denis Villeneuve"></div>
       <div class="au-eyebrow">A comparative analysis · 1998 – 2026</div>
       <h1>Two Auteurs. Two Decades. <em>One Throne.</em></h1>
       <p class="au-hero-sub">Christopher Nolan vs. Denis Villeneuve — and the year that finally settled it.</p>
@@ -4139,6 +4160,7 @@ async function renderOverview() {
     const movies = await loadMovies();
     if (!movies.length) return;
   }
+  await loadBoxOffice();
   renderRankings();
 }
 
@@ -4225,19 +4247,73 @@ function renderGenreBreakdown() {
 // ═══════════════════════════════════════════════════════════════════
 // RANKINGS TAB
 // ═══════════════════════════════════════════════════════════════════
+// Ranked by Box Office Mojo's domestic weekend chart (via /api/boxoffice).
+// If the chart can't be reached, falls back to TMDB now-playing by popularity
+// and says so in the subheading.
+async function loadBoxOffice() {
+  if (state.boxOffice !== undefined) return state.boxOffice;
+  let chart = null;
+  try {
+    const r = await fetch('/api/boxoffice');
+    chart = r.ok ? await r.json() : null;
+  } catch { chart = null; }
+  if (!chart?.rows?.length) return (state.boxOffice = null);
+
+  const norm = t => (t || '').normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^\w]/g, '').toLowerCase();
+  const year = new Date().getFullYear();
+  const rows = chart.rows.slice(0, 20);
+  await Promise.all(rows.map(async row => {
+    const key = norm(row.title);
+    // Already loaded as a current US release? Use it (has genres + details).
+    let m = state.movies.find(x => norm(x.title) === key)
+         || state.movies.find(x => norm(x.title).startsWith(key) || key.startsWith(norm(x.title)));
+    if (!m) {
+      // Re-releases and long runs aren't in now_playing; search, preferring
+      // an exact title and the most recent release.
+      const res = (await tmdbGet('/search/movie', { query: row.title, region: 'US' }))?.results || [];
+      const recent = res.filter(x => (x.release_date || '').slice(0, 4) >= String(year - 1));
+      m = recent.find(x => norm(x.title) === key) || res.find(x => norm(x.title) === key) || recent[0] || res[0] || null;
+    }
+    row.tmdb = m;
+    row.genreNames = m ? (m.genres?.map(g => g.name) || (m.genre_ids || []).map(id => TMDB_GENRES[id]).filter(Boolean)) : [];
+  }));
+  state.boxOffice = { ...chart, rows };
+  state.fetchLog.push({
+    status: chart.stale ? 'warn' : 'success', source: 'Box Office Mojo', action: 'weekend chart',
+    time: new Date(), detail: `${chart.weekend} · ${rows.length} films${chart.stale ? ' (stale cache)' : ''}`
+  });
+  return state.boxOffice;
+}
+
 function renderRankings() {
   populateGenreFilter();
+  const bo = state.boxOffice;
+  const sortSel = document.getElementById('rankSort');
+  if (!bo) {
+    // Fallback: popularity view
+    document.getElementById('rankTitle').textContent = 'Now Playing';
+    document.getElementById('rankSub').textContent = 'BOX OFFICE CHART UNAVAILABLE · SORTED BY TMDB POPULARITY';
+    sortSel.innerHTML = '<option value="popularity">Sort: Popularity</option><option value="revenue">Sort: Revenue</option><option value="weeks">Sort: Weeks in Market</option>';
+    document.getElementById('rankingsHead').innerHTML = `<tr><th>#</th><th>Title</th><th class="right">Worldwide Revenue</th><th class="right">Budget</th><th class="right">Rev/Budget</th><th class="right">Popularity</th><th class="right">Wks</th><th>Genre</th></tr>`;
+  } else {
+    const est = bo.rows.every(r => r.estimated) ? ' · STUDIO ESTIMATES' : bo.rows.some(r => r.estimated) ? ' · * STUDIO ESTIMATE' : '';
+    document.getElementById('rankSub').innerHTML =
+      `DOMESTIC · ${bo.dates.toUpperCase()}${est} · <a href="${bo.url}" target="_blank" rel="noopener" style="color:inherit">BOX OFFICE MOJO ↗</a>`;
+  }
   buildRankingsTable();
-  document.getElementById('rankSort').onchange = buildRankingsTable;
+  sortSel.onchange = buildRankingsTable;
   document.getElementById('rankFilter').onchange = buildRankingsTable;
 }
+
+const TMDB_GENRES = {28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Science Fiction',10770:'TV Movie',53:'Thriller',10752:'War',37:'Western'};
 
 function populateGenreFilter() {
   const sel = document.getElementById('rankFilter');
   if (sel.options.length > 1) return;
   const genres = new Set();
-  state.movies.forEach(m => (m.genres||[]).forEach(g => genres.add(g.name)));
-  genres.forEach(g => {
+  if (state.boxOffice) state.boxOffice.rows.forEach(r => r.genreNames.forEach(g => genres.add(g)));
+  else state.movies.forEach(m => (m.genres||[]).forEach(g => genres.add(g.name)));
+  [...genres].sort().forEach(g => {
     const opt = document.createElement('option');
     opt.value = g; opt.textContent = g;
     sel.appendChild(opt);
@@ -4245,21 +4321,51 @@ function populateGenreFilter() {
 }
 
 function buildRankingsTable() {
-  let movies = [...state.movies];
   const sort = document.getElementById('rankSort').value;
   const filter = document.getElementById('rankFilter').value;
+  const body = document.getElementById('rankingsTableBody');
+  const empty = `<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px">No results</td></tr>`;
+
+  if (state.boxOffice) {
+    let rows = [...state.boxOffice.rows];
+    if (filter !== 'all') rows = rows.filter(r => r.genreNames.includes(filter));
+    const by = { gross: r => r.gross, total: r => r.total, average: r => r.average, weeks: r => r.weeks }[sort] || (r => r.gross);
+    rows.sort((a, b) => (by(b) || 0) - (by(a) || 0));
+    body.innerHTML = rows.map(r => {
+      const m = r.tmdb;
+      const open = m ? `onclick="openModal(${m.id})"` : '';
+      const poster = m?.poster_path ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" ${open} loading="lazy">` : '';
+      const lw = r.new ? '<span class="badge gold" style="margin-left:6px">NEW</span>'
+               : r.last_week ? `<span class="text-muted text-mono" style="font-size:10px;margin-left:6px" title="Last week's rank">LW ${r.last_week}</span>` : '';
+      const chg = r.change_pct == null ? '<span class="text-muted">—</span>'
+                : `<span class="${r.change_pct >= 0 ? 'text-green' : 'text-red'}">${fmt.pct(r.change_pct)}</span>`;
+      const genreStr = r.genreNames.slice(0, 2).map(g => `<span class="badge grey">${g}</span>`).join(' ');
+      return `<tr>
+        <td class="rank">${r.rank}</td>
+        <td><div class="movie-title-cell">${poster}<div><span class="${m ? 'title-link' : ''}" ${open}>${r.title}</span>${lw}${r.distributor && r.distributor !== '-' ? `<div class="text-muted" style="font-size:11px;margin-top:2px">${r.distributor}</div>` : ''}</div></div></td>
+        <td class="right revenue" style="color:var(--gold)">${fmt.M(r.gross)}${r.estimated ? '<span class="text-muted" title="Studio estimate · actuals pending">*</span>' : ''}</td>
+        <td class="right text-mono">${chg}</td>
+        <td class="right text-muted text-mono">${fmt.num(r.theaters)}</td>
+        <td class="right text-muted text-mono">${r.average ? '$' + r.average.toLocaleString() : '—'}</td>
+        <td class="right revenue teal">${fmt.M(r.total)}</td>
+        <td class="right weeks">${r.weeks}w</td>
+        <td>${genreStr}</td>
+      </tr>`;
+    }).join('') || empty;
+    return;
+  }
+
+  let movies = [...state.movies];
   if (filter !== 'all') movies = movies.filter(m => (m.genres||[]).some(g => g.name === filter));
   if (sort === 'weeks') movies.sort((a,b) => b._weeks - a._weeks);
   else if (sort === 'popularity') movies.sort((a,b) => b.popularity - a.popularity);
   else movies.sort((a,b) => (b.revenue||0) - (a.revenue||0));
-
-  const rows = movies.map((m, i) => {
-    const worldwide = m.revenue || 0;
-    const budget    = m.budget || 0;
-    const roi       = budget > 0 && worldwide > 0 ? (worldwide / budget) : null;
-    const roiStr    = roi != null ? `<span class="${roi>=1?'text-green':'text-red'}" title="Revenue ÷ Production Budget only">${roi.toFixed(2)}x</span>` : '<span class="text-muted">—</span>';
-    const poster    = m.poster_path ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" onclick="openModal(${m.id})" loading="lazy">` : '';
-    const genreStr  = (m.genres||[]).slice(0,2).map(g => `<span class="badge grey">${g.name}</span>`).join(' ');
+  body.innerHTML = movies.map((m, i) => {
+    const worldwide = m.revenue || 0, budget = m.budget || 0;
+    const roi = budget > 0 && worldwide > 0 ? worldwide / budget : null;
+    const roiStr = roi != null ? `<span class="${roi>=1?'text-green':'text-red'}">${roi.toFixed(2)}x</span>` : '<span class="text-muted">—</span>';
+    const poster = m.poster_path ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" onclick="openModal(${m.id})" loading="lazy">` : '';
+    const genreStr = (m.genres||[]).slice(0,2).map(g => `<span class="badge grey">${g.name}</span>`).join(' ');
     return `<tr>
       <td class="rank">${i+1}</td>
       <td><div class="movie-title-cell">${poster}<span class="title-link" onclick="openModal(${m.id})">${m.title}</span></div></td>
@@ -4270,8 +4376,7 @@ function buildRankingsTable() {
       <td class="right weeks">${m._weeks}w</td>
       <td>${genreStr}</td>
     </tr>`;
-  }).join('');
-  document.getElementById('rankingsTableBody').innerHTML = rows || `<tr><td colspan="9" style="text-align:center;color:var(--text3);padding:20px">No results</td></tr>`;
+  }).join('') || empty;
 }
 
 // ═══════════════════════════════════════════════════════════════════

@@ -202,6 +202,86 @@ def groq_health():
         }), 200
 
 
+# ─── Weekend box office (Box Office Mojo) ──────────────────────────────────
+# TMDB has no box-office chart (its "revenue" is a sparse lifetime figure),
+# so the Box Office tab ranks by Mojo's domestic weekend chart. Mojo posts
+# Sunday estimates and Monday actuals; a 3-hour cache tracks both, and the
+# last good chart is served if a refresh fails.
+import html as _html
+import re as _re
+
+BOM_URL = 'https://www.boxofficemojo.com/weekend/chart/'
+BOM_TTL = 3 * 3600
+BOM_UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
+          '(KHTML, like Gecko) Chrome/130.0 Safari/537.36')
+_bom_cache = {'data': None, 'at': 0}
+
+
+def _bom_text(cell):
+    return _html.unescape(_re.sub(r'<[^>]+>', '', cell)).strip()
+
+
+def _bom_int(s):
+    digits = _re.sub(r'[^\d]', '', s or '')
+    return int(digits) if digits else None
+
+
+def _bom_pct(s):
+    m = _re.match(r'^([+-]?\d+(?:\.\d+)?)%$', (s or '').replace(',', ''))
+    return float(m.group(1)) if m else None
+
+
+def _parse_bom(page):
+    heading = _re.search(r'<h1[^>]*>(.*?)</h1>', page, _re.S)
+    dates = _re.search(r'<h4[^>]*>(.*?)</h4>', page, _re.S)
+    rows = []
+    for tr in _re.findall(r'<tr[^>]*>(.*?)</tr>', page, _re.S):
+        cells = [_bom_text(c) for c in _re.findall(r'<td[^>]*>(.*?)</td>', tr, _re.S)]
+        if len(cells) < 13 or not cells[0].isdigit():
+            continue
+        rank, lw, title, gross, change, theaters, _, avg, total, weeks, dist, new, est = cells[:13]
+        rows.append({
+            'rank': int(rank),
+            'last_week': int(lw) if lw.isdigit() else None,
+            'title': title,
+            'gross': _bom_int(gross),
+            'change_pct': _bom_pct(change),
+            'theaters': _bom_int(theaters),
+            'average': _bom_int(avg),
+            'total': _bom_int(total),
+            'weeks': _bom_int(weeks),
+            'distributor': dist,
+            'new': new == 'true',
+            'estimated': est == 'true',
+        })
+    if not rows:
+        raise ValueError('No chart rows found')
+    return {
+        'weekend': _bom_text(heading.group(1)) if heading else '',
+        'dates': _bom_text(dates.group(1)) if dates else '',
+        'source': 'Box Office Mojo',
+        'url': BOM_URL,
+        'rows': rows[:25],
+    }
+
+
+@app.route('/api/boxoffice')
+def box_office():
+    now = time.time()
+    if _bom_cache['data'] and now - _bom_cache['at'] < BOM_TTL:
+        return jsonify({**_bom_cache['data'], 'cached': True})
+    try:
+        r = requests.get(BOM_URL, headers={'User-Agent': BOM_UA, 'Accept-Language': 'en-US'}, timeout=12)
+        r.raise_for_status()
+        data = _parse_bom(r.text)
+        _bom_cache.update(data=data, at=now)
+        return jsonify({**data, 'cached': False})
+    except Exception as e:
+        if _bom_cache['data']:
+            return jsonify({**_bom_cache['data'], 'cached': True, 'stale': True})
+        return jsonify({'error': f'{type(e).__name__}: {str(e)[:160]}'}), 503
+
+
 # ─── IMAX "Now Playing" ─────────────────────────────────────────────────────
 # static/imax-now-playing.json is refreshed weekly by GitHub Actions
 # (.github/workflows/imax-update.yml) which scrapes Wikipedia's "List of
