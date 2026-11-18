@@ -153,6 +153,7 @@ Return ONLY valid JSON, no markdown, no preamble:
 TMDB_KEY = os.environ.get('TMDB_API_KEY', '5257b8de97581229fd5a52d5e61a48ec')
 _tmdb = requests.Session()
 _NOT_FAMILY = {'R', 'NC-17'}
+MIN_VOTES = 25
 
 
 def _norm_title(t):
@@ -169,7 +170,7 @@ def _tmdb_get(path, **params):
 
 def _verify_pick(rec):
     """Return the pick enriched with TMDB facts, or None if no such film."""
-    title, year = (rec.get('title') or '').strip(), rec.get('year')
+    title, year = str(rec.get('title') or '').strip(), rec.get('year')
     try:
         year = int(str(year)[:4])
     except (TypeError, ValueError):
@@ -187,7 +188,9 @@ def _verify_pick(rec):
         y = int((m.get('release_date') or '0')[:4] or 0)
         dy = abs(y - year) if (year and y) else 99
         return (exact, dy <= 1, -dy, m.get('vote_count', 0))
-    cands = [m for m in results if m.get('release_date')]
+    # Feature films with some audience only: a same-titled obscure film or
+    # TV movie is almost never the one the model meant.
+    cands = [m for m in results if m.get('release_date') and m.get('vote_count', 0) >= MIN_VOTES]
     if not cands:
         return None
     best = max(cands, key=score)
@@ -214,6 +217,8 @@ def _verify_pick(rec):
     try:
         det = _tmdb_get(f"/movie/{best['id']}", append_to_response='credits,release_dates')
     except Exception:
+        return None
+    if any(g.get('name') == 'TV Movie' for g in det.get('genres', [])):
         return None
     directors = [c['name'] for c in det.get('credits', {}).get('crew', []) if c.get('job') == 'Director']
     cert = ''
@@ -249,10 +254,11 @@ def _misfit(m, c):
         return f"{m['runtime']} min, over {num('max_runtime_min')}"
     if c.get('family_friendly') is True and (m['certification'] in _NOT_FAMILY or 'horror' in genres):
         return f"rated {m['certification'] or 'horror'}, not family-friendly"
-    want = {g.lower() for g in (c.get('include_genres') or []) if isinstance(g, str)}
+    as_list = lambda v: [v] if isinstance(v, str) else [g for g in (v or []) if isinstance(g, str)]
+    want = {g.lower() for g in as_list(c.get('include_genres'))}
     if want and not want & genres:
-        return f"genres are {', '.join(m['genres']) or 'unknown'}, not {', '.join(c['include_genres'])}"
-    banned = {g.lower() for g in (c.get('exclude_genres') or []) if isinstance(g, str)}
+        return f"genres are {', '.join(m['genres']) or 'unknown'}, not {', '.join(as_list(c.get('include_genres')))}"
+    banned = {g.lower() for g in as_list(c.get('exclude_genres'))}
     if banned & genres:
         return f"is {', '.join(sorted(banned & genres))}"
     return ''
@@ -274,7 +280,6 @@ def recommend():
         query = query[:1500]
 
     from groq import Groq
-    from concurrent.futures import ThreadPoolExecutor
     client = Groq(api_key=api_key)
     messages = [
         {'role': 'system', 'content': RECOMMENDER_SYSTEM},
@@ -282,7 +287,26 @@ def recommend():
     ]
 
     def ask():
-        response = client.chat.completions.create(
+        for attempt in (1, 2):
+            try:
+                response = _create()
+                break
+            except Exception as e:
+                if attempt == 2 or getattr(e, 'status_code', None) != 429:
+                    raise
+                # Free-tier tokens-per-minute limit: wait as told (max 20 s), retry once.
+                wait = 8.0
+                try:
+                    wait = float(e.response.headers.get('retry-after', wait))
+                except Exception:
+                    pass
+                time.sleep(min(max(wait, 1.0), 20.0))
+        raw = (response.choices[0].message.content or '').strip()
+        messages.append({'role': 'assistant', 'content': raw})
+        return json.loads(raw)
+
+    def _create():
+        return client.chat.completions.create(
             model=GROQ_MODEL,
             messages=messages,
             response_format={'type': 'json_object'},
@@ -292,17 +316,27 @@ def recommend():
             max_tokens=8192,
             extra_body={'reasoning_effort': 'medium'} if 'gpt-oss' in GROQ_MODEL else None,
         )
-        raw = (response.choices[0].message.content or '').strip()
-        messages.append({'role': 'assistant', 'content': raw})
-        return json.loads(raw)
 
     try:
         data = ask()
     except json.JSONDecodeError:
         return jsonify({'error': 'Model returned invalid JSON', 'raw': (messages[-1]['content'] if messages[-1]['role'] == 'assistant' else '')[:500]}), 502
     except Exception as e:
+        if getattr(e, 'status_code', None) == 429:
+            return jsonify({'error': 'The recommender is busy right now (free-tier rate limit). Try again in a minute.'}), 429
         return jsonify({'error': f'{type(e).__name__}: {e}'}), 502
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Model returned an unexpected format. Try again.'}), 502
+    try:
+        return jsonify(_finish(data, ask, messages))
+    except Exception:
+        import traceback
+        traceback.print_exc()   # shows in Railway logs
+        return jsonify({'error': 'Something went wrong checking the picks. Try again.'}), 502
 
+
+def _finish(data, ask, messages):
+    from concurrent.futures import ThreadPoolExecutor
     constraints = data.get('constraints') if isinstance(data.get('constraints'), dict) else {}
     final, seen, rejected, suggested = [], set(), [], 0
 
@@ -336,12 +370,12 @@ def recommend():
         except Exception:
             pass   # keep what already passed
 
-    return jsonify({
+    return {
         'interpretation': data.get('interpretation'),
         'constraints': constraints,
         'recommendations': final[:10],
         'checked': {'suggested': suggested, 'rejected': len(rejected), 'shown': min(len(final), 10)},
-    })
+    }
 
 
 @app.route('/api/health/groq', methods=['GET'])
