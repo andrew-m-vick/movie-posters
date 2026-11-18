@@ -13,6 +13,14 @@ def index():
     return send_file('index.html')
 
 
+# Ratings barely move day to day, and every page load asks for the same ~20
+# films. Without this the free tier (1,000 req/day) runs out at ~50 visits.
+OMDB_TTL_HIT = 24 * 3600
+OMDB_TTL_MISS = 3600
+OMDB_CACHE_MAX = 2000
+_omdb_cache = {}  # key -> (expires_at, payload)
+
+
 @app.route('/api/omdb')
 def omdb_proxy():
     """Proxy OMDb lookups so the API key stays server-side.
@@ -25,13 +33,33 @@ def omdb_proxy():
     if not api_key:
         return jsonify({'Response': 'False', 'Error': 'OMDB_API_KEY not set on the server'}), 200
 
-    params = {k: v for k, v in request.args.items()}
-    params['apikey'] = api_key
+    params = dict(request.args.items())
+    key = tuple(sorted(params.items()))
+    now = time.time()
+    cached = _omdb_cache.get(key)
+    if cached and cached[0] > now:
+        resp = jsonify(cached[1])
+        resp.headers['X-Cache'] = 'HIT'
+        return resp, 200
+
     try:
-        r = requests.get('https://www.omdbapi.com/', params=params, timeout=8)
-        return jsonify(r.json()), 200
+        r = requests.get('https://www.omdbapi.com/', params={**params, 'apikey': api_key}, timeout=8)
+        payload = r.json()
     except Exception as e:
         return jsonify({'Response': 'False', 'Error': f'{type(e).__name__}: {str(e)[:120]}'}), 200
+
+    # Cache real answers ("found" or "not found"); never cache key/quota errors.
+    err = payload.get('Error', '')
+    if payload.get('Response') == 'True' or 'not found' in err.lower():
+        if len(_omdb_cache) >= OMDB_CACHE_MAX:
+            for k in sorted(_omdb_cache, key=lambda k: _omdb_cache[k][0])[:OMDB_CACHE_MAX // 10]:
+                del _omdb_cache[k]
+        ttl = OMDB_TTL_HIT if payload.get('Response') == 'True' else OMDB_TTL_MISS
+        _omdb_cache[key] = (now + ttl, payload)
+
+    resp = jsonify(payload)
+    resp.headers['X-Cache'] = 'MISS'
+    return resp, 200
 
 
 @app.route('/favicon.ico')

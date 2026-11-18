@@ -21,9 +21,6 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -3327,30 +3324,51 @@ function weeksInRelease(releaseDate) {
 }
 
 // Decay model: estimate weekend gross from revenue + weeks out
-function estimateWeekendGross(revenue, weeks) {
-  if (!revenue || revenue === 0) return 0;
-  // Typical opening weekend is ~40% of total domestic, then decays ~45%/wk
-  const openingEst = revenue * 0.35;
-  return openingEst * Math.pow(0.55, weeks - 1);
-}
-
-function decayFactor(weeks) {
-  return Math.pow(0.55, weeks - 1);
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // API HELPERS
 // ═══════════════════════════════════════════════════════════════════
-async function tmdbGet(path, params = {}) {
-  if (!CFG.tmdb) return null;
+// Chart.js and Leaflet are only needed on a few tabs, so they load on demand
+// instead of blocking first paint on every visit.
+const _scriptLoads = {};
+function loadScript(src) {
+  return _scriptLoads[src] ||= new Promise((resolve, reject) => {
+    const el = document.createElement('script');
+    el.src = src; el.async = true;
+    el.onload = resolve;
+    el.onerror = () => { delete _scriptLoads[src]; reject(new Error(`Failed to load ${src}`)); };
+    document.head.appendChild(el);
+  });
+}
+function ensureChart() {
+  return window.Chart ? Promise.resolve() : loadScript('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js');
+}
+function ensureLeaflet() {
+  if (window.L) return Promise.resolve();
+  if (!document.querySelector('link[data-leaflet]')) {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    css.dataset.leaflet = '';
+    document.head.appendChild(css);
+  }
+  return loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+}
+
+// Session memo: tabs and modals re-request the same TMDB resources constantly.
+// Caching the in-flight promise also collapses concurrent duplicate calls.
+const _tmdbCache = new Map();
+function tmdbGet(path, params = {}) {
+  if (!CFG.tmdb) return Promise.resolve(null);
   const url = new URL(`${TMDB_BASE}${path}`);
   url.searchParams.set('api_key', CFG.tmdb);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  try {
-    const r = await fetch(url.toString());
-    if (!r.ok) return null;
-    return r.json();
-  } catch { return null; }
+  const key = url.toString();
+  if (!_tmdbCache.has(key)) {
+    _tmdbCache.set(key, fetch(key)
+      .then(r => r.ok ? r.json() : null)
+      .catch(() => null)
+      .then(data => { if (data === null) _tmdbCache.delete(key); return data; }));
+  }
+  return _tmdbCache.get(key);
 }
 
 // Routed through /api/omdb so the key lives in a Railway env var rather
@@ -3395,23 +3413,18 @@ async function loadMovies() {
     return true;
   }).slice(0, 20);
 
-  // Enrich with details + OMDb IMDb rating in batches of 5
-  const enriched = [];
-  for (let i = 0; i < raw.length; i += 5) {
-    const batch = await Promise.all(raw.slice(i, i + 5).map(async m => {
-      const det = await tmdbGet(`/movie/${m.id}`);
-      const movie = { ...m, ...(det || {}), _weeks: weeksInRelease(m.release_date) };
-      // Fetch IMDb rating via OMDb using the IMDb ID from TMDB details
-      if (det?.imdb_id) {
-        const omdb = await omdbGet({ i: det.imdb_id });
-        if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
-          movie.imdb_rating = parseFloat(omdb.imdbRating);
-        }
+  // Enrich with TMDB details + IMDb rating (OMDb is cached server-side)
+  const enriched = await Promise.all(raw.map(async m => {
+    const det = await tmdbGet(`/movie/${m.id}`);
+    const movie = { ...m, ...(det || {}), _weeks: weeksInRelease(m.release_date) };
+    if (det?.imdb_id) {
+      const omdb = await omdbGet({ i: det.imdb_id });
+      if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
+        movie.imdb_rating = parseFloat(omdb.imdbRating);
       }
-      return movie;
-    }));
-    enriched.push(...batch);
-  }
+    }
+    return movie;
+  }));
 
   // Sort by TMDB popularity (real-time, reflects current theatrical performance)
   enriched.sort((a, b) => b.popularity - a.popularity);
@@ -3796,7 +3809,8 @@ function _tUserIcon() {
 }
 
 // ── Init map ───────────────────────────────────────────────────────
-function initTheaterMap() {
+async function initTheaterMap() {
+  await ensureLeaflet();
   if (_tMap) { _tMap.invalidateSize(); return; }
   // On mobile/small screens center on the US; on desktop show the full world
   const isMobile = window.innerWidth < 768;
@@ -3975,7 +3989,7 @@ async function searchTheaterLocation() {
     );
     const data = await res.json();
     if (!data.length) { alert('Location not found — try a city name or zip code.'); }
-    else { initTheaterMap(); _setUserLocation(parseFloat(data[0].lat), parseFloat(data[0].lon)); }
+    else { await initTheaterMap(); _setUserLocation(parseFloat(data[0].lat), parseFloat(data[0].lon)); }
   } catch { alert('Could not reach geocoding service. Check your connection.'); }
   btn.textContent = 'SEARCH'; btn.disabled = false;
 }
@@ -3985,8 +3999,8 @@ function useMyLocation() {
   const btn = document.getElementById('theaterLocateBtn');
   btn.innerHTML = '<span>…</span>'; btn.disabled = true;
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      initTheaterMap();
+    async pos => {
+      await initTheaterMap();
       _setUserLocation(pos.coords.latitude, pos.coords.longitude);
       btn.innerHTML = '<span>📍</span> USE MY LOCATION'; btn.disabled = false;
     },
@@ -4367,8 +4381,6 @@ function switchTab(id) {
 // ═══════════════════════════════════════════════════════════════════
 function showNoKeyError() {
   const html = `<div class="error-state"><div class="error-icon">&#9881;</div><div class="error-msg">API keys not configured</div><div class="error-hint">Click the settings icon ⚙ in the header to add your TMDB key and get started.</div></div>`;
-  document.getElementById('overviewTableBody').innerHTML = `<tr><td colspan="5">${html}</td></tr>`;
-  document.getElementById('posterGrid').innerHTML = html;
   document.getElementById('rankingsTableBody').innerHTML = `<tr><td colspan="9">${html}</td></tr>`;
 }
 
@@ -4398,23 +4410,6 @@ function renderKPIs() {
   document.getElementById('kpi-releases-chg').textContent = 'Active now-playing releases';
   document.getElementById('kpi-imdb').textContent = avgRating > 0 ? `${avgRating.toFixed(1)}/10` : '—';
   document.getElementById('kpi-imdb-chg').textContent = `IMDb · ${ratings.length} films`;
-}
-
-function renderOverviewTable() {
-  const rows = state.movies.slice(0, 10).map((m, i) => {
-    const poster = m.poster_path
-      ? `<img class="mini-poster" src="${TMDB_IMG}w92${m.poster_path}" alt="" onclick="openModal(${m.id})" loading="lazy">`
-      : `<div class="mini-poster" style="display:flex;align-items:center;justify-content:center;color:var(--text3)">?</div>`;
-    return `<tr>
-      <td class="rank">${i+1}</td>
-      <td><div class="movie-title-cell">${poster}<span class="title-link" onclick="openModal(${m.id})">${m.title}</span></div></td>
-      <td class="right revenue teal">${m.revenue > 0 ? fmt.M(m.revenue) : '—'}</td>
-      <td class="right text-muted text-mono">${m.budget > 0 ? fmt.M(m.budget) : '—'}</td>
-      <td class="right" style="font-family:var(--font-mono);color:var(--gold)">${m.popularity.toFixed(1)}</td>
-      <td class="right weeks">${m._weeks}w</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('overviewTableBody').innerHTML = rows;
 }
 
 function renderWeeklyChart() {
@@ -4535,7 +4530,8 @@ function buildRankingsTable() {
 // ═══════════════════════════════════════════════════════════════════
 // TRENDS TAB
 // ═══════════════════════════════════════════════════════════════════
-function renderTrends() {
+async function renderTrends() {
+  await ensureChart();
   renderKPIs();
   renderWeeklyChart();
   renderGenreBreakdown();
@@ -4989,60 +4985,6 @@ async function openModal(movieId) {
 // ═══════════════════════════════════════════════════════════════════
 // AI ANALYST
 // ═══════════════════════════════════════════════════════════════════
-function addMsg(role, text) {
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  div.textContent = text;
-  const msgs = document.getElementById('analystMessages');
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-async function askAnalyst(question) {
-  if (!question.trim()) return;
-  if (!CFG.claude) {
-    addMsg('assistant', 'No Claude API key configured. Add your key in ⚙ Settings to enable AI analysis.');
-    return;
-  }
-  addMsg('user', question);
-
-  const send = document.getElementById('analystSend');
-  const input = document.getElementById('analystInput');
-  send.disabled = true; input.disabled = true;
-
-  // Build context from loaded movies
-  const context = state.movies.slice(0,10).map((m,i) =>
-    `${i+1}. ${m.title} (${m.release_date?.slice(0,4)||'?'}) — Revenue: ${fmt.M(m.revenue||0)}, Rating: ${m.vote_average?.toFixed(1)||'?'}/10, Weeks: ${m._weeks}`
-  ).join('\n');
-
-  const systemPrompt = `You are CINE-ANALYST, an expert box office analytics assistant for the CINEDATA platform. You provide concise, data-driven insights about film performance, industry trends, and box office strategy. You have access to current box office data:\n\n${context}\n\nBe analytical, specific, and reference the actual data. Keep responses to 2-3 sentences.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': CFG.claude,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 256,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: question }]
-      })
-    });
-    if (!res.ok) throw new Error(`${res.status}`);
-    const data = await res.json();
-    addMsg('assistant', data.content?.[0]?.text || 'No response.');
-  } catch (e) {
-    addMsg('assistant', `Error: ${e.message}. Check your Claude API key and that CORS is allowed.`);
-  } finally {
-    send.disabled = false; input.disabled = false; input.focus();
-  }
-}
-
 // ═══════════════════════════════════════════════════════════════════
 // OPS TAB
 // ═══════════════════════════════════════════════════════════════════
@@ -5401,6 +5343,7 @@ function mlPredict(m, beta, fMeans, fStds) {
 // ── Render forecast page ──
 async function renderForecast() {
   if (mlState.trained) return; // don't retrain on revisit
+  await ensureChart();
   const btn  = document.getElementById('mlTrainBtn');
   const hint = document.getElementById('mlTrainHint');
   btn.disabled = true;
