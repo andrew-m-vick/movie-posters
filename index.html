@@ -3236,12 +3236,21 @@ const STREAMERS = [
   { key: 'paramount', name: 'Paramount+',  ids: [2303, 2616, 582, 633], logo: '/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png' },
 ];
 
-function fetchStreamer(svc) {
-  return tmdbGet('/discover/movie', {
+// Top 20 for a service. Page 1 is usually enough; titles without posters
+// are dropped, so pull page 2 when that leaves it short.
+async function fetchStreamer(svc) {
+  const page = p => tmdbGet('/discover/movie', {
     watch_region: 'US', with_watch_providers: svc.ids.join('|'),
     with_watch_monetization_types: 'flatrate', sort_by: 'popularity.desc',
-    'vote_count.gte': 25, page: 1,
-  }).then(d => (d?.results || []).filter(m => m.poster_path));
+    'vote_count.gte': 25, page: p,
+  });
+  const first = await page(1);
+  let films = (first?.results || []).filter(m => m.poster_path);
+  if (films.length < 20 && (first?.total_pages || 1) > 1) {
+    const ids = new Set(films.map(m => m.id));
+    films = films.concat(((await page(2))?.results || []).filter(m => m.poster_path && !ids.has(m.id)));
+  }
+  return films.slice(0, 20);
 }
 
 async function showStreamingService(key) {
@@ -3260,7 +3269,7 @@ async function showStreamingService(key) {
     entry.flatrate.push({ provider_name: s.name, logo_path: s.logo });
     byId.set(m.id, entry);
   }));
-  const films = [...byId.values()].sort((a, b) => b.popularity - a.popularity).slice(0, key === 'all' ? 30 : 20);
+  const films = [...byId.values()].sort((a, b) => b.popularity - a.popularity).slice(0, 20);
   renderStreamingGrid(films, 'streamingGrid', 'flatrate');
 }
 
