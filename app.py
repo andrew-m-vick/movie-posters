@@ -82,8 +82,10 @@ def service_worker():
     return resp
 
 
-# ─── Recommender endpoint (Groq · Llama 3.3 70B) ──────────────────────────
-GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
+# ─── Recommender endpoint (Groq · GPT-OSS 120B) ───────────────────────────
+# Groq retired llama-3.3-70b-versatile on 2026-08-16; gpt-oss-120b is its
+# named replacement. Override with the GROQ_MODEL env var.
+GROQ_MODEL = os.environ.get('GROQ_MODEL', 'openai/gpt-oss-120b')
 
 RECOMMENDER_SYSTEM = """You are the head programmer at a cinephile repertory theatre. You've seen everything from Tarkovsky to Tsai Ming-liang, know the French extremity movement and second-wave 70s horror, and can recommend a Chantal Akerman film without irony.
 
@@ -146,7 +148,10 @@ def recommend():
             ],
             response_format={'type': 'json_object'},
             temperature=0.85,
-            max_tokens=4096,
+            # Reasoning models spend output tokens thinking; keep it light and
+            # leave room for the ten-film JSON.
+            max_tokens=8192,
+            extra_body={'reasoning_effort': 'low'} if 'gpt-oss' in GROQ_MODEL else None,
         )
         raw_text = (response.choices[0].message.content or '').strip()
         data = json.loads(raw_text)
@@ -176,8 +181,11 @@ def groq_health():
         from groq import Groq
         client = Groq(api_key=api_key)
         t0 = time.time()
-        client.models.list()
+        available = {m.id for m in client.models.list().data}
         latency_ms = int((time.time() - t0) * 1000)
+        # Reachable isn't enough: a retired model still lists the API as up.
+        if GROQ_MODEL not in available:
+            return jsonify({'status': 'error', 'detail': f'Model {GROQ_MODEL} is not available on Groq'}), 200
         return jsonify({
             'status': 'online',
             'latency_ms': latency_ms,

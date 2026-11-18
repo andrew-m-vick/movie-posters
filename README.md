@@ -23,7 +23,7 @@ Most-anticipated unreleased films from TMDB, up to two years out (*Avengers: Doo
 - Filter by genre and window (90 days → all announced); sort by popularity, date, or rating
 
 ### For You — AI Recommender
-Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (Llama 3.3 70B); tuned to avoid obvious picks.
+Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (GPT-OSS 120B); tuned to avoid obvious picks.
 
 ### IMAX
 - **Now Playing in IMAX** — refreshed weekly from Wikipedia's IMAX release list, then matched against what's actually in US theaters (see *Maintaining the IMAX data*).
@@ -48,7 +48,7 @@ Add to Home Screen on iOS, Android, or desktop. Pages load network-first so new 
 | App | Single-file HTML/CSS/JS — no build step |
 | Design | Playfair Display · DM Sans · DM Mono |
 | Movie data | [TMDB](https://developer.themoviedb.org), [OMDb](https://www.omdbapi.com) (proxied server-side, cached 24 h), Watchmode |
-| Recommender | [Groq](https://groq.com) · Llama 3.3 70B |
+| Recommender | [Groq](https://groq.com) · GPT-OSS 120B |
 | Charts / map | Chart.js · [Leaflet](https://leafletjs.com) + CartoDB Dark Matter — both loaded only when a tab needs them |
 | Geocoding / routing | OpenStreetMap Nominatim · OSRM (free, no key) |
 | Server | Flask + Gunicorn |

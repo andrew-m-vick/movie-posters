@@ -1703,7 +1703,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <!-- ═══════════════════════════════ FOR YOU — AI RECOMMENDER ═══════════════════════════════ -->
   <section class="tab-panel" id="tab-picks">
     <div class="picks-wrap">
-      <div class="picks-eyebrow">FOR YOU · POWERED BY LLAMA 3.3 70B ON GROQ</div>
+      <div class="picks-eyebrow">FOR YOU · POWERED BY GPT-OSS 120B ON GROQ</div>
       <div class="picks-title">Describe your mood.</div>
       <div class="picks-lede">Tell me anything — a film you loved, an anchor you're chasing, a runtime, a vibe. One sentence or a paragraph. The AI reads every signal, reflects what it understood, then picks ten films — each with a specific reason.</div>
       <div id="picksContent"></div>
@@ -2159,7 +2159,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
         <span class="tech-pill">OMDb API</span>
         <span class="tech-pill">Watchmode API</span>
         <span class="tech-pill" style="border-color:rgba(227,165,66,.45);color:var(--gold2);background:rgba(227,165,66,.08)">Groq Cloud</span>
-        <span class="tech-pill" style="border-color:rgba(227,165,66,.45);color:var(--gold2);background:rgba(227,165,66,.08)">Llama 3.3 70B</span>
+        <span class="tech-pill" style="border-color:rgba(227,165,66,.45);color:var(--gold2);background:rgba(227,165,66,.08)">GPT-OSS 120B</span>
         <span class="tech-pill">Power BI</span>
         <span class="tech-pill">dbt Core</span>
         <span class="tech-pill">Docker</span>
@@ -2426,7 +2426,7 @@ DB_CONN  = os.environ[<span class="dag-string">'POSTGRES_CONN'</span>]
     <!-- AI RECOMMENDER SERVICE -->
     <div class="card mb-16">
       <div class="card-title">
-        <span class="dot teal"></span> AI Recommender Service — Groq · Llama 3.3 70B
+        <span class="dot teal"></span> AI Recommender Service — Groq · GPT-OSS 120B
         <span style="font-size:10px;font-family:var(--font-mono);letter-spacing:1.5px;padding:3px 8px;border-radius:3px;border:1px solid rgba(227,165,66,.45);color:var(--gold2);background:rgba(227,165,66,.08);margin-left:8px">LIVE</span>
       </div>
       <div style="color:var(--text2);font-size:13px;margin-bottom:16px;line-height:1.55">
@@ -2453,7 +2453,7 @@ DB_CONN  = os.environ[<span class="dag-string">'POSTGRES_CONN'</span>]
           <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
           <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
             <div style="font-size:9px;color:var(--text3);letter-spacing:1px">INFERENCE</div>
-            <div style="padding:7px 12px;border:1px solid rgba(227,165,66,.4);border-radius:5px;color:var(--gold2);background:rgba(227,165,66,.08);text-align:center">Llama 3.3 70B<br>Versatile</div>
+            <div style="padding:7px 12px;border:1px solid rgba(227,165,66,.4);border-radius:5px;color:var(--gold2);background:rgba(227,165,66,.08);text-align:center">GPT-OSS<br>120B</div>
           </div>
           <div style="padding:0 10px;color:var(--text3);font-size:18px">&#8594;</div>
           <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
@@ -2491,7 +2491,7 @@ DB_CONN  = os.environ[<span class="dag-string">'POSTGRES_CONN'</span>]
           <div style="font-size:11px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Model Configuration</div>
           <div class="dag-block">
 <span class="dag-comment"># Groq SDK configuration</span>
-model:            <span class="dag-string">llama-3.3-70b-versatile</span>
+model:            <span class="dag-string">openai/gpt-oss-120b</span>
 temperature:      <span class="dag-string">0.85</span>  <span class="dag-comment"># creative but coherent</span>
 max_tokens:       <span class="dag-string">4096</span>
 response_format:  {<span class="dag-string">"type": "json_object"</span>}
@@ -2517,7 +2517,7 @@ client = Groq(api_key=os.environ[<span class="dag-string">'GROQ_API_KEY'</span>]
         <span class="dag-keyword">return</span> jsonify({<span class="dag-string">'error'</span>: <span class="dag-string">'No query provided'</span>}), 400
 
     resp = client.chat.completions.create(
-        model=<span class="dag-string">'llama-3.3-70b-versatile'</span>,
+        model=<span class="dag-string">'openai/gpt-oss-120b'</span>,
         messages=[
             {<span class="dag-string">'role'</span>: <span class="dag-string">'system'</span>, <span class="dag-string">'content'</span>: RECOMMENDER_SYSTEM},
             {<span class="dag-string">'role'</span>: <span class="dag-string">'user'</span>,   <span class="dag-string">'content'</span>: query},
@@ -2612,7 +2612,7 @@ Mode:      <span class="dag-string">DirectQuery</span>  <span class="dag-comment
       <div class="health-card"><div class="health-indicator checking" id="h-tmdb"></div><div><div class="health-name">TMDB API</div><div class="health-detail">api.themoviedb.org</div></div><div class="health-latency" id="h-tmdb-lat">—</div></div>
       <div class="health-card"><div class="health-indicator checking" id="h-omdb"></div><div><div class="health-name">OMDb API</div><div class="health-detail">www.omdbapi.com</div></div><div class="health-latency" id="h-omdb-lat">—</div></div>
       <div class="health-card"><div class="health-indicator checking" id="h-watchmode"></div><div><div class="health-name">Watchmode API</div><div class="health-detail">api.watchmode.com</div></div><div class="health-latency" id="h-watchmode-lat">—</div></div>
-      <div class="health-card"><div class="health-indicator checking" id="h-groq"></div><div><div class="health-name">Groq API <span style="font-size:9px;color:var(--gold);letter-spacing:1px;margin-left:4px">LLM</span></div><div class="health-detail">api.groq.com · Llama 3.3 70B</div></div><div class="health-latency" id="h-groq-lat">—</div></div>
+      <div class="health-card"><div class="health-indicator checking" id="h-groq"></div><div><div class="health-name">Groq API <span style="font-size:9px;color:var(--gold);letter-spacing:1px;margin-left:4px">LLM</span></div><div class="health-detail">api.groq.com · GPT-OSS 120B</div></div><div class="health-latency" id="h-groq-lat">—</div></div>
     </div>
 
     <!-- DATA QUALITY CHECKS -->
@@ -3858,7 +3858,7 @@ function upcomingSetGenre(genre, btn) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// "FOR YOU" — AI RECOMMENDER (Groq · Llama 3.3 70B)
+// "FOR YOU" — AI RECOMMENDER (Groq · GPT-OSS 120B)
 // ═══════════════════════════════════════════════════════════════════
 // One free-text box, one API call. The model does the parsing, not the user.
 const picksState = {
