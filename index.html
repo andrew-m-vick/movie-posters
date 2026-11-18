@@ -820,6 +820,31 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 }
 .imax-hero .imax-hero-eyebrow,.imax-hero .imax-hero-title,.imax-hero .imax-hero-sub{text-shadow:0 2px 18px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}
 .imax-hero .imax-hero-sub{color:var(--text)}
+/* Upcoming: a slow "coming attractions" reel of the upcoming slate's posters */
+.up-reel{
+  position:absolute;inset:0;z-index:-2;display:flex;align-items:center;overflow:hidden;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);
+}
+.up-reel-track{
+  display:flex;gap:14px;padding:18px 14px 18px 0;opacity:.32;flex-shrink:0;
+  background:
+    repeating-linear-gradient(90deg,transparent 0 10px,rgba(237,232,223,.18) 10px 22px) top/100% 8px no-repeat,
+    repeating-linear-gradient(90deg,transparent 0 10px,rgba(237,232,223,.18) 10px 22px) bottom/100% 8px no-repeat;
+  animation:upReel 90s linear infinite;
+}
+.up-reel-track:empty{display:none}
+.up-reel-track img{height:300px;aspect-ratio:2/3;object-fit:cover;border-radius:4px;display:block;animation:fadeIn .8s both}
+@keyframes upReel{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.up-reel-track{animation:none}}
+.upcoming-hero::after{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 75% at 50% 50%,rgba(11,11,12,.8),rgba(11,11,12,.3) 75%,transparent),
+    linear-gradient(to bottom,transparent 60%,var(--bg));
+}
+.upcoming-hero .upcoming-hero-eyebrow,.upcoming-hero .upcoming-hero-title,.upcoming-hero .upcoming-hero-sub{text-shadow:0 2px 18px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}
+.upcoming-hero .upcoming-hero-sub{color:var(--text)}
 .imax-hero-eyebrow,.upcoming-hero-eyebrow{
   font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--gold);margin-bottom:18px;
@@ -1258,6 +1283,8 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 @media(max-width:768px){
   .imax-hero,.upcoming-hero{margin-top:-20px;margin-bottom:36px;padding:64px 16px 44px}
   .imax-hero-photo{background-position:66% 36%}
+  .up-reel-track img{height:220px}
+  .up-reel-track{gap:10px;padding:14px 10px 14px 0}
   .imax-compare-grid{grid-template-columns:1fr;gap:16px}
   .imax-compare-vs{padding:4px 0}
   .imax-filmed-grid{grid-template-columns:1fr}
@@ -1744,6 +1771,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <!-- ═══════════════════════════════ UPCOMING TAB ═══════════════════════════════ -->
   <section class="tab-panel" id="tab-upcoming">
     <div class="upcoming-hero">
+      <div class="up-reel" aria-hidden="true"><div class="up-reel-track" id="upReelTrack"></div></div>
       <div class="upcoming-hero-eyebrow">WHAT'S COMING</div>
       <div class="upcoming-hero-title">Most Anticipated</div>
       <div class="upcoming-hero-sub">Ranked by current popularity · Updated live from TMDB</div>
@@ -3938,6 +3966,11 @@ async function renderUpcoming() {
 
   upcomingState.films  = all;
   upcomingState.loaded = true;
+  // Header reel: #2–#15 (#1 already gets the spotlight). Two copies so the
+  // -50% scroll loops seamlessly.
+  const reel = all.filter(m => m.poster_path).slice(1, 15)
+    .map(m => `<img src="${TMDB_IMG}w342${m.poster_path}" alt="" decoding="async">`).join('');
+  document.getElementById('upReelTrack').innerHTML = reel + reel;
   upcomingBuildGenres(all);
   upcomingRender();
 }
