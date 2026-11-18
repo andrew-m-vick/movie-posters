@@ -2112,13 +2112,13 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
           <div class="theater-filter-row">
             <span class="theater-filter-label">FORMAT</span>
             <button class="theater-filter-btn active-all" data-filter="all" onclick="setTheaterFilter('all',this)">
-              <span class="fmt-dot" style="background:rgba(255,255,255,.4)"></span> ALL <span class="theater-count-pill" id="countAll">28</span>
+              <span class="fmt-dot" style="background:rgba(255,255,255,.4)"></span> ALL <span class="theater-count-pill" id="countAll">—</span>
             </button>
             <button class="theater-filter-btn" data-filter="70mm_film" onclick="setTheaterFilter('70mm_film',this)">
-              <span class="fmt-dot" style="background:#e3a542"></span> 70MM FILM <span class="theater-count-pill" id="count70mm">9</span>
+              <span class="fmt-dot" style="background:#e3a542"></span> 70MM FILM <span class="theater-count-pill" id="count70mm">—</span>
             </button>
             <button class="theater-filter-btn" data-filter="laser_digital" onclick="setTheaterFilter('laser_digital',this)">
-              <span class="fmt-dot" style="background:#7fb5ac"></span> LASER DIGITAL <span class="theater-count-pill" id="countLaser">19</span>
+              <span class="fmt-dot" style="background:#7fb5ac"></span> LASER DIGITAL <span class="theater-count-pill" id="countLaser">—</span>
             </button>
           </div>
         </div>
@@ -3286,6 +3286,10 @@ function loadIMAXData() {
   ]).then(([films, theaters]) => {
     IMAX_SHOT_FILMS = films;
     IMAX_THEATERS  = theaters;
+    const n70 = theaters.filter(t => t.format === '70mm_film').length;
+    document.getElementById('countAll').textContent   = theaters.length;
+    document.getElementById('count70mm').textContent  = n70;
+    document.getElementById('countLaser').textContent = theaters.length - n70;
   }).catch(err => {
     console.error('Failed to load IMAX data:', err);
     _imaxDataPromise = null; // allow retry on next tab click
@@ -3611,7 +3615,7 @@ function _renderTheaterList(lat, lng) {
     const is70  = t.format === '70mm_film';
     const loc   = [t.city, t.state, t.country !== 'US' ? t.country : ''].filter(Boolean).join(', ');
     const dist  = t.dist < 10 ? `${t.dist.toFixed(1)} mi` : `${Math.round(t.dist).toLocaleString()} mi`;
-    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(t.address)}`;
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(t.name + ", " + t.address)}`;
     return `<div class="theater-result-card ${is70 ? 'fmt-70mm' : 'fmt-laser'}" onclick="_flyToTheater(${t.id})">
       <div class="theater-result-num">#${i+1}</div>
       <div class="theater-result-info">

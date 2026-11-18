@@ -28,7 +28,7 @@ Describe what you want to watch in your own words — mood, pacing, anchor films
 ### IMAX
 - **Now Playing in IMAX** — refreshed weekly from Wikipedia's IMAX release list, then matched against what's actually in US theaters (see *Maintaining the IMAX data*).
 - **Films shot with IMAX cameras** — curated, append-only. Not DMR upconverts. Each entry notes the format (15/70mm film, IMAX-certified digital, or both) and how the cameras were used.
-- **Premium IMAX theater finder** — map of 70mm film (gold) and laser (teal) venues, with format filter, zip/city search, and routing to the nearest one.
+- **Premium IMAX theater finder** — map of 67 venues in 15 countries: every theater IMAX booked for *The Odyssey* in 15/70mm film (gold), plus the verified dual-laser venues that project the full 1.43:1 frame (teal). Format filter, zip/city search, and directions to the nearest one.
 
 ### Auteurs
 Christopher Nolan vs. Denis Villeneuve, 1998–2026: career ledger, parallel timeline of every feature, verified scorecards, the Dark Knight vs. Dune trilogies, the 2026 *Odyssey* / *Dune: Part Three* face-off — and a twist. Every film opens the detail modal.
@@ -83,7 +83,7 @@ Railway builds from `main` using the `Procfile`. Push to deploy.
 | File | How it's maintained |
 |---|---|
 | `static/imax-films.json` | **Manual, append-only.** Only films confirmed to have been *shot* with IMAX cameras; entries are never removed. Each carries a `tmdb_id` and `poster_path` so the page needs no lookups — for new entries these are optional, and the page falls back to a title search. |
-| `static/imax-theaters.json` | **Manual.** Updated periodically from venues associated with 70mm IMAX releases. |
+| `static/imax-theaters.json` | **Manual.** Two tiers, each with a source. *70mm film*: the venues on IMAX's official participating-theater list for the most recent 15/70mm release (currently *The Odyssey*, 41 venues). *Laser*: venues that project IMAX with Laser at the full 1.43:1 ratio, as listed **verified** on [whatisimax.com/theatres/1-43](https://whatisimax.com/theatres/1-43/) (26); "reported" venues are left out until confirmed. The map's filter counts are computed from this file. |
 | `static/imax-now-playing.json` | **Auto.** `.github/workflows/imax-update.yml` runs every Saturday, scrapes Wikipedia's per-decade "List of films released in IMAX," and writes the last 60 days of releases. Because that list is worldwide, the page shows whichever of those titles is most popular in US theaters right now. If the scrape ever comes back stale, the workflow fails instead of overwriting good data. |
 
 Run the workflow on demand from the repo's **Actions** tab → *Update IMAX Now Playing* → *Run workflow*.
