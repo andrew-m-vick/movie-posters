@@ -287,23 +287,30 @@ def recommend():
     ]
 
     def ask():
-        for attempt in (1, 2):
+        # Groq fails a call two ways that a retry fixes: the free tier's
+        # tokens-per-minute 429, and json_validate_failed — the reasoning model
+        # occasionally ends with an empty/invalid answer that JSON mode rejects.
+        for attempt in (1, 2, 3):
             try:
                 response = _create()
-                break
-            except Exception as e:
-                if attempt == 2 or getattr(e, 'status_code', None) != 429:
+                raw = (response.choices[0].message.content or '').strip()
+                parsed = json.loads(raw)
+                messages.append({'role': 'assistant', 'content': raw})
+                return parsed
+            except json.JSONDecodeError:
+                if attempt == 3:
                     raise
-                # Free-tier tokens-per-minute limit: wait as told (max 20 s), retry once.
-                wait = 8.0
-                try:
-                    wait = float(e.response.headers.get('retry-after', wait))
-                except Exception:
-                    pass
-                time.sleep(min(max(wait, 1.0), 20.0))
-        raw = (response.choices[0].message.content or '').strip()
-        messages.append({'role': 'assistant', 'content': raw})
-        return json.loads(raw)
+            except Exception as e:
+                status = getattr(e, 'status_code', None)
+                if attempt == 3 or status not in (429, 400) or (status == 400 and 'json_validate_failed' not in str(e)):
+                    raise
+                if status == 429:
+                    wait = 8.0
+                    try:
+                        wait = float(e.response.headers.get('retry-after', wait))
+                    except Exception:
+                        pass
+                    time.sleep(min(max(wait, 1.0), 20.0))
 
     def _create():
         return client.chat.completions.create(
@@ -320,10 +327,12 @@ def recommend():
     try:
         data = ask()
     except json.JSONDecodeError:
-        return jsonify({'error': 'Model returned invalid JSON', 'raw': (messages[-1]['content'] if messages[-1]['role'] == 'assistant' else '')[:500]}), 502
+        return jsonify({'error': 'The recommender returned a garbled answer. Try again.'}), 502
     except Exception as e:
         if getattr(e, 'status_code', None) == 429:
             return jsonify({'error': 'The recommender is busy right now (free-tier rate limit). Try again in a minute.'}), 429
+        if 'json_validate_failed' in str(e):
+            return jsonify({'error': 'The recommender returned a garbled answer. Try again.'}), 502
         return jsonify({'error': f'{type(e).__name__}: {e}'}), 502
     if not isinstance(data, dict):
         return jsonify({'error': 'Model returned an unexpected format. Try again.'}), 502
