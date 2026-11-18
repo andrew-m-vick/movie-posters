@@ -4074,7 +4074,7 @@ function picksResultsHTML() {
       ? `<img src="${TMDB_IMG}w342${rec.poster_path}" alt="${rec.title}" loading="lazy">`
       : '🎬';
     const tags = (rec.tags || []).map(t => `<span class="picks-card-tag">${t}</span>`).join('');
-    const meta = [rec.year, rec.director].filter(Boolean).join(' · ');
+    const meta = [rec.year, rec.director, rec.runtime ? `${rec.runtime} min` : ''].filter(Boolean).join(' · ');
     const clickAttr = rec.tmdb_id ? `onclick="openModal(${rec.tmdb_id})"` : '';
     return `
       <div class="picks-card" ${clickAttr}>
@@ -4132,8 +4132,9 @@ async function picksSubmit() {
     const recs = Array.isArray(data.recommendations) ? data.recommendations : [];
     picksState.interpretation = data.interpretation || null;
 
-    // Enrich with TMDB data for posters + modal links
-    await Promise.all(recs.map(async rec => {
+    // The server already matched each pick to TMDB (tmdb_id + poster);
+    // only search for any it couldn't.
+    await Promise.all(recs.filter(rec => !rec.tmdb_id).map(async rec => {
       try {
         const s = await tmdbGet('/search/movie', { query: rec.title, year: rec.year, include_adult: false });
         const match = (s?.results || [])[0];

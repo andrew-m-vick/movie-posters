@@ -28,7 +28,7 @@ The real domestic weekend chart from [Box Office Mojo](https://www.boxofficemojo
 What's available across subscription services and digital retailers, filterable by service.
 
 ### For You — AI Recommender
-Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (GPT-OSS 120B); tuned to avoid obvious picks.
+Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (GPT-OSS 120B). Every pick is fact-checked against TMDB before it's shown: films that don't exist are dropped, year/director/runtime come from TMDB, and the limits you stated (era, runtime, family-friendly, genre) are enforced on those real values. If too few survive, the model gets one retry with the reasons.
 
 ### Auteurs
 Christopher Nolan vs. Denis Villeneuve, 1998–2026 — opening on the two of them face to face: career ledger, parallel timeline of every feature, verified scorecards, the Dark Knight vs. Dune trilogies, the 2026 *Odyssey* / *Dune: Part Three* face-off — and a twist. Every film opens the detail modal.

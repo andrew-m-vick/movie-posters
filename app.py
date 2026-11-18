@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import re as _re_mod
 import requests
 from flask import Flask, send_file, send_from_directory, request, jsonify
 
@@ -99,10 +100,20 @@ The user will describe what they want to watch in their OWN words — free-form,
 
 2. REFLECT. Write a one-sentence "interpretation" in their own register — proof you understood. Use their specific language. Example: if they wrote "I felt gutted by Past Lives and want that quiet ache under 2 hours", you might write: "Contemplative-heartbreak mode, Past Lives flavor specifically, sub-120 minutes." Be concrete, not generic.
 
-3. RECOMMEND exactly 10 films.
+3. CONSTRAIN. Write down the hard limits they stated or clearly implied, so they can be checked against real film data. Use null (or false / []) when they didn't set one; never invent limits they didn't ask for.
+   - year_from / year_to: release-year range, e.g. 1990 and 1999 for "90s movies".
+   - max_runtime_min: e.g. 120 for "under 2 hours".
+   - family_friendly: true only if kids are watching or they asked for family viewing.
+   - include_genres: only if they explicitly named a genre — e.g. ["Crime"] for "crime movies", ["Science Fiction"] for "sci-fi". Each pick must be in at least one. Leave [] for moods or vibes.
+   - exclude_genres: genre names they ruled out, e.g. ["Horror"] for "no horror".
+   Genre names must come from: Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Science Fiction, Thriller, War, Western.
+
+4. RECOMMEND exactly 16 films, best fit first. (They are fact-checked afterwards and the first 10 that pass are shown, so every one must be a real, released feature film with its correct original release year and director.)
 
 Recommendation rules:
-- Avoid obvious picks. If they say "patient dread," don't pick The Shining — pick Under the Skin, Sauvage, or Memories of Murder. Go global, era-diverse, sometimes international, sometimes documentary, sometimes forgotten.
+- FIT BEATS NOVELTY. Every pick must squarely satisfy every stated constraint — era, runtime, audience, genre, mood. A famous film that fits is better than an obscure one that doesn't.
+- Within that, lean away from the most obvious picks. If they say "patient dread," don't lead with The Shining — think Under the Skin, Sauvage, Memories of Murder. Mix eras and countries when the request allows it.
+- Only recommend films you are certain exist. If unsure of a title, year, or director, leave that film out.
 - Each "why" must reference their OWN language in 2–4 sentences. Don't just say "similar tone" — quote their phrase or paraphrase it tightly.
 - Write like a friend who actually watched it. No adjective padding.
 - Respect runtime ceilings strictly.
@@ -112,6 +123,14 @@ Recommendation rules:
 Return ONLY valid JSON, no markdown, no preamble:
 {
   "interpretation": "one-sentence reflection of their request in their register",
+  "constraints": {
+    "year_from": null,
+    "year_to": null,
+    "max_runtime_min": null,
+    "family_friendly": false,
+    "include_genres": [],
+    "exclude_genres": []
+  },
   "recommendations": [
     {
       "title": "film title",
@@ -123,6 +142,120 @@ Return ONLY valid JSON, no markdown, no preamble:
   ]
 }
 """
+
+
+# ─── Fact-checking picks against TMDB ──────────────────────────────────────
+# The model is good at taste and bad at facts: it misdates films, credits the
+# wrong director, invents titles, and drifts outside stated limits ("90s"
+# answered with 2004 films). Every pick is looked up on TMDB; missing films are
+# dropped, year/director/runtime come from TMDB, and the stated constraints are
+# enforced on those real values.
+TMDB_KEY = os.environ.get('TMDB_API_KEY', '5257b8de97581229fd5a52d5e61a48ec')
+_tmdb = requests.Session()
+_NOT_FAMILY = {'R', 'NC-17'}
+
+
+def _norm_title(t):
+    t = (t or '').lower().replace('&', 'and')
+    t = _re_mod.sub(r'^(the|a|an)\s+', '', t)
+    return _re_mod.sub(r'[^a-z0-9]', '', __import__('unicodedata').normalize('NFKD', t).encode('ascii', 'ignore').decode())
+
+
+def _tmdb_get(path, **params):
+    r = _tmdb.get(f'https://api.themoviedb.org/3{path}', params={'api_key': TMDB_KEY, **params}, timeout=8)
+    r.raise_for_status()
+    return r.json()
+
+
+def _verify_pick(rec):
+    """Return the pick enriched with TMDB facts, or None if no such film."""
+    title, year = (rec.get('title') or '').strip(), rec.get('year')
+    try:
+        year = int(str(year)[:4])
+    except (TypeError, ValueError):
+        year = None
+    if not title:
+        return None
+    try:
+        results = _tmdb_get('/search/movie', query=title, include_adult='false').get('results', [])
+    except Exception:
+        return None
+    key = _norm_title(title)
+    def score(m):
+        names = {_norm_title(m.get('title')), _norm_title(m.get('original_title'))}
+        exact = key in names
+        y = int((m.get('release_date') or '0')[:4] or 0)
+        dy = abs(y - year) if (year and y) else 99
+        return (exact, dy <= 1, -dy, m.get('vote_count', 0))
+    cands = [m for m in results if m.get('release_date')]
+    if not cands:
+        return None
+    best = max(cands, key=score)
+    exact, close, _, _ = score(best)
+    if not exact:
+        # Release titles vary ("The Raid: Redemption" is "The Raid" on TMDB;
+        # "Hundred-Year-Old" vs "100 Year-Old"): accept a close title only
+        # when the year also matches.
+        from difflib import SequenceMatcher
+        def near(m):
+            y = int((m.get('release_date') or '0')[:4] or 0)
+            if not (year and y and abs(y - year) <= 1):
+                return 0
+            n = max((_norm_title(m.get('title')), _norm_title(m.get('original_title'))),
+                    key=lambda x: SequenceMatcher(None, key, x).ratio())
+            prefix = len(n) >= 4 and (key.startswith(n) or n.startswith(key))
+            return max(SequenceMatcher(None, key, n).ratio(), 0.9 if prefix else 0)
+        alt = max(cands, key=near)
+        if near(alt) < 0.75:
+            return None   # no film with this title near this year: hallucinated or misremembered
+        best = alt
+    elif year and not close:
+        return None
+    try:
+        det = _tmdb_get(f"/movie/{best['id']}", append_to_response='credits,release_dates')
+    except Exception:
+        return None
+    directors = [c['name'] for c in det.get('credits', {}).get('crew', []) if c.get('job') == 'Director']
+    cert = ''
+    for rd in det.get('release_dates', {}).get('results', []):
+        if rd.get('iso_3166_1') == 'US':
+            cert = next((x['certification'] for x in rd.get('release_dates', []) if x.get('certification')), '')
+    return {
+        **rec,
+        'title': det.get('title') or title,
+        'year': int(det['release_date'][:4]) if det.get('release_date') else year,
+        'director': ', '.join(directors) or rec.get('director'),
+        'runtime': det.get('runtime') or None,
+        'genres': [g['name'] for g in det.get('genres', [])],
+        'certification': cert,
+        'tmdb_id': det['id'],
+        'poster_path': det.get('poster_path'),
+    }
+
+
+def _misfit(m, c):
+    """Why a verified film breaks the request's constraints, or '' if it fits."""
+    def num(k):
+        try:
+            return int(c.get(k)) if c.get(k) not in (None, '', False) else None
+        except (TypeError, ValueError):
+            return None
+    genres = {g.lower() for g in m['genres']}
+    if num('year_from') and m['year'] and m['year'] < num('year_from'):
+        return f"released {m['year']}, before {num('year_from')}"
+    if num('year_to') and m['year'] and m['year'] > num('year_to'):
+        return f"released {m['year']}, after {num('year_to')}"
+    if num('max_runtime_min') and m['runtime'] and m['runtime'] > num('max_runtime_min'):
+        return f"{m['runtime']} min, over {num('max_runtime_min')}"
+    if c.get('family_friendly') is True and (m['certification'] in _NOT_FAMILY or 'horror' in genres):
+        return f"rated {m['certification'] or 'horror'}, not family-friendly"
+    want = {g.lower() for g in (c.get('include_genres') or []) if isinstance(g, str)}
+    if want and not want & genres:
+        return f"genres are {', '.join(m['genres']) or 'unknown'}, not {', '.join(c['include_genres'])}"
+    banned = {g.lower() for g in (c.get('exclude_genres') or []) if isinstance(g, str)}
+    if banned & genres:
+        return f"is {', '.join(sorted(banned & genres))}"
+    return ''
 
 
 @app.route('/api/recommend', methods=['POST'])
@@ -140,33 +273,75 @@ def recommend():
     if len(query) > 1500:
         query = query[:1500]
 
-    raw_text = None
-    try:
-        from groq import Groq
-        client = Groq(api_key=api_key)
+    from groq import Groq
+    from concurrent.futures import ThreadPoolExecutor
+    client = Groq(api_key=api_key)
+    messages = [
+        {'role': 'system', 'content': RECOMMENDER_SYSTEM},
+        {'role': 'user',   'content': query},
+    ]
+
+    def ask():
         response = client.chat.completions.create(
             model=GROQ_MODEL,
-            messages=[
-                {'role': 'system', 'content': RECOMMENDER_SYSTEM},
-                {'role': 'user',   'content': query},
-            ],
+            messages=messages,
             response_format={'type': 'json_object'},
-            temperature=0.85,
-            # Reasoning models spend output tokens thinking; keep it light and
-            # leave room for the ten-film JSON.
+            temperature=0.6,
+            # Reasoning models spend output tokens thinking; medium effort
+            # noticeably cuts factual slips. Leave room for the JSON.
             max_tokens=8192,
-            extra_body={'reasoning_effort': 'low'} if 'gpt-oss' in GROQ_MODEL else None,
+            extra_body={'reasoning_effort': 'medium'} if 'gpt-oss' in GROQ_MODEL else None,
         )
-        raw_text = (response.choices[0].message.content or '').strip()
-        data = json.loads(raw_text)
-        return jsonify(data)
+        raw = (response.choices[0].message.content or '').strip()
+        messages.append({'role': 'assistant', 'content': raw})
+        return json.loads(raw)
+
+    try:
+        data = ask()
     except json.JSONDecodeError:
-        return jsonify({
-            'error': 'Model returned invalid JSON',
-            'raw': (raw_text or '')[:500],
-        }), 502
+        return jsonify({'error': 'Model returned invalid JSON', 'raw': (messages[-1]['content'] if messages[-1]['role'] == 'assistant' else '')[:500]}), 502
     except Exception as e:
         return jsonify({'error': f'{type(e).__name__}: {e}'}), 502
+
+    constraints = data.get('constraints') if isinstance(data.get('constraints'), dict) else {}
+    final, seen, rejected, suggested = [], set(), [], 0
+
+    def check(recs):
+        nonlocal suggested
+        recs = [r for r in (recs or []) if isinstance(r, dict)]
+        suggested += len(recs)
+        with ThreadPoolExecutor(8) as ex:
+            verified = list(ex.map(_verify_pick, recs))
+        for rec, m in zip(recs, verified):
+            if not m:
+                rejected.append(f"{rec.get('title')} ({rec.get('year')}): no such film found")
+            elif m['tmdb_id'] in seen:
+                continue
+            elif (why := _misfit(m, constraints)):
+                seen.add(m['tmdb_id'])
+                rejected.append(f"{m['title']} ({m['year']}): {why}")
+            else:
+                seen.add(m['tmdb_id'])
+                final.append(m)
+
+    check(data.get('recommendations'))
+    if len(final) < 8:
+        # One top-up round: say exactly what failed so it can correct course.
+        messages.append({'role': 'user', 'content':
+            'These picks failed the fact check or broke the request:\n- ' + '\n- '.join(rejected[:20]) +
+            '\n\nAlready accepted: ' + '; '.join(f"{m['title']} ({m['year']})" for m in final) +
+            f'\n\nGive 12 more different films that are real and meet every constraint. Same JSON format.'})
+        try:
+            check(ask().get('recommendations'))
+        except Exception:
+            pass   # keep what already passed
+
+    return jsonify({
+        'interpretation': data.get('interpretation'),
+        'constraints': constraints,
+        'recommendations': final[:10],
+        'checked': {'suggested': suggested, 'rejected': len(rejected), 'shown': min(len(final), 10)},
+    })
 
 
 @app.route('/api/health/groq', methods=['GET'])
