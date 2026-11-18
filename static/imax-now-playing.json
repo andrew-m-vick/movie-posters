@@ -2,5 +2,39 @@
   "title": "Ramayana: Part 1",
   "year": 2026,
   "release_date": "2026-11-06",
+  "recent": [
+    {
+      "title": "Ramayana: Part 1",
+      "release_date": "2026-11-06"
+    },
+    {
+      "title": "Godzilla Minus Zero",
+      "release_date": "2026-11-03"
+    },
+    {
+      "title": "Street Fighter",
+      "release_date": "2026-10-16"
+    },
+    {
+      "title": "Digger",
+      "release_date": "2026-10-02"
+    },
+    {
+      "title": "Lalka",
+      "release_date": "2026-09-30"
+    },
+    {
+      "title": "Death Whisperer: Saming the Werebeast",
+      "release_date": "2026-09-30"
+    },
+    {
+      "title": "Avengers: Endgame Encore",
+      "release_date": "2026-09-25"
+    },
+    {
+      "title": "The Paradise",
+      "release_date": "2026-09-24"
+    }
+  ],
   "source": "wikipedia"
 }

@@ -16,7 +16,7 @@ rows rather than the release tables.
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import requests
@@ -38,6 +38,9 @@ def _wiki_api_url(today=None):
 # has almost certainly changed and we should fail loudly rather than
 # overwrite good data with something stale.
 MAX_STALENESS_DAYS = 75
+
+# How far back the frontend may look for a title that's still in US theaters.
+RECENT_WINDOW_DAYS = 60
 
 HEADERS = {'User-Agent': 'cinedata-imax-updater/1.0 (github actions)'}
 
@@ -125,10 +128,23 @@ def scrape():
             f'page structure has likely changed. Refusing to write stale data.'
         )
 
+    # The list is worldwide, so the newest row is often a regional release
+    # (e.g. an India-only Diwali title). Ship the whole recent slate and let
+    # the frontend pick whichever of these is actually in US theaters now.
+    window_start = today - timedelta(days=RECENT_WINDOW_DAYS)
+    seen, recent = set(), []
+    for d, t in reversed(candidates):
+        if d < window_start:
+            break
+        if t not in seen:
+            seen.add(t)
+            recent.append({'title': t, 'release_date': d.strftime('%Y-%m-%d')})
+
     return {
         'title': title,
         'year': dt.year,
         'release_date': dt.strftime('%Y-%m-%d'),
+        'recent': recent,
         'source': 'wikipedia',
     }
 
@@ -146,7 +162,8 @@ def main():
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, indent=2) + '\n')
     print(f'Wrote {OUTPUT}')
-    print(f'Headline: {payload["title"]} ({payload["release_date"]})')
+    print(f'Newest: {payload["title"]} ({payload["release_date"]})')
+    print(f'Recent slate: {len(payload["recent"])} titles in the last {RECENT_WINDOW_DAYS} days')
 
 
 if __name__ == '__main__':

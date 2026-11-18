@@ -3641,8 +3641,8 @@ async function renderNowInIMAX() {
   const el = document.getElementById('imaxNowPlaying');
   if (!el || !CFG.tmdb) return;
 
-  // Server endpoint scrapes imax.com (cached 6h) with /static/imax-now-playing.json
-  // as a manual fallback. Either way we get { title, year?, note?, source }.
+  // { title, year, release_date, recent: [{title, release_date}] } — refreshed
+  // weekly from Wikipedia's worldwide IMAX list by GitHub Actions.
   let curated;
   try {
     const r = await fetch('/api/imax-now-playing', { cache: 'no-store' });
@@ -3662,16 +3662,24 @@ async function renderNowInIMAX() {
     return;
   }
 
-  // Resolve the curated title against TMDB to fetch poster + metadata.
-  const search = await tmdbGet('/search/movie', {
-    query: curated.title,
-    year: curated.year,
-    language: 'en-US',
-    page: 1,
-  });
-  const m = (search?.results || []).find(r => r.poster_path) || (search?.results || [])[0];
+  // The Wikipedia list is worldwide, so its newest row is often a regional
+  // release. Prefer the most popular recent IMAX title that's actually in
+  // US theaters now (TMDB now_playing, already loaded for Box Office).
+  const norm = t => (t || '').normalize('NFKD').replace(/[^\w]/g, '').toLowerCase();
+  const slate = (curated.recent?.length ? curated.recent : [curated]).map(r => norm(r.title));
+  if (!state.movies.length) await loadMovies();
+  const playing = [...state.movies].sort((a, b) => b.popularity - a.popularity);
+  let m = playing.find(p => slate.includes(norm(p.title)))
+       || playing.find(p => slate.some(s => s.length > 3 && (norm(p.title).startsWith(s) || s.startsWith(norm(p.title)))));
+
   if (!m) {
-    el.textContent = `Could not find "${curated.title}" on TMDB.`;
+    // Nothing on the slate is in US theaters — fall back to the newest entry,
+    // accepting only an exact title match so we never show the wrong film.
+    const search = await tmdbGet('/search/movie', { query: curated.title, year: curated.year, language: 'en-US', page: 1 });
+    m = (search?.results || []).find(r => r.poster_path && norm(r.title) === norm(curated.title));
+  }
+  if (!m) {
+    el.textContent = 'No IMAX feature currently set.';
     return;
   }
 
@@ -3712,8 +3720,10 @@ async function renderIMAX() {
   const grid = document.getElementById('imaxPosterGrid');
   grid.innerHTML = '<div class="imax-poster-loading">FETCHING POSTERS…</div>';
 
-  // Search TMDB for each film to get the correct ID + poster
+  // Entries carry a verified tmdb_id + poster_path; only newly added
+  // entries without them fall back to a title search.
   const results = await Promise.all(IMAX_SHOT_FILMS.map(async f => {
+    if (f.tmdb_id && f.poster_path) return f;
     const data = await tmdbGet('/search/movie', { query: f.title, year: f.year, language: 'en-US', page: 1 });
     const hit  = (data?.results || []).find(r => r.poster_path) || data?.results?.[0];
     if (!hit || !hit.poster_path) return null;
