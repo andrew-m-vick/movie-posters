@@ -1288,15 +1288,17 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     radial-gradient(ellipse 55% 90% at 88% 10%,rgba(228,140,92,.16),transparent 70%);
 }
 /* Head-to-head portraits: Nolan left, Villeneuve right (mirrored from the
-   source photo so he faces in), each on his own color side. */
+   source photo so he faces in), each on his own color side. Both images are
+   cropped so the eyes sit 43% down, and positioned at 43%, which keeps the
+   eyelines level at any box size. */
 #tab-auteurs .au-face{
   position:absolute;top:0;bottom:0;width:42%;z-index:-2;pointer-events:none;
   background-size:cover;background-repeat:no-repeat;opacity:.5;
   animation:auFaceIn 1.4s var(--ease) both;
 }
-#tab-auteurs .au-face.n{left:0;background-position:62% 22%;
+#tab-auteurs .au-face.n{left:0;background-position:62% 43%;
   -webkit-mask-image:linear-gradient(to right,#000 30%,transparent 92%);mask-image:linear-gradient(to right,#000 30%,transparent 92%)}
-#tab-auteurs .au-face.v{right:0;background-position:40% 30%;
+#tab-auteurs .au-face.v{right:0;background-position:40% 43%;
   -webkit-mask-image:linear-gradient(to left,#000 30%,transparent 92%);mask-image:linear-gradient(to left,#000 30%,transparent 92%)}
 #tab-auteurs .au-hero::after{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
