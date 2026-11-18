@@ -312,6 +312,7 @@ p{text-wrap:pretty}
 .rating-chip.imdb{color:#f0c53a;border-color:rgba(240,197,58,.32);background:rgba(240,197,58,.07)}
 .rating-chip.rt{color:#ec6a4f;border-color:rgba(236,106,79,.32);background:rgba(236,106,79,.07)}
 .rating-chip.mc{color:#8fc96f;border-color:rgba(143,201,111,.32);background:rgba(143,201,111,.07)}
+.rating-chip.tmdb{color:var(--teal);border-color:rgba(127,181,172,.32);background:rgba(127,181,172,.07)}
 .modal-trailer{
   aspect-ratio:16/9;width:100%;margin-bottom:26px;
   border-radius:var(--radius);overflow:hidden;background:#000;
@@ -411,7 +412,7 @@ p{text-wrap:pretty}
 /* A tilted wall of Drew Struzan one-sheets, faded behind the search */
 .home-collage{
   position:absolute;inset:-14% -10%;z-index:-2;pointer-events:none;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:16px;align-content:center;
+  display:grid;grid-template-columns:repeat(8,1fr);gap:14px;align-content:center;
   transform:rotate(-6deg);
   opacity:.3;filter:saturate(.9);
   animation:collageIn 1.6s var(--ease) both;
@@ -1587,20 +1588,31 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <!-- ═══════════════════════════════ HOME TAB ═══════════════════════════════ -->
   <section class="tab-panel active" id="tab-home">
     <div class="home-hero">
-      <!-- Drew Struzan poster art: Back to the Future, Back to the Future Part II, Back to the Future Part III, Indiana Jones and the Last Crusade, Indiana Jones and the Kingdom of the Crystal Skull, The Goonies, The Thing, Hook, Star Wars: Episode I - The Phantom Menace, First Blood, An American Tail, Harry Potter and the Philosopher's Stone -->
+      <!-- Drew Struzan poster art: Hook, The Empire Strikes Back (Special Edition), Back to the Future, First Blood, Raiders of the Lost Ark, Star Wars (Special Edition), The Goonies, Star Wars: Episode I - The Phantom Menace, Back to the Future Part II, The Thing, Indiana Jones and the Last Crusade, Star Wars: Episode III - Revenge of the Sith, An American Tail, Harry Potter and the Philosopher's Stone, The Land Before Time, Indiana Jones and the Temple of Doom, Police Academy, Return of the Jedi (Special Edition), The Muppet Movie, Back to the Future Part III, Hellboy, Indiana Jones and the Kingdom of the Crystal Skull, Star Wars: Episode II - Attack of the Clones -->
       <div class="home-collage" aria-hidden="true">
-        <img src="https://image.tmdb.org/t/p/w342/vN5B5WgYscRGcQpVhHl6p9DDTP0.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/hQq8xZe5uLjFzSBt4LanNP7SQjl.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/crzoVQnMzIrRfHtQw0tLBirNfVg.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/sizg1AU8f8JDZX4QIgE4pjUMBvx.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/56As6XEM1flWvprX4LgkPl8ii4K.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/eBU7gCjTCj9n2LTxvCSIXXOvHkD.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/tzGY49kseSE9QAKk47uuDGwnSCu.jpg" alt="" decoding="async">
         <img src="https://image.tmdb.org/t/p/w342/a6rB1lGXoGms7gWxRfJneQmAjNV.jpg" alt="" decoding="async">
-        <img src="https://image.tmdb.org/t/p/w342/6wkfovpn7Eq8dYNKaG5PY3q2oq6.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/xlmNecl7nFeWnrWKjAQwRjPTw1.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/vN5B5WgYscRGcQpVhHl6p9DDTP0.jpg" alt="" decoding="async">
         <img src="https://image.tmdb.org/t/p/w342/a9sa6ERZCpplbPEO7OMWE763CLD.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/tlevjsDo33mkHIO5kC7Ar16cVk2.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/tZM2bZySE9DcKMPBeIW0BFfveV1.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/eBU7gCjTCj9n2LTxvCSIXXOvHkD.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/6wkfovpn7Eq8dYNKaG5PY3q2oq6.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/hQq8xZe5uLjFzSBt4LanNP7SQjl.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/tzGY49kseSE9QAKk47uuDGwnSCu.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/sizg1AU8f8JDZX4QIgE4pjUMBvx.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/duJfdpefRgFBMvMdOJSiTWDD69z.jpg" alt="" decoding="async">
         <img src="https://image.tmdb.org/t/p/w342/51pLurrIQDhXZab4cv8lHP32UiR.jpg" alt="" decoding="async">
         <img src="https://image.tmdb.org/t/p/w342/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/wSC2wxFj3ZgrIHlIaePeuHN4igo.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/t7Pv44sBcxhc47kNNDDafNAgr7Y.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/ApsenIoTzEScNe4HIRSKlmFQQhC.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/xxCnFmRZ83jHTZsBiceG4IBUGoq.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/8LUjnIW5ph6pHoXDE3Zg4iVi6BV.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/crzoVQnMzIrRfHtQw0tLBirNfVg.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/hjblR6bPZR0PvFwztHcEBCjYf7d.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/56As6XEM1flWvprX4LgkPl8ii4K.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/oZNPzxqM2s5DyVWab09NTQScDQt.jpg" alt="" decoding="async">
       </div>
       <div class="home-eyebrow">Est. 2025 · Live Data · TMDB · OMDb · Watchmode</div>
       <h1 class="home-headline">Movie<br><span>Posters!</span></h1>
@@ -3193,13 +3205,22 @@ async function renderStreaming() {
   pills.querySelectorAll('.service-pill').forEach(p => p.addEventListener('click', () => showStreamingService(p.dataset.service)));
   const subscription = showStreamingService('all');
 
-  // Buy & Rent: this week's trending titles that can be rented or bought
-  const trending = await tmdbGet('/trending/movie/week', { page: 1 });
-  const withProviders = await Promise.all((trending?.results || []).slice(0, 20).map(async m => {
-    const us = (await tmdbGet(`/movie/${m.id}/watch/providers`))?.results?.US || {};
-    return { ...m, rent: us.rent || [], buy: us.buy || [] };
-  }));
-  const digital = withProviders.filter(m => m.rent.length || m.buy.length);
+  // Buy & Rent: this week's trending titles that can be rented or bought.
+  // Most trending films are still theatrical-only, so walk down the list a
+  // page at a time until there are 20 digital ones.
+  const digital = [], seenIds = new Set();
+  for (let page = 1; page <= 5 && digital.length < 20; page++) {
+    const trending = await tmdbGet('/trending/movie/week', { page });
+    // Trending pages overlap as rankings shift between requests
+    const results = (trending?.results || []).filter(m => m.poster_path && !seenIds.has(m.id) && seenIds.add(m.id));
+    if (!results.length) break;
+    const withProviders = await Promise.all(results.map(async m => {
+      const us = (await tmdbGet(`/movie/${m.id}/watch/providers`))?.results?.US || {};
+      return { ...m, rent: us.rent || [], buy: us.buy || [] };
+    }));
+    digital.push(...withProviders.filter(m => m.rent.length || m.buy.length));
+  }
+  digital.splice(20);
   renderDigitalGrid(digital);
   await subscription;
 
@@ -4643,6 +4664,12 @@ async function openModal(movieId) {
     if (imdb) ratingsHtml += `<div class="rating-chip imdb">&#9733; ${imdb} <span style="opacity:.6;font-weight:400;margin-left:4px">IMDb</span></div>`;
     if (rt)   ratingsHtml += `<div class="rating-chip rt">&#127813; ${rt} <span style="opacity:.6;font-weight:400;margin-left:4px">Rotten Tomatoes</span></div>`;
     if (mc)   ratingsHtml += `<div class="rating-chip mc">&#9670; ${mc} <span style="opacity:.6;font-weight:400;margin-left:4px">Metacritic</span></div>`;
+  }
+  // OMDb lags on new releases (record exists, scores still N/A); TMDB's user
+  // score fills in until IMDb has one.
+  const hasImdb = omdbData && omdbData.imdbRating !== 'N/A';
+  if (!hasImdb && details.vote_count >= 20 && details.vote_average > 0) {
+    ratingsHtml += `<div class="rating-chip tmdb">&#9733; ${details.vote_average.toFixed(1)} <span style="opacity:.6;font-weight:400;margin-left:4px">TMDB · ${details.vote_count.toLocaleString()} votes</span></div>`;
   }
   if (!ratingsHtml) ratingsHtml = `<span class="text-muted text-sm">No ratings yet — too new for aggregators</span>`;
 

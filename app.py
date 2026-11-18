@@ -54,7 +54,11 @@ def omdb_proxy():
         if len(_omdb_cache) >= OMDB_CACHE_MAX:
             for k in sorted(_omdb_cache, key=lambda k: _omdb_cache[k][0])[:OMDB_CACHE_MAX // 10]:
                 del _omdb_cache[k]
-        ttl = OMDB_TTL_HIT if payload.get('Response') == 'True' else OMDB_TTL_MISS
+        # New releases often exist in OMDb before their scores do; re-check
+        # those hourly so ratings appear soon after OMDb adds them.
+        rated = payload.get('Response') == 'True' and (
+            payload.get('imdbRating', 'N/A') != 'N/A' or payload.get('Ratings'))
+        ttl = OMDB_TTL_HIT if rated else OMDB_TTL_MISS
         _omdb_cache[key] = (now + ttl, payload)
 
     resp = jsonify(payload)
