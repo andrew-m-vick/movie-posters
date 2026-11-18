@@ -601,5 +601,59 @@
     "note": "Christopher Nolan and DP Hoyte van Hoytema shot the entire film on 15-perf/65mm IMAX film cameras — the first feature ever captured wholly in the format, according to IMAX and Universal. The long-standing obstacle was noise: IMAX film cameras are loud enough that dialogue scenes historically had to be re-recorded or shot on another format. The production solved it with quieter IMAX camera technology and purpose-built soundproof housings, finally letting intimate dialogue share the 1.43:1 frame with the action. Every 70mm IMAX screening presents the full image Nolan photographed; the film became his best-reviewed and passed $1 billion worldwide.",
     "tmdb_id": 1368337,
     "poster_path": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg"
+  },
+  {
+    "title": "F1",
+    "year": 2025,
+    "month": 6,
+    "format": "IMAX Digital",
+    "note": "Director Joseph Kosinski and DP Claudio Miranda — the Top Gun: Maverick team — shot the entire film on IMAX-certified Sony Venice cameras and framed every minute in the expanded 1.90:1 ratio. Much of the racing was filmed during real Formula 1 Grand Prix weekends, with camera rigs small enough to ride on the cars themselves. Brad Pitt and Damson Idris drove the cars, so the IMAX frame shows the actual actors at real speed.",
+    "tmdb_id": 911430,
+    "poster_path": "/9PXZIUsSDh4alB80jheWX4fhZmy.jpg"
+  },
+  {
+    "title": "Tron: Ares",
+    "year": 2025,
+    "month": 10,
+    "format": "IMAX Digital",
+    "note": "DP Jeff Cronenweth, David Fincher's longtime cinematographer, shot the film on RED V-Raptor 8K cameras with ARRI DNA large-format lenses adapted to meet IMAX certification, and it opens up to 1.90:1 for about half its runtime. Cronenweth composed primarily for 2.39:1 and treated the extra IMAX height as breathing room, so neither version loses the frame. He doubled the grain and pulled back the color to echo the 1982 original, set against a Nine Inch Nails score.",
+    "tmdb_id": 533533,
+    "poster_path": "/chpWmskl3aKm1aTZqUHRCtviwPy.jpg"
+  },
+  {
+    "title": "Mortal Kombat II",
+    "year": 2026,
+    "month": 5,
+    "format": "IMAX Digital",
+    "note": "Director Simon McQuoid and DP Stephen Windon shot the sequel entirely with IMAX-certified digital cameras, with 45 minutes opening up to the expanded 1.90:1 ratio in IMAX theaters. Windon has described building the film's photography around the format, giving the tournament's one-on-one fights a taller canvas than the standard 2.39:1 release can show.",
+    "tmdb_id": 931285,
+    "poster_path": "/hwRdDFIhaEmpRgoki805YvyyjZf.jpg"
+  },
+  {
+    "title": "The Mandalorian and Grogu",
+    "year": 2026,
+    "month": 5,
+    "format": "IMAX Digital",
+    "note": "Jon Favreau shot the first Star Wars feature since 2019 entirely with IMAX-certified digital cameras. In IMAX with Laser (GT) venues, 55 minutes open up to the full 1.43:1 frame; IMAX digital venues show those scenes at 1.90:1. The Disney+ release kept the expanded ratio in IMAX Enhanced, with the 1.43:1 scenes presented at 16:9.",
+    "tmdb_id": 1228710,
+    "poster_path": "/uwMKWjcNID0D9jjplsjkQS2OrB4.jpg"
+  },
+  {
+    "title": "Supergirl",
+    "year": 2026,
+    "month": 6,
+    "format": "IMAX Digital",
+    "note": "Director Craig Gillespie shot the DC Universe's second film entirely on IMAX-certified Sony Venice cameras, with 52 minutes opening up to the expanded 1.90:1 ratio in IMAX theaters. It follows James Gunn's Superman, also shot entirely for IMAX, keeping the new DC Universe a large-format franchise from the start, with Milly Alcock as Kara Zor-El.",
+    "tmdb_id": 1081003,
+    "poster_path": "/uhzRnTW4DM13UQBvZP3eVNzQTuz.jpg"
+  },
+  {
+    "title": "Resident Evil",
+    "year": 2026,
+    "month": 9,
+    "format": "IMAX Digital",
+    "note": "Zach Cregger, the director of Barbarian and Weapons, shot Sony's reboot entirely with IMAX-certified digital cameras, with 33 minutes opening up to the expanded 1.90:1 ratio. The film takes the series back to the survival-horror roots of the original games, and uses the taller IMAX frame for dread rather than spectacle. The home release on Sony Pictures Core kept the expanded ratio in IMAX Enhanced.",
+    "tmdb_id": 1423191,
+    "poster_path": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg"
   }
 ]
