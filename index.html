@@ -809,14 +809,17 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 .imax-hero-photo{
   position:absolute;inset:0;z-index:-2;pointer-events:none;
   background:url('/static/imax-hero.jpg') 58% 36% / cover no-repeat;
-  opacity:.5;animation:auFaceIn 1.4s var(--ease) both;
+  opacity:.36;animation:imaxPhotoIn 1.4s var(--ease) both;
 }
+@keyframes imaxPhotoIn{from{opacity:0;transform:scale(1.03)}to{opacity:.36;transform:none}}
 .imax-hero-photo::after{
   content:'';position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 45% 70% at 50% 50%,rgba(11,11,12,.55),transparent 75%),
+    radial-gradient(ellipse 55% 80% at 50% 52%,rgba(11,11,12,.8),rgba(11,11,12,.35) 70%,transparent 100%),
     linear-gradient(to bottom,rgba(11,11,12,.25) 0%,transparent 35%,transparent 55%,var(--bg) 100%);
 }
+.imax-hero .imax-hero-eyebrow,.imax-hero .imax-hero-title,.imax-hero .imax-hero-sub{text-shadow:0 2px 18px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}
+.imax-hero .imax-hero-sub{color:var(--text)}
 .imax-hero-eyebrow,.upcoming-hero-eyebrow{
   font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--gold);margin-bottom:18px;
