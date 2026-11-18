@@ -127,7 +127,9 @@ p{text-wrap:pretty}
 .nav-group.active .nav-group-trigger{color:var(--text)}
 .nav-group.active .nav-group-trigger::after{transform:scaleX(1)}
 .nav-menu{
-  position:fixed;z-index:1200;min-width:200px;padding:6px;
+  /* left/top are set on open; the 0,0 default keeps the closed menu inside the
+     viewport, where an offscreen fixed box would widen mobile layouts */
+  position:fixed;left:0;top:0;z-index:1200;min-width:200px;padding:6px;
   background:var(--elev);border:1px solid var(--border2);border-radius:var(--radius);
   box-shadow:var(--shadow);
   opacity:0;visibility:hidden;transform:translateY(-6px);
@@ -527,6 +529,8 @@ p{text-wrap:pretty}
 
 /* ── Responsive (shared) ─────────────────────────────────────────── */
 @media(max-width:900px){
+  /* fade the nav's right edge so it reads as scrollable */
+  .nav-tabs::after{content:'';position:sticky;right:0;flex:0 0 28px;margin-left:-28px;align-self:stretch;pointer-events:none;background:linear-gradient(to right,rgba(11,11,12,0),rgba(11,11,12,.95))}
   #header{padding-left:16px;padding-right:12px}
   .logo-btn{margin-right:10px}
   .logo-btn img{height:24px}
@@ -1555,13 +1559,13 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
       </div>
     </div>
   </nav>
-  <button class="icon-btn mobile-search-btn" id="mobileSearchBtn" title="Search" style="display:none">&#128269;</button>
+  <button class="icon-btn mobile-search-btn" id="mobileSearchBtn" title="Search" aria-label="Search" style="display:none"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7.5"/><path d="m20.5 20.5-4.2-4.2"/></svg></button>
   <div class="search-wrap" id="searchWrap">
     <button class="icon-btn" id="mobileSearchClose" title="Close" style="display:none;flex-shrink:0">&#10005;</button>
     <input class="search-input" id="searchInput" type="text" placeholder="Search movies…" autocomplete="off">
     <div class="search-results" id="searchResults"></div>
   </div>
-  <button class="icon-btn" id="settingsBtn" title="API configuration" aria-label="API configuration">&#9881;</button>
+  <button class="icon-btn" id="settingsBtn" title="API configuration" aria-label="API configuration"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 </header>
 
 <!-- MAIN CONTENT -->
@@ -3370,7 +3374,7 @@ async function renderNowInIMAX() {
           ${rating ? `<span>★ ${rating}</span>` : ''}
         </div>
         <div class="imax-now-overview">${overview}</div>
-        <a class="imax-now-fandango" href="${fandango}" target="_blank" rel="noopener" onclick="event.stopPropagation()">BUY IMAX TICKETS ON FANDANGO</a>
+        <a class="imax-now-fandango" href="${fandango}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Buy IMAX tickets on Fandango</a>
       </div>
     </div>`;
 }
@@ -5422,7 +5426,8 @@ function closeNavMenu() {
 function openNavMenu() {
   const r = navDataBtn.getBoundingClientRect();
   navDataMenu.style.top = `${r.bottom + 6}px`;
-  navDataMenu.style.left = `${Math.min(r.left, window.innerWidth - 216)}px`;
+  const vw = document.documentElement.clientWidth;
+  navDataMenu.style.left = `${Math.max(8, Math.min(r.left, vw - 216))}px`;
   navData.classList.add('open');
   navDataBtn.setAttribute('aria-expanded', 'true');
 }
@@ -5774,10 +5779,14 @@ window.openModal = openModal; // expose for inline handlers
 })();
 </script>
 <script>
-  // Register service worker for PWA / Add to Home Screen support
+  // Service worker for PWA install + offline. Served from the root so its scope
+  // covers the app; the old /static/sw.js registration only ever covered /static/*.
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+      navigator.serviceWorker.getRegistrations()
+        .then(regs => regs.filter(r => r.scope.endsWith('/static/')).forEach(r => r.unregister()))
+        .catch(() => {});
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     });
   }
 </script>

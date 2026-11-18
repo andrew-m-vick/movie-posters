@@ -73,6 +73,15 @@ def apple_touch_icon():
     return send_from_directory('static', 'apple-touch-icon.png')
 
 
+@app.route('/sw.js')
+def service_worker():
+    # A worker's scope is capped at its own path, so it must be served from
+    # the root to control the app; from /static/ it only ever covered /static/*.
+    resp = send_from_directory('static', 'sw.js', mimetype='application/javascript')
+    resp.headers['Cache-Control'] = 'no-cache'
+    return resp
+
+
 # ─── Recommender endpoint (Groq · Llama 3.3 70B) ──────────────────────────
 GROQ_MODEL = os.environ.get('GROQ_MODEL', 'llama-3.3-70b-versatile')
 

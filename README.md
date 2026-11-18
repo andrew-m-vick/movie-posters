@@ -9,40 +9,35 @@ A cinephile's dashboard for tracking what's in theaters, what's streaming, and w
 ## Features
 
 ### Home — Poster Search
-The original movie-poster search engine that started the project. Search any film and click a poster to view it full size.
+The original movie-poster search engine that started the project. Search any film and click a poster to view it full size; click again to see it at its native resolution. The hero fades in the backdrop of whatever is #1 in theaters.
 
 ### Box Office
-Current theatrical releases with posters, ratings, and release info. Click any film for a detailed modal with cast, runtime, genres, and trailer links.
+Current theatrical releases ranked by popularity, with revenue, budget, return, and genres. Click any film for the detail modal: cast, runtime, IMDb / Rotten Tomatoes / Metacritic ratings, trailer, and where to stream or rent.
 
 ### Streaming
-What's available across major streaming platforms, filtered by service.
+What's available across subscription services and digital retailers, filterable by service.
 
 ### Upcoming
-Most-anticipated unreleased films sourced from TMDB's discover and upcoming endpoints, pulling up to two years out so major releases (Avengers, Spider-Man, *The Odyssey*) always appear.
-- Spotlight card for the #1 most anticipated film with backdrop, overview, and countdown
-- Filterable grid by genre and time window (90 days → all announced)
-- Sort by popularity, release date, or rating
+Most-anticipated unreleased films from TMDB, up to two years out (*Avengers: Doomsday*, *Dune: Part Three*):
+- Spotlight on the #1 most anticipated film, with backdrop and release countdown
+- Filter by genre and window (90 days → all announced); sort by popularity, date, or rating
 
 ### For You — AI Recommender
-A free-form recommendation engine powered by Groq (Llama 3.3 70B). Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, anti-patterns — and get 10 hand-picked recommendations with a one-sentence interpretation of your request. Tuned to avoid obvious picks and go global, era-diverse, and sometimes forgotten.
+Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (Llama 3.3 70B); tuned to avoid obvious picks.
 
 ### IMAX
-Three datasets, two questions:
-- **Now Playing in IMAX** — auto-updated weekly. A GitHub Actions workflow scrapes Wikipedia's "List of films released in IMAX" every Saturday morning and commits the most recent entry to `static/imax-now-playing.json`. Click the headline card to open the full TMDB detail modal (synopsis, cast, trailer).
-- **Films confirmed to have been *filmed* in IMAX** — manually curated, append-only. Not DMR upconverts, not post-converted. Each entry includes the format used (15/70mm film, IMAX-certified digital, or hybrid) and a detailed production note. Click any poster to open the production-notes modal.
-- **Premium IMAX theater finder** — interactive map of venues that actually deliver the format.
-  - **Gold markers** — 70mm Film IMAX (the best)
-  - **Teal markers** — Laser Digital IMAX
-  - Format filter, zip/city geocoding, auto-route to the nearest theater, click any result to reroute
+- **Now Playing in IMAX** — refreshed weekly from Wikipedia's IMAX release list, then matched against what's actually in US theaters (see *Maintaining the IMAX data*).
+- **Films shot with IMAX cameras** — curated, append-only. Not DMR upconverts. Each entry notes the format (15/70mm film, IMAX-certified digital, or both) and how the cameras were used.
+- **Premium IMAX theater finder** — map of 70mm film (gold) and laser (teal) venues, with format filter, zip/city search, and routing to the nearest one.
 
-### Trends, Forecast, Pipeline
-Analytics views over the box office and upcoming slate.
+### Auteurs
+Christopher Nolan vs. Denis Villeneuve, 1998–2026: career ledger, parallel timeline of every feature, verified scorecards, the Dark Knight vs. Dune trilogies, the 2026 *Odyssey* / *Dune: Part Three* face-off — and a twist. Every film opens the detail modal.
 
-### OPS
-Internal diagnostics — API health, latency, model status.
+### Data menu — Trends, Forecast, Pipeline, OPS
+Market analytics over the current slate, an ML revenue forecaster, the data pipeline view, and an ops dashboard with live API health.
 
 ### Installable (PWA)
-CINEDATA is a Progressive Web App — installable on iOS/Android/desktop via "Add to Home Screen." Launches standalone (no browser chrome), with a service worker for offline asset caching and maskable 192/512 icons.
+Add to Home Screen on iOS, Android, or desktop. Pages load network-first so new deploys appear immediately; the cached copy covers offline.
 
 ---
 
@@ -51,34 +46,35 @@ CINEDATA is a Progressive Web App — installable on iOS/Android/desktop via "Ad
 | Layer | Tool |
 |---|---|
 | App | Single-file HTML/CSS/JS — no build step |
-| Movie data | [TMDB](https://developer.themoviedb.org), OMDB, Watchmode |
+| Design | Playfair Display · DM Sans · DM Mono |
+| Movie data | [TMDB](https://developer.themoviedb.org), [OMDb](https://www.omdbapi.com) (proxied server-side, cached 24 h), Watchmode |
 | Recommender | [Groq](https://groq.com) · Llama 3.3 70B |
-| Map | [Leaflet.js](https://leafletjs.com) + CartoDB Dark Matter tiles |
-| Geocoding | OpenStreetMap Nominatim (free, no key) |
-| Routing | OSRM (free, no key) |
-| Server | Flask (+ Gunicorn in production) |
+| Charts / map | Chart.js · [Leaflet](https://leafletjs.com) + CartoDB Dark Matter — both loaded only when a tab needs them |
+| Geocoding / routing | OpenStreetMap Nominatim · OSRM (free, no key) |
+| Server | Flask + Gunicorn |
 | Hosting | [Railway](https://railway.app) |
 
 ---
 
 ## Setup
 
-1. Clone the repo
-2. Add your API keys (TMDB, Groq) in the config section at the top of `index.html` / as environment variables for the Flask app
-3. Run locally:
-
 ```bash
 pip install -r requirements.txt
-python app.py
+OMDB_API_KEY=... GROQ_API_KEY=... python app.py
 ```
 
-The Flask server serves `index.html` and the `/static/` assets (including `imax-films.json` and `imax-theaters.json`), and hosts the `/api/recommend` Groq endpoint.
+| Variable | Used for |
+|---|---|
+| `OMDB_API_KEY` | IMDb / RT / Metacritic ratings, via `/api/omdb` |
+| `GROQ_API_KEY` | The For You recommender, via `/api/recommend` |
+
+TMDB and Watchmode work out of the box with built-in keys. To use your own, click the ⚙ icon in the header — overrides are stored in your browser only.
 
 ---
 
 ## Deployment
 
-Deployed on Railway using the included `Procfile` and `app.py`. Push to `main` to trigger a redeploy.
+Railway builds from `main` using the `Procfile`. Push to deploy.
 
 ---
 
@@ -86,8 +82,8 @@ Deployed on Railway using the included `Procfile` and `app.py`. Push to `main` t
 
 | File | How it's maintained |
 |---|---|
-| `static/imax-films.json` | **Manual, append-only.** Entries are confirmed to have been filmed in IMAX and are never removed. New films added only when confirmed (e.g. *The Odyssey* on 70mm). |
+| `static/imax-films.json` | **Manual, append-only.** Only films confirmed to have been *shot* with IMAX cameras; entries are never removed. Each carries a `tmdb_id` and `poster_path` so the page needs no lookups — for new entries these are optional, and the page falls back to a title search. |
 | `static/imax-theaters.json` | **Manual.** Updated periodically from venues associated with 70mm IMAX releases. |
-| `static/imax-now-playing.json` | **Auto.** Refreshed every Saturday by `.github/workflows/imax-update.yml`, which scrapes Wikipedia's "List of films released in IMAX" and commits the most recent entry. Manual edits are overwritten on the next workflow run. |
+| `static/imax-now-playing.json` | **Auto.** `.github/workflows/imax-update.yml` runs every Saturday, scrapes Wikipedia's per-decade "List of films released in IMAX," and writes the last 60 days of releases. Because that list is worldwide, the page shows whichever of those titles is most popular in US theaters right now. If the scrape ever comes back stale, the workflow fails instead of overwriting good data. |
 
-The auto-update workflow can be triggered on demand from the repo's **Actions** tab → *Update IMAX Now Playing* → *Run workflow*.
+Run the workflow on demand from the repo's **Actions** tab → *Update IMAX Now Playing* → *Run workflow*.
