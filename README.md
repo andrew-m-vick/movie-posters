@@ -11,24 +11,24 @@ A cinephile's dashboard for tracking what's in theaters, what's streaming, and w
 ### Home — Poster Search
 The original movie-poster search engine that started the project. Search any film and click a poster to view it full size; click again to see it at its native resolution. The hero fades in the backdrop of whatever is #1 in theaters.
 
-### Box Office
-The real domestic weekend chart from [Box Office Mojo](https://www.boxofficemojo.com/weekend/chart/): weekend gross, change vs. last weekend, theaters, per-theater average, domestic total, and weeks in release. Sort by any of them or filter by genre. Served by `/api/boxoffice` (cached 3 h, so Sunday estimates turn into Monday actuals; the last good chart is kept if Mojo is unreachable). Click any film for the detail modal: cast, runtime, IMDb / Rotten Tomatoes / Metacritic ratings, trailer, and where to stream or rent.
-
-### Streaming
-What's available across subscription services and digital retailers, filterable by service.
-
 ### Upcoming
 Most-anticipated unreleased films from TMDB, up to two years out (*Avengers: Doomsday*, *Dune: Part Three*):
 - Spotlight on the #1 most anticipated film, with backdrop and release countdown
 - Filter by genre and window (90 days → all announced); sort by popularity, date, or rating
 
-### For You — AI Recommender
-Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (GPT-OSS 120B); tuned to avoid obvious picks.
+### Box Office
+The real domestic weekend chart from [Box Office Mojo](https://www.boxofficemojo.com/weekend/chart/): weekend gross, change vs. last weekend, theaters, per-theater average, domestic total, and weeks in release. Sort by any of them or filter by genre. Served by `/api/boxoffice` (cached 3 h, so Sunday estimates turn into Monday actuals; the last good chart is kept if Mojo is unreachable). Click any film for the detail modal: cast, runtime, IMDb / Rotten Tomatoes / Metacritic ratings, trailer, and where to stream or rent.
 
 ### IMAX
 - **Now Playing in IMAX** — refreshed weekly from Wikipedia's IMAX release list, then matched against what's actually in US theaters (see *Maintaining the IMAX data*).
 - **Films shot with IMAX cameras** — curated, append-only. Not DMR upconverts. Each entry notes the format (15/70mm film, IMAX-certified digital, or both) and how the cameras were used.
 - **Premium IMAX theater finder** — map of 67 venues in 15 countries: every theater IMAX booked for *The Odyssey* in 15/70mm film (gold), plus the verified dual-laser venues that project the full 1.43:1 frame (teal). Format filter, zip/city search, and directions to the nearest one.
+
+### Streaming
+What's available across subscription services and digital retailers, filterable by service.
+
+### For You — AI Recommender
+Describe what you want to watch in your own words — mood, pacing, anchor films, runtime caps, things to avoid — and get ten picks with a one-line read of your request. Powered by Groq (GPT-OSS 120B); tuned to avoid obvious picks.
 
 ### Auteurs
 Christopher Nolan vs. Denis Villeneuve, 1998–2026 — opening on the two of them face to face: career ledger, parallel timeline of every feature, verified scorecards, the Dark Knight vs. Dune trilogies, the 2026 *Odyssey* / *Dune: Part Three* face-off — and a twist. Every film opens the detail modal.

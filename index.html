@@ -1619,11 +1619,12 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
 <header id="header">
   <button class="logo-btn" onclick="switchTab('home')" aria-label="CINEDATA home"><img src="/static/logo-horizontal.png" alt="CINEDATA"></button>
   <nav class="nav-tabs" role="tablist">
-    <button class="nav-tab" data-tab="overview" role="tab">Box Office</button>
-    <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
+    <!-- A film's life: announced → opens → premium screens → at home; then picks, the feature, analytics -->
     <button class="nav-tab" data-tab="upcoming" role="tab">Upcoming</button>
-    <button class="nav-tab" data-tab="picks" role="tab">For You</button>
+    <button class="nav-tab" data-tab="overview" role="tab">Box Office</button>
     <button class="nav-tab" data-tab="imax" role="tab">IMAX</button>
+    <button class="nav-tab" data-tab="streaming" role="tab">Streaming</button>
+    <button class="nav-tab" data-tab="picks" role="tab">For You</button>
     <button class="nav-tab" data-tab="auteurs" role="tab">Auteurs</button>
     <div class="nav-group" id="navData">
       <button class="nav-tab nav-group-trigger" id="navDataBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="navDataMenu">Data <span class="chev" aria-hidden="true">&#9662;</span></button>
