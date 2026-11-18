@@ -408,14 +408,20 @@ p{text-wrap:pretty}
   margin-top:-32px;margin-bottom:40px;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:112px 28px 72px;
   text-align:center;overflow:hidden;
 }
-/* Backdrop of whatever's #1 in theaters, painted in once Box Office data loads */
-.home-hero::before{
-  content:'';position:absolute;inset:0;z-index:-2;
-  background:var(--hero-img,none) center 30%/cover no-repeat;
-  opacity:0;transition:opacity 1.2s ease;
-  filter:saturate(.85);
+/* A tilted wall of Drew Struzan one-sheets, faded behind the search */
+.home-collage{
+  position:absolute;inset:-14% -10%;z-index:-2;pointer-events:none;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:16px;align-content:center;
+  transform:rotate(-6deg);
+  opacity:.3;filter:saturate(.9);
+  animation:collageIn 1.6s var(--ease) both;
 }
-.home-hero.has-backdrop::before{opacity:.32}
+.home-collage img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;border-radius:6px}
+@keyframes collageIn{from{opacity:0;transform:rotate(-6deg) scale(1.04)}to{opacity:.3;transform:rotate(-6deg)}}
+.home-collage-credit{
+  position:absolute;right:28px;bottom:16px;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);
+}
 .home-hero::after{
   content:'';position:absolute;inset:0;z-index:-1;
   background:
@@ -488,6 +494,8 @@ p{text-wrap:pretty}
   transition:color .2s,border-color .2s,background .2s;
 }
 .service-pill:hover{color:var(--text);border-color:var(--text3)}
+.service-pill{display:inline-flex;align-items:center;gap:7px}
+.service-pill img{width:18px;height:18px;border-radius:5px;flex-shrink:0}
 .service-pill.active{color:#140e04;background:var(--gold);border-color:var(--gold)}
 .stream-card{
   display:flex;flex-direction:column;cursor:pointer;
@@ -541,6 +549,8 @@ p{text-wrap:pretty}
 @media(max-width:768px){
   #main{padding:20px 16px 48px}
   .home-hero{margin-top:-20px;margin-bottom:28px;padding:72px 16px 48px}
+  .home-collage{grid-template-columns:repeat(3,1fr);gap:10px}
+  .home-collage-credit{right:16px}
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
   .two-col{grid-template-columns:1fr}
   .modal-overlay{padding:12px}
@@ -1577,6 +1587,21 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
   <!-- ═══════════════════════════════ HOME TAB ═══════════════════════════════ -->
   <section class="tab-panel active" id="tab-home">
     <div class="home-hero">
+      <!-- Drew Struzan poster art: Back to the Future, Back to the Future Part II, Back to the Future Part III, Indiana Jones and the Last Crusade, Indiana Jones and the Kingdom of the Crystal Skull, The Goonies, The Thing, Hook, Star Wars: Episode I - The Phantom Menace, First Blood, An American Tail, Harry Potter and the Philosopher's Stone -->
+      <div class="home-collage" aria-hidden="true">
+        <img src="https://image.tmdb.org/t/p/w342/vN5B5WgYscRGcQpVhHl6p9DDTP0.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/hQq8xZe5uLjFzSBt4LanNP7SQjl.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/crzoVQnMzIrRfHtQw0tLBirNfVg.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/sizg1AU8f8JDZX4QIgE4pjUMBvx.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/56As6XEM1flWvprX4LgkPl8ii4K.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/eBU7gCjTCj9n2LTxvCSIXXOvHkD.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/tzGY49kseSE9QAKk47uuDGwnSCu.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/a6rB1lGXoGms7gWxRfJneQmAjNV.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/6wkfovpn7Eq8dYNKaG5PY3q2oq6.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/a9sa6ERZCpplbPEO7OMWE763CLD.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/51pLurrIQDhXZab4cv8lHP32UiR.jpg" alt="" decoding="async">
+        <img src="https://image.tmdb.org/t/p/w342/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg" alt="" decoding="async">
+      </div>
       <div class="home-eyebrow">Est. 2025 · Live Data · TMDB · OMDb · Watchmode</div>
       <h1 class="home-headline">Movie<br><span>Posters!</span></h1>
       <p class="home-blurb">
@@ -1589,6 +1614,7 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
         <input class="home-search-input" id="homeSearchInput" type="text" placeholder="Search any movie…" autocomplete="off">
         <div class="home-search-hint">Type to search · Click any poster to enlarge image</div>
       </div>
+      <div class="home-collage-credit">Poster art by Drew Struzan</div>
     </div>
     <hr class="home-divider">
     <div class="home-poster-grid" id="homePosterGrid">
@@ -1643,15 +1669,13 @@ select.forecast-input{appearance:none;-webkit-appearance:none;
     <!-- SERVICE FILTER PILLS -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;align-items:center">
       <span style="font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:1px;margin-right:4px">FILTER:</span>
-      <div id="serviceFilters" style="display:flex;flex-wrap:wrap;gap:6px">
-        <button class="service-pill active" data-service="all">All Services</button>
-      </div>
+      <div id="serviceFilters" style="display:flex;flex-wrap:wrap;gap:6px"></div>
     </div>
 
     <!-- NOW STREAMING (subscription) -->
     <div class="section-header">
-      <div class="section-title">Now Streaming</div>
-      <div class="section-sub">SUBSCRIPTION SERVICES · TMDB WATCH PROVIDERS</div>
+      <div class="section-title" id="streamingTitle">Now Streaming</div>
+      <div class="section-sub">Most popular on subscription services · US</div>
     </div>
     <div id="streamingGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px">
       <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div><div class="loading-text">FETCHING STREAMING DATA</div></div>
@@ -3117,79 +3141,73 @@ const RETAILER_STYLE = {
   'Fandango At Home':      'vudu',
 };
 
+// Major US subscription services. TMDB lists tiers and resold "channels" as
+// separate providers (Netflix Standard with Ads, HBO Max Amazon Channel…), so
+// each service maps to all of its ids and appears once.
+const STREAMERS = [
+  { key: 'netflix',   name: 'Netflix',     ids: [8, 1796],             logo: '/rK1KljqmbvO9HQa1PBFLILWah72.png' },
+  { key: 'prime',     name: 'Prime Video', ids: [9, 2100],             logo: '/gMZdpavHmxFNnLpMHwVxfqeux2g.png' },
+  { key: 'disney',    name: 'Disney+',     ids: [337],                 logo: '/5eZ872CghnHFLB1j8grszbrx0dx.png' },
+  { key: 'hulu',      name: 'Hulu',        ids: [15],                  logo: '/44uAnmSqvA4yBOdbPWN8YgQHjWm.png' },
+  { key: 'max',       name: 'HBO Max',     ids: [1899, 1825],          logo: '/skypuy7SXuugIQeYg0IglmzoKaS.png' },
+  { key: 'apple',     name: 'Apple TV',    ids: [350, 2243],           logo: '/9icYBfYFcwgCbky5VdGUIKJ4C5i.png' },
+  { key: 'peacock',   name: 'Peacock',     ids: [386, 387, 2553],      logo: '/a1UIdq5BrkcAxnxcUhFsNbXnxeu.png' },
+  { key: 'paramount', name: 'Paramount+',  ids: [2303, 2616, 582, 633], logo: '/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png' },
+];
+
+function fetchStreamer(svc) {
+  return tmdbGet('/discover/movie', {
+    watch_region: 'US', with_watch_providers: svc.ids.join('|'),
+    with_watch_monetization_types: 'flatrate', sort_by: 'popularity.desc',
+    'vote_count.gte': 25, page: 1,
+  }).then(d => (d?.results || []).filter(m => m.poster_path));
+}
+
+async function showStreamingService(key) {
+  state.streamingService = key;
+  document.querySelectorAll('#serviceFilters .service-pill').forEach(p => p.classList.toggle('active', p.dataset.service === key));
+  const svcs = key === 'all' ? STREAMERS : STREAMERS.filter(s => s.key === key);
+  document.getElementById('streamingTitle').textContent = key === 'all' ? 'Now Streaming' : `Now Streaming on ${svcs[0].name}`;
+  const grid = document.getElementById('streamingGrid');
+  grid.innerHTML = '<div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div><div class="loading-text">Fetching streaming data</div></div>';
+
+  const lists = await Promise.all(svcs.map(async s => ({ s, films: await fetchStreamer(s) })));
+  if (state.streamingService !== key) return; // a different pill was clicked meanwhile
+  const byId = new Map();
+  lists.forEach(({ s, films }) => films.forEach(m => {
+    const entry = byId.get(m.id) || { ...m, flatrate: [] };
+    entry.flatrate.push({ provider_name: s.name, logo_path: s.logo });
+    byId.set(m.id, entry);
+  }));
+  const films = [...byId.values()].sort((a, b) => b.popularity - a.popularity).slice(0, key === 'all' ? 30 : 20);
+  renderStreamingGrid(films, 'streamingGrid', 'flatrate');
+}
+
 async function renderStreaming() {
   if (state.streamingLoaded) return;
-
-  // Fetch trending movies for the week
-  const trending = await tmdbGet('/trending/movie/week', { page: 1 });
-  const movies = (trending?.results || []).slice(0, 20);
-
-  // Fetch watch providers + OMDb IMDb rating for each in parallel
-  const withProviders = await Promise.all(movies.map(async m => {
-    const year = m.release_date?.slice(0, 4) || '';
-    const [wp, extIds] = await Promise.all([
-      tmdbGet(`/movie/${m.id}/watch/providers`),
-      tmdbGet(`/movie/${m.id}/external_ids`),
-    ]);
-    const us = wp?.results?.US || {};
-    let imdb_rating = null;
-    if (extIds?.imdb_id) {
-      const omdb = await omdbGet({ i: extIds.imdb_id });
-      if (omdb?.Response === 'True' && omdb.imdbRating && omdb.imdbRating !== 'N/A') {
-        imdb_rating = parseFloat(omdb.imdbRating);
-      }
-    }
-    return { ...m, flatrate: us.flatrate || [], rent: us.rent || [], buy: us.buy || [], imdb_rating };
-  }));
-
-  // Build service filter pills from all available flatrate providers
-  const allServices = new Map();
-  withProviders.forEach(m => m.flatrate.forEach(p => allServices.set(p.provider_id, p)));
-  buildServiceFilters(allServices, withProviders);
-
-  // Separate streaming vs digital retail
-  const streamable = withProviders.filter(m => m.flatrate.length > 0);
-  const digital    = withProviders.filter(m => m.rent.length > 0 || m.buy.length > 0);
-
-  renderStreamingGrid(streamable, 'streamingGrid', 'flatrate');
-  renderDigitalGrid(digital);
-  state.streamingCount = withProviders.filter(m => m.flatrate.length || m.rent.length || m.buy.length).length;
   state.streamingLoaded = true;
+
+  const pills = document.getElementById('serviceFilters');
+  pills.innerHTML = '<button class="service-pill" data-service="all">All Services</button>' +
+    STREAMERS.map(s => `<button class="service-pill" data-service="${s.key}"><img src="${TMDB_IMG}w45${s.logo}" alt="">${s.name}</button>`).join('');
+  pills.querySelectorAll('.service-pill').forEach(p => p.addEventListener('click', () => showStreamingService(p.dataset.service)));
+  const subscription = showStreamingService('all');
+
+  // Buy & Rent: this week's trending titles that can be rented or bought
+  const trending = await tmdbGet('/trending/movie/week', { page: 1 });
+  const withProviders = await Promise.all((trending?.results || []).slice(0, 20).map(async m => {
+    const us = (await tmdbGet(`/movie/${m.id}/watch/providers`))?.results?.US || {};
+    return { ...m, rent: us.rent || [], buy: us.buy || [] };
+  }));
+  const digital = withProviders.filter(m => m.rent.length || m.buy.length);
+  renderDigitalGrid(digital);
+  await subscription;
+
+  state.streamingCount = document.querySelectorAll('#streamingGrid .stream-card').length + digital.length;
   state.fetchLog.push({
     status: 'success', source: 'TMDB Watch Providers', action: 'streaming data fetch',
     time: new Date(), detail: `${state.streamingCount} titles with availability data`
   });
-}
-
-function buildServiceFilters(servicesMap, movies) {
-  const container = document.getElementById('serviceFilters');
-  // Clear existing pills except "All"
-  container.innerHTML = `<button class="service-pill active" data-service="all">All Services</button>`;
-
-  servicesMap.forEach((provider, id) => {
-    const btn = document.createElement('button');
-    btn.className = 'service-pill';
-    btn.dataset.service = id;
-    btn.textContent = provider.provider_name;
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      filterStreamingGrid(id, movies);
-    });
-    container.appendChild(btn);
-  });
-
-  container.querySelector('[data-service="all"]').addEventListener('click', () => {
-    document.querySelectorAll('.service-pill').forEach(p => p.classList.remove('active'));
-    container.querySelector('[data-service="all"]').classList.add('active');
-    const streamable = movies.filter(m => m.flatrate.length > 0);
-    renderStreamingGrid(streamable, 'streamingGrid', 'flatrate');
-  });
-}
-
-function filterStreamingGrid(providerId, movies) {
-  const filtered = movies.filter(m => m.flatrate.some(p => p.provider_id == providerId));
-  renderStreamingGrid(filtered, 'streamingGrid', 'flatrate');
 }
 
 function renderStreamingGrid(movies, gridId, key) {
@@ -4065,6 +4083,7 @@ function switchTab(id) {
   document.querySelectorAll('.nav-tab[data-tab]').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
   document.getElementById('navData').classList.toggle('active', DATA_TABS.includes(id));
   closeNavMenu();
+  if (state.activeTab !== id) window.scrollTo({ top: 0, behavior: 'instant' });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === `tab-${id}`));
   state.activeTab = id;
   if (id === 'home')      { document.getElementById('homeSearchInput').focus(); }
@@ -5778,25 +5797,12 @@ document.getElementById('tab-auteurs').addEventListener('click', e => {
 // ═══════════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════════
-// Home hero: fade in the backdrop of whatever's most popular in theaters.
-function paintHomeBackdrop() {
-  const m = state.movies.find(x => x.backdrop_path);
-  if (!m) return;
-  const hero = document.querySelector('.home-hero');
-  const img = new Image();
-  img.onload = () => {
-    hero.style.setProperty('--hero-img', `url('${img.src}')`);
-    hero.classList.add('has-backdrop');
-  };
-  img.src = `${TMDB_IMG}w1280${m.backdrop_path}`;
-}
-
 window.openModal = openModal; // expose for inline handlers
 
 (async function init() {
   switchTab('home');
   // Eagerly kick off data fetch in the background so all tabs have data ready immediately
-  if (CFG.tmdb) loadMovies().then(paintHomeBackdrop);
+  if (CFG.tmdb) loadMovies();
 })();
 </script>
 <script>
